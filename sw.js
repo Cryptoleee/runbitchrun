@@ -5,7 +5,16 @@ const STATIC_ASSETS = [
   '/index.html',
   '/css/app.css',
   '/js/config.js',
-  '/manifest.json'
+  '/js/app.js',
+  '/js/auth.js',
+  '/js/firestore.js',
+  '/js/tracker.js',
+  '/js/map.js',
+  '/js/social.js',
+  '/js/ui.js',
+  '/manifest.json',
+  '/assets/icons/icon-192.png',
+  '/assets/icons/icon-512.png'
 ];
 
 // Install: cache static assets and skip waiting
