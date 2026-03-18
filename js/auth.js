@@ -20,12 +20,16 @@ function initAuth() {
   });
 
   auth.onAuthStateChanged(async (user) => {
+    // Hide splash screen once auth state is known
+    const splash = document.getElementById('splash-screen');
     if (user) {
       const profile = await getOrCreateProfile(user);
       setUser(user, profile);
+      if (splash) splash.remove();
       navigateTo('home', { force: true });
     } else {
       setUser(null, null);
+      if (splash) splash.remove();
       navigateTo('login', { force: true, skipHistory: true });
     }
   });
