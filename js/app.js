@@ -132,7 +132,8 @@ export function showIOSInstallBanner() {
 export async function initApp() {
   if ('serviceWorker' in navigator) {
     try {
-      await navigator.serviceWorker.register('/sw.js');
+      const reg = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
+      reg.update();
     } catch (err) {
       console.warn('SW registration failed:', err);
     }
