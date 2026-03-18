@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Run bitch! Run!</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "secondary-fixed-dim": "#d5dc4f",
+        "inverse-on-surface": "#565555",
+        "on-primary-container": "#415e00",
+        "on-tertiary-container": "#5f5600",
+        "tertiary": "#fff7d1",
+        "surface": "#0e0e0e",
+        "primary-dim": "#acee00",
+        "tertiary-fixed-dim": "#eedc46",
+        "on-error": "#450900",
+        "surface-bright": "#2c2c2c",
+        "surface-variant": "#262626",
+        "background": "#0e0e0e",
+        "primary-container": "#b7fe00",
+        "surface-container-high": "#201f1f",
+        "error-container": "#b92902",
+        "secondary": "#e3ea5c",
+        "on-secondary-container": "#f9ff88",
+        "surface-container-lowest": "#000000",
+        "secondary-fixed": "#e3ea5c",
+        "error": "#ff7351",
+        "tertiary-dim": "#eedc46",
+        "inverse-primary": "#496800",
+        "tertiary-container": "#fdeb53",
+        "on-primary-fixed": "#334a00",
+        "primary": "#e9ffbc",
+        "outline-variant": "#484847",
+        "surface-tint": "#e9ffbc",
+        "primary-fixed-dim": "#acee00",
+        "on-primary-fixed-variant": "#496800",
+        "on-background": "#ffffff",
+        "outline": "#767575",
+        "on-tertiary": "#685e00",
+        "inverse-surface": "#fcf9f8",
+        "error-dim": "#d53d18",
+        "on-surface-variant": "#adaaaa",
+        "on-secondary-fixed": "#3f4200",
+        "surface-container-low": "#131313",
+        "on-primary": "#486700",
+        "secondary-dim": "#d5dc4f",
+        "surface-dim": "#0e0e0e",
+        "on-secondary": "#525500",
+        "on-secondary-fixed-variant": "#5c6000",
+        "on-tertiary-fixed": "#4b4400",
+        "on-tertiary-fixed-variant": "#6a6000",
+        "surface-container-highest": "#262626",
+        "on-surface": "#ffffff",
+        "tertiary-fixed": "#fdeb53",
+        "secondary-container": "#5e6300",
+        "surface-container": "#1a1919",
+        "primary-fixed": "#b7fe00",
+        "on-error-container": "#ffd2c8"
+      },
+      fontFamily: {
+        "headline": ["Space Grotesk"],
+        "body": ["Inter"],
+        "label": ["Lexend"]
+      },
+      borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+    },
+  },
+}
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .kinetic-gradient {
+    background: linear-gradient(135deg, #e9ffbc 0%, #b7fe00 100%);
+  }
+  .glow-primary {
+    filter: drop-shadow(0 0 8px rgba(184, 255, 0, 0.4));
+  }
+  .pace-glow {
+    text-shadow: 0 0 15px rgba(184, 255, 0, 0.4);
+  }
+  .map-mask {
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  body {
+    background-color: #0e0e0e;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    min-height: 100dvh;
+    overscroll-behavior: none;
+  }
+  .page { display: none; }
+  .page.active { display: flex; flex-direction: column; }
+  .page-enter { animation: pageIn 0.3s ease-out; }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  .pulse-ring::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 2px solid #b7fe00;
+    animation: pulseRing 1.5s ease-out infinite;
+  }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header id="app-header" class="flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50 bg-[#0E0E0E]">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden border border-outline-variant/20">
+      <img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxJUCo69ex5OhcvgaQlk4JExEQHnWTmdG7VrfVYhh3Lr68Xpcu_bb9CjYX6gExCjRf7TQsKNoXRKfp6ll7GoTB3UMU_dukx_QaROocCfKhLx99TF2Ttnb4INbW997bbWt-3rv21F5BvE-1Eme7dyyfUU9fcxaddHPZvIET1CWkLAHrxQ_MbQwh9zvizEixGKmXpdWQJkFeV7wwOXSye55bRIhWxh4w5FXDShzc3vK3dWfYKO7Wy_EZ9A-8aOUK9Y4rO8GZXITh7hY" class="w-full h-full object-cover"/>
+    </div>
+    <h1 class="text-2xl font-black italic text-[#B8FF00] tracking-tighter font-headline">Run bitch! Run!</h1>
+  </div>
+  <div class="flex items-center gap-2">
+    <div id="gps-badge" class="hidden px-2.5 py-0.5 bg-primary-container/10 border border-primary-container/20 rounded-full">
+      <span class="font-label text-[9px] text-primary-fixed-dim uppercase tracking-widest flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim animate-pulse"></span>GPS ACTIVE
+      </span>
+    </div>
+    <button class="text-[#A0A0A0] hover:text-[#B8FF00] transition-colors duration-200 active:scale-95">
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════ PAGE: HOME ═══════════════ -->
+<div id="page-home" class="page active min-h-screen">
+  <main class="pt-24 pb-32 px-6 max-w-lg mx-auto page-enter">
+    <section class="mb-10">
+      <h2 class="font-label text-on-surface-variant text-sm uppercase tracking-[0.2em] mb-1">DASHBOARD</h2>
+      <h1 class="font-headline font-bold text-4xl tracking-tight leading-none">Good morning, <span class="text-primary-container">Alex</span>.</h1>
+    </section>
+
+    <section class="mb-12">
+      <button id="btn-start-run" class="kinetic-gradient w-full py-6 rounded-[20px] flex items-center justify-between px-8 shadow-[0_0_24px_rgba(184,255,0,0.2)] active:scale-95 transition-transform duration-100">
+        <div class="flex flex-col items-start">
+          <span class="font-headline font-black text-2xl text-on-primary tracking-tighter italic">START RUN</span>
+          <span class="font-label text-[10px] text-on-primary/60 uppercase tracking-widest">Gps ready &bull; high accuracy</span>
+        </div>
+        <div class="bg-on-primary text-primary-container w-12 h-12 rounded-full flex items-center justify-center">
+          <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1;">play_arrow</span>
+        </div>
+      </button>
+    </section>
+
+    <section class="mb-12">
+      <h3 class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-4">Performance Metrics</h3>
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-7 bg-surface-container rounded-2xl p-5 border-l-2 border-primary-container/30">
+          <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-6">Weekly Distance</p>
+          <div class="flex items-baseline gap-1">
+            <span class="font-headline font-bold text-5xl tracking-tighter">42.8</span>
+            <span class="font-label text-sm text-on-surface-variant">KM</span>
+          </div>
+        </div>
+        <div class="col-span-5 flex flex-col gap-3">
+          <div class="bg-surface-container rounded-2xl p-4 flex-1">
+            <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Time</p>
+            <div class="flex items-baseline gap-1">
+              <span class="font-headline font-bold text-xl">4:12</span>
+              <span class="font-label text-[10px] text-on-surface-variant">HR</span>
+            </div>
+          </div>
+          <div class="bg-surface-container rounded-2xl p-4 flex-1">
+            <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Avg Pace</p>
+            <div class="flex items-baseline gap-1">
+              <span class="font-headline font-bold text-xl">5:15</span>
+              <span class="font-label text-[10px] text-on-surface-variant">/KM</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest">Recent Activity</h3>
+        <button onclick="navigateTo('history')" class="font-label text-primary-container text-[10px] uppercase tracking-widest">View All</button>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-surface-container p-1 rounded-2xl flex items-center gap-4 group">
+          <div class="w-20 h-20 rounded-xl overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+            <img alt="Route map" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF2fwBDKp6kALrQrNYXAp6JBz6KH337Y-0HKKDgMJmTi3ORjnOujQFNqhyRdPqGjeq1MhjPeO2YYveoVL6JzVbkrVv9OYbu5VHQ1VIC4hn7MckijcaiCmgAC16sqGuWdGZPSiTqPS74nFfY1u95IHrj2GE-roJQgZiwxCQQZVEpFsEPHwszP8_JwesC5OUlXca6mB9jgzpNVGHLLG4lEylIFXeIa5sUTKvQ4C3ptkBs_ELqcH6G2rtY-z9xRQpMHxLHNN5el8H7nU"/>
+          </div>
+          <div class="flex-1 py-2 pr-4">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <h4 class="font-headline font-bold text-lg leading-tight">Tempo Sprint</h4>
+                <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">Tuesday &bull; 6:15 AM</p>
+              </div>
+              <span class="text-primary-container material-symbols-outlined text-lg">trending_up</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-headline font-bold text-sm">8.2<span class="text-[10px] font-normal ml-0.5 opacity-60">KM</span></span>
+              <span class="font-headline font-bold text-sm">42:15</span>
+              <span class="font-headline font-bold text-sm text-primary-container">4:58<span class="text-[10px] font-normal ml-0.5 opacity-60">/KM</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-surface-container p-1 rounded-2xl flex items-center gap-4 group">
+          <div class="w-20 h-20 rounded-xl overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
+            <img alt="Route map" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZCnorT0UM3ZxiaxtrYpCJzdVKPMb1qRtbR014piZyCvFw8gcTVA5_yQid78-smAekhKyB5KIvFoH8HfNGy-oaRgMhadJFXiLxfQr_q_8ICSjmgrkv2wWFTRYB-Y9bcDP4gi7gEmBjD-TJZRb_BXgSIRGo791UC12v_LdweM6YRi4D9MaEroLN9NJi5IELzjVhMLAO469S24TzXPx9KLwOg3bJ5NvO9h8A6eLoLQj-Fz9ShoJMGpZctQK7pksH63edgVsm9x48GC8"/>
+          </div>
+          <div class="flex-1 py-2 pr-4">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <h4 class="font-headline font-bold text-lg leading-tight">Recovery Walk</h4>
+                <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-wider">Sunday &bull; 5:30 PM</p>
+              </div>
+              <span class="text-on-surface-variant material-symbols-outlined text-lg">history</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="font-headline font-bold text-sm">5.0<span class="text-[10px] font-normal ml-0.5 opacity-60">KM</span></span>
+              <span class="font-headline font-bold text-sm">58:30</span>
+              <span class="font-headline font-bold text-sm">11:42<span class="text-[10px] font-normal ml-0.5 opacity-60">/KM</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ═══════════════ PAGE: ACTIVE RUN ═══════════════ -->
+<div id="page-run" class="page h-screen overflow-hidden">
+  <main class="relative flex-1 flex flex-col overflow-hidden pt-[72px]">
+    <div class="w-full h-[22vh] relative map-mask shrink-0">
+      <div class="absolute inset-0 bg-surface-container-low overflow-hidden">
+        <img alt="Satellite map" class="w-full h-full object-cover opacity-40 grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMatc8aFX6wwRF76qQmuDnBFHVts95PVu1iEnmNEd8Ulhx3JG4Yx43n6XZ6r_1hM81lH8fJSHK-vjJ4b28dHuZ_PfCaoNiUqc4FF09b-dqvNhK1_Xks-St-QM9mcxop9smSzZ3YttwJ-CsJ1sISNibbsToowvxUIXDsxgmkiaTuvGSic77s7G2uHl05U_rc0MMJTtc8KOzUmHU8tG5Zvf6Kp8WRdfoO0mSFU24_fDOlGLph9OyVj9CqNyNG0MqcCj69DtRG5yvZno"/>
+        <svg class="absolute inset-0 w-full h-full opacity-80" preserveAspectRatio="none" viewBox="0 0 400 400">
+          <path d="M50 350 Q 150 250 100 150 T 300 50" fill="none" stroke="#B8FF00" stroke-dasharray="8 4" stroke-linecap="round" stroke-width="4"></path>
+          <circle cx="300" cy="50" fill="#B8FF00" r="6">
+            <animate attributeName="r" dur="2s" repeatCount="indefinite" values="6;9;6"></animate>
+          </circle>
+        </svg>
+      </div>
+      <div class="absolute bottom-4 left-6">
+        <div class="bg-surface-container-highest/80 backdrop-blur-md px-3 py-1.5 rounded-lg flex items-center gap-2 border border-white/5">
+          <span class="material-symbols-outlined text-[#B8FF00] text-xs">location_on</span>
+          <span class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant">Tiergarten Loop</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="flex-1 px-6 pb-4 flex flex-col justify-between overflow-hidden">
+      <div class="flex flex-col items-start pt-2">
+        <span class="font-label text-[10px] text-on-surface-variant uppercase tracking-[0.2em] mb-1">Current Pace</span>
+        <div class="flex items-baseline gap-1">
+          <h1 id="run-pace" class="font-headline font-extrabold text-7xl text-primary-fixed-dim pace-glow italic tracking-tighter">4:15</h1>
+          <span class="font-headline font-bold text-xl text-primary-fixed-dim/60 italic">/KM</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 my-4">
+        <div class="flex flex-col border-l-2 border-primary-container/30 pl-4">
+          <span class="font-label text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Distance</span>
+          <div class="flex items-baseline gap-1">
+            <span id="run-distance" class="font-headline font-bold text-4xl text-on-surface">0.00</span>
+            <span class="font-label text-xs text-on-surface-variant uppercase">KM</span>
+          </div>
+        </div>
+        <div class="flex flex-col border-l-2 border-surface-container-highest pl-4">
+          <span class="font-label text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Elapsed Time</span>
+          <div class="flex items-baseline gap-1">
+            <span id="run-time" class="font-headline font-bold text-4xl text-on-surface">00:00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3">
+        <div class="bg-surface-container p-4 rounded-xl flex flex-col justify-between h-24">
+          <span class="material-symbols-outlined text-[#B8FF00] text-xl" style="font-variation-settings:'FILL' 1;">favorite</span>
+          <div>
+            <span id="run-hr" class="block font-headline font-bold text-xl">--</span>
+            <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">BPM HEART</span>
+          </div>
+        </div>
+        <div class="bg-surface-container p-4 rounded-xl flex flex-col justify-between h-24">
+          <span class="material-symbols-outlined text-[#B8FF00] text-xl">local_fire_department</span>
+          <div>
+            <span id="run-cal" class="block font-headline font-bold text-xl">0</span>
+            <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">KCAL BURNED</span>
+          </div>
+        </div>
+        <div class="bg-surface-container p-4 rounded-xl flex flex-col justify-between h-24">
+          <span class="material-symbols-outlined text-[#B8FF00] text-xl">terrain</span>
+          <div>
+            <span id="run-elev" class="block font-headline font-bold text-xl">0</span>
+            <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">M ELEVATION</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center gap-3 w-full pb-2">
+        <button id="btn-pause" class="flex-1 h-14 rounded-xl bg-surface-container-highest/60 backdrop-blur-xl flex items-center justify-center gap-2 transition-all active:scale-95 border border-outline-variant/10">
+          <span class="material-symbols-outlined text-on-surface text-xl" id="pause-icon">pause</span>
+          <span class="font-headline font-bold uppercase tracking-widest text-xs" id="pause-label">Pause</span>
+        </button>
+        <button id="btn-stop" class="flex-[1.5] h-14 rounded-xl bg-primary-container flex items-center justify-center gap-2 transition-all active:scale-95 shadow-[0_8px_32px_rgba(184,255,0,0.3)]">
+          <span class="material-symbols-outlined text-on-primary text-xl" style="font-variation-settings:'FILL' 1;">stop</span>
+          <span class="font-headline font-black uppercase tracking-widest text-xs text-on-primary">Stop Run</span>
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ═══════════════ PAGE: HISTORY ═══════════════ -->
+<div id="page-history" class="page min-h-screen">
+  <main class="pt-24 px-6 max-w-2xl mx-auto pb-32 page-enter">
+    <section class="mb-12">
+      <p class="font-label text-on-surface-variant text-xs tracking-[0.2em] uppercase mb-2">Training Archive</p>
+      <h2 class="font-headline font-black text-5xl tracking-tighter leading-none mb-8">RUN LOG</h2>
+      <div class="flex items-center gap-2 p-1 bg-surface-container rounded-full w-fit">
+        <button class="filter-tab active px-6 py-2 rounded-full font-label text-xs tracking-widest uppercase bg-primary-container text-on-primary-container font-bold transition-all shadow-[0_0_12px_rgba(184,255,0,0.3)]" data-filter="all">All</button>
+        <button class="filter-tab px-6 py-2 rounded-full font-label text-xs tracking-widest uppercase text-on-surface-variant hover:text-on-surface transition-all" data-filter="week">Week</button>
+        <button class="filter-tab px-6 py-2 rounded-full font-label text-xs tracking-widest uppercase text-on-surface-variant hover:text-on-surface transition-all" data-filter="month">Month</button>
+      </div>
+    </section>
+
+    <div class="space-y-6">
+      <div class="bg-[#1A1919] rounded-[2rem] p-6 relative overflow-hidden group">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <p class="font-label text-[10px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Today &bull; 06:42 AM</p>
+            <h3 class="font-headline font-bold text-4xl text-[#B8FF00] tracking-tight glow-primary">12.42 <span class="text-lg font-medium tracking-normal text-on-surface-variant">KM</span></h3>
+          </div>
+          <div class="w-24 h-24 rounded-2xl bg-surface-container-low overflow-hidden ring-1 ring-outline-variant/10">
+            <img alt="Map Route" class="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBV8twH4SlLt5UY89oUtaBTFsjvjR5FMfVeJE68mOCwAmnRxCg0Z-tdXIFdKygyN-7LE_8_oMfhBoJYqRwv23QEvbcvzh94qnnndAghJcHP5QbWxQT61i2qy_nus7e1Jr9HL8lmRZ41sLvl6BTAdPrTpH0awrgbnhJ3019Co8c0dHuP_umr69v9YQ_PBPaPZFQIcwshJQHxmjcXJy2iLuRx1pjxqWxKoeQiCJhgaiQmnQWedRFh4EugHLy3YgbNZx0h8hYHjhSwNEs"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-8">
+          <div>
+            <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Duration</p>
+            <p class="font-headline font-medium text-xl">54:12</p>
+          </div>
+          <div>
+            <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Avg Pace</p>
+            <p class="font-headline font-medium text-xl">4'22"/km</p>
+          </div>
+        </div>
+        <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[60px] rounded-full"></div>
+      </div>
+
+      <div class="bg-[#1A1919] rounded-[2rem] p-6 relative overflow-hidden group">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <p class="font-label text-[10px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Yesterday &bull; 07:15 PM</p>
+            <h3 class="font-headline font-bold text-4xl text-on-surface tracking-tight">8.05 <span class="text-lg font-medium tracking-normal text-on-surface-variant">KM</span></h3>
+          </div>
+          <div class="w-24 h-24 rounded-2xl bg-surface-container-low overflow-hidden ring-1 ring-outline-variant/10">
+            <img alt="Map Route" class="w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8YUcJpwyl28SMuPj8ag-VbxdD8eLR-PsPxRFm1trEYwbMgdLdLmiZ5HHusqDiiFmeaQ6RGXzE45guDUTfy6KWsuOYPVT_UKXz95Fqdp7pdxtQoP-TdxrMfHfT9Jv5eXWEgKKDw0RiEOeGmb1FagE4gbTUxT-hs5ZOaYIm75rujmU4hWa1XlB8HS_8y_FzXG6FYmFlI8cArLKmcPfaI8kMufZZo9ZiFX3Pva5c51NagxCxpLrxAKZbyaGp3e9glGpMWygd9DMesSA"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-8">
+          <div>
+            <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Duration</p>
+            <p class="font-headline font-medium text-xl">38:45</p>
+          </div>
+          <div>
+            <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Avg Pace</p>
+            <p class="font-headline font-medium text-xl">4'49"/km</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[#1A1919] rounded-[2rem] p-6 relative overflow-hidden group">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <p class="font-label text-[10px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Oct 24 &bull; 08:30 AM</p>
+            <h3 class="font-headline font-bold text-4xl text-on-surface tracking-tight">21.10 <span class="text-lg font-medium tracking-normal text-on-surface-variant">KM</span></h3>
+          </div>
+          <div class="w-24 h-24 rounded-2xl bg-surface-container-low overflow-hidden ring-1 ring-outline-variant/10">
+            <img alt="Map Route" class="w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEdfP26lZOSTq5ErQtvRKmz_jREphSvfQfLP9g2kSMgPUiBIQ4xspZ5TO0PB23UDBIoq57JoyNRZoXDSh4RWgo9r5NIhULDDIHz9S4yEc9mGBQaNdNCQu8EYLkjSGvFZDL45f4Fgy_GeivpIBcbDJfkEvVJo3_R3fVmW5shxRlT1PykbmzQKEwWuApPygtjPhSARURRKw3ea0Uxx3g45asJssSSA7vmTdypEfwromyKZ-0KH3x3qSGQqcSaTIg_inx7elsfScGh4E"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-8">
+          <div>
+            <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Duration</p>
+            <p class="font-headline font-medium text-xl">1:42:05</p>
+          </div>
+          <div>
+            <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Avg Pace</p>
+            <p class="font-headline font-medium text-xl">4'50"/km</p>
+          </div>
+        </div>
+      </div>
+      <div class="h-12"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════ PAGE: PROFILE ═══════════════ -->
+<div id="page-profile" class="page min-h-screen">
+  <main class="pt-24 pb-32 px-6 max-w-5xl mx-auto page-enter">
+    <section class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+      <div class="space-y-2">
+        <span class="font-label text-primary-container text-xs tracking-widest uppercase">Elite Athlete</span>
+        <h2 class="text-5xl font-headline font-black tracking-tighter leading-none">THE STATS</h2>
+      </div>
+      <div class="inline-flex items-center gap-3 px-4 py-2 bg-surface-container-low rounded-xl border border-outline-variant/10 self-start md:self-auto">
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"></path>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+        </svg>
+        <span class="text-sm font-medium text-on-surface-variant">Signed in with Google</span>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-surface-container p-8 rounded-3xl relative overflow-hidden group">
+        <div class="absolute -right-4 -top-4 text-primary/5 group-hover:text-primary/10 transition-colors">
+          <span class="material-symbols-outlined text-8xl">directions_run</span>
+        </div>
+        <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-8">Total runs</p>
+        <h3 class="font-headline text-6xl font-bold tracking-tighter">142</h3>
+      </div>
+      <div class="bg-surface-container p-8 rounded-3xl md:col-span-2 relative overflow-hidden">
+        <div class="flex justify-between items-start mb-8">
+          <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest">Total distance</p>
+          <span class="material-symbols-outlined text-primary-fixed">auto_graph</span>
+        </div>
+        <div class="flex items-baseline gap-2">
+          <h3 class="font-headline text-7xl font-bold tracking-tighter">1,240.5</h3>
+          <span class="font-headline text-2xl font-bold text-on-surface-variant uppercase">KM</span>
+        </div>
+      </div>
+      <div class="bg-primary-container p-8 rounded-3xl flex flex-col justify-between">
+        <p class="font-label text-on-primary-container text-[10px] uppercase tracking-widest font-bold">Personal Best</p>
+        <div>
+          <h3 class="font-headline text-5xl font-black tracking-tighter text-on-primary-container">4:12</h3>
+          <p class="font-label text-on-primary-container/60 text-xs">MIN/KM</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-surface-container p-8 rounded-3xl md:col-span-2 flex flex-col h-[400px]">
+        <div class="flex justify-between items-center mb-12">
+          <div>
+            <h4 class="font-headline text-xl font-bold">Weekly Performance</h4>
+            <p class="text-on-surface-variant text-sm">Last 7 active days</p>
+          </div>
+          <div class="flex gap-1">
+            <div class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-primary-container/20"></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-primary-container/20"></div>
+          </div>
+        </div>
+        <div class="flex-1 flex items-end justify-between gap-2 md:gap-4 relative px-2">
+          <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-5">
+            <div class="w-full border-t border-on-surface"></div>
+            <div class="w-full border-t border-on-surface"></div>
+            <div class="w-full border-t border-on-surface"></div>
+            <div class="w-full border-t border-on-surface"></div>
+          </div>
+          <div class="flex flex-col items-center gap-4 flex-1"><div class="w-full bg-primary-container rounded-t-xl transition-all duration-700" style="height:40%"></div><span class="font-label text-[10px] text-on-surface-variant">MON</span></div>
+          <div class="flex flex-col items-center gap-4 flex-1"><div class="w-full bg-primary-container rounded-t-xl transition-all duration-700" style="height:65%"></div><span class="font-label text-[10px] text-on-surface-variant">TUE</span></div>
+          <div class="flex flex-col items-center gap-4 flex-1"><div class="w-full bg-primary-container rounded-t-xl transition-all duration-700" style="height:35%"></div><span class="font-label text-[10px] text-on-surface-variant">WED</span></div>
+          <div class="flex flex-col items-center gap-4 flex-1"><div class="w-full bg-primary-container rounded-t-xl transition-all duration-700" style="height:85%"></div><span class="font-label text-[10px] text-on-surface-variant">THU</span></div>
+          <div class="flex flex-col items-center gap-4 flex-1"><div class="w-full bg-primary-container rounded-t-xl transition-all duration-700" style="height:55%"></div><span class="font-label text-[10px] text-on-surface-variant">FRI</span></div>
+          <div class="flex flex-col items-center gap-4 flex-1"><div class="w-full bg-primary-container rounded-t-xl shadow-[0_0_20px_rgba(184,255,0,0.4)] transition-all duration-700" style="height:100%"></div><span class="font-label text-[10px] text-primary-container font-bold">SAT</span></div>
+          <div class="flex flex-col items-center gap-4 flex-1"><div class="w-full bg-surface-container-highest rounded-t-xl transition-all duration-700" style="height:15%"></div><span class="font-label text-[10px] text-on-surface-variant">SUN</span></div>
+        </div>
+      </div>
+      <div class="bg-surface-variant/40 backdrop-blur-xl p-8 rounded-3xl flex flex-col justify-between border border-outline-variant/10">
+        <div>
+          <span class="material-symbols-outlined text-on-surface-variant mb-4">schedule</span>
+          <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest">Total time</p>
+        </div>
+        <div>
+          <h3 class="font-headline text-5xl font-bold tracking-tighter">84h <span class="text-2xl text-on-surface-variant">22m</span></h3>
+          <div class="mt-4 flex items-center gap-2 text-primary-container text-sm">
+            <span class="material-symbols-outlined text-sm">trending_up</span>
+            <span>+4.2h this week</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="mt-12">
+      <h4 class="font-headline text-2xl font-bold mb-6">Recent Records</h4>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between p-4 bg-surface-container rounded-2xl hover:bg-surface-container-high transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary-container">trophy</span>
+            </div>
+            <div>
+              <p class="font-bold">Fastest 10K</p>
+              <p class="text-xs text-on-surface-variant">San Francisco Waterfront &bull; 12 Oct</p>
+            </div>
+          </div>
+          <p class="font-headline font-bold text-xl">42:18</p>
+        </div>
+        <div class="flex items-center justify-between p-4 bg-surface-container rounded-2xl hover:bg-surface-container-high transition-colors">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center">
+              <span class="material-symbols-outlined text-on-surface-variant">calendar_today</span>
+            </div>
+            <div>
+              <p class="font-bold">Consistency Streak</p>
+              <p class="text-xs text-on-surface-variant">Active daily &bull; 14 Day Streak</p>
+            </div>
+          </div>
+          <p class="font-headline font-bold text-xl text-primary-container">LEVEL 4</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ═══════════════ BOTTOM NAV ═══════════════ -->
+<nav id="bottom-nav" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-safe bg-[#1A1919]/80 backdrop-blur-xl h-20 rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
+  <button onclick="navigateTo('home')" class="nav-btn flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="home">
+    <span class="material-symbols-outlined">home</span>
+    <span class="font-label text-[10px] uppercase tracking-widest mt-1">HOME</span>
+  </button>
+  <button onclick="navigateTo('run')" class="nav-btn flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="run">
+    <span class="material-symbols-outlined">directions_run</span>
+    <span class="font-label text-[10px] uppercase tracking-widest mt-1">GO</span>
+  </button>
+  <button onclick="navigateTo('history')" class="nav-btn flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="history">
+    <span class="material-symbols-outlined">history</span>
+    <span class="font-label text-[10px] uppercase tracking-widest mt-1">LOGS</span>
+  </button>
+  <button onclick="navigateTo('profile')" class="nav-btn flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="profile">
+    <span class="material-symbols-outlined">person</span>
+    <span class="font-label text-[10px] uppercase tracking-widest mt-1">ME</span>
+  </button>
+</nav>
+
+<script>
+// ─── Navigation ───
+let currentPage = 'home';
+
+function navigateTo(page) {
+  if (page === currentPage) return;
+  document.getElementById(`page-${currentPage}`).classList.remove('active');
+  document.getElementById(`page-${page}`).classList.add('active');
+
+  // Re-trigger enter animation
+  const main = document.querySelector(`#page-${page} main, #page-${page} > main`);
+  if (main) {
+    main.classList.remove('page-enter');
+    void main.offsetWidth;
+    main.classList.add('page-enter');
+  }
+
+  // Update nav highlight
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    const isActive = btn.dataset.page === page;
+    btn.classList.toggle('text-[#B8FF00]', isActive);
+    btn.classList.toggle('drop-shadow-[0_0_12px_rgba(184,255,0,0.8)]', isActive);
+    btn.classList.toggle('scale-110', isActive);
+    btn.classList.toggle('text-[#4A4A4A]', !isActive);
+    const icon = btn.querySelector('.material-symbols-outlined');
+    icon.style.fontVariationSettings = isActive ? "'FILL' 1" : "'FILL' 0";
+  });
+
+  // Show/hide bottom nav during active run
+  const nav = document.getElementById('bottom-nav');
+  const gps = document.getElementById('gps-badge');
+  if (page === 'run') {
+    nav.classList.add('hidden');
+    gps.classList.remove('hidden');
+  } else {
+    nav.classList.remove('hidden');
+    gps.classList.add('hidden');
+  }
+
+  currentPage = page;
+}
+
+// Set initial nav state
+navigateTo('home');
+
+// ─── Run Timer & Simulation ───
+let runInterval = null;
+let runSeconds = 0;
+let isPaused = false;
+let simulatedDistance = 0;
+let simulatedCal = 0;
+let simulatedElev = 0;
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  if (m >= 60) {
+    const h = Math.floor(m / 60);
+    const rm = m % 60;
+    return `${h}:${String(rm).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function startRun() {
+  runSeconds = 0;
+  simulatedDistance = 0;
+  simulatedCal = 0;
+  simulatedElev = 0;
+  isPaused = false;
+  updateRunUI();
+  navigateTo('run');
+
+  runInterval = setInterval(() => {
+    if (!isPaused) {
+      runSeconds++;
+      // Simulate ~4:15/km pace = ~0.00392 km/s
+      simulatedDistance += 0.00392 + (Math.random() * 0.001 - 0.0005);
+      simulatedCal += 0.15 + Math.random() * 0.05;
+      simulatedElev += (Math.random() - 0.45) * 0.3;
+      if (simulatedElev < 0) simulatedElev = 0;
+      updateRunUI();
+    }
+  }, 1000);
+}
+
+function updateRunUI() {
+  document.getElementById('run-time').textContent = formatTime(runSeconds);
+  document.getElementById('run-distance').textContent = simulatedDistance.toFixed(2);
+  document.getElementById('run-cal').textContent = Math.floor(simulatedCal);
+  document.getElementById('run-elev').textContent = Math.floor(simulatedElev);
+
+  // Simulate HR between 145-175
+  const hr = runSeconds > 0 ? Math.floor(145 + Math.random() * 30) : 0;
+  document.getElementById('run-hr').textContent = runSeconds > 0 ? hr : '--';
+
+  // Simulate pace variation
+  if (runSeconds > 5 && simulatedDistance > 0) {
+    const paceSecsPerKm = runSeconds / simulatedDistance;
+    const pMin = Math.floor(paceSecsPerKm / 60);
+    const pSec = Math.floor(paceSecsPerKm % 60);
+    document.getElementById('run-pace').textContent = `${pMin}:${String(pSec).padStart(2, '0')}`;
+  }
+}
+
+function stopRun() {
+  clearInterval(runInterval);
+  runInterval = null;
+  navigateTo('home');
+}
+
+function togglePause() {
+  isPaused = !isPaused;
+  document.getElementById('pause-icon').textContent = isPaused ? 'play_arrow' : 'pause';
+  document.getElementById('pause-label').textContent = isPaused ? 'Resume' : 'Pause';
+}
+
+// ─── Event Listeners ───
+document.getElementById('btn-start-run').addEventListener('click', startRun);
+document.getElementById('btn-stop').addEventListener('click', stopRun);
+document.getElementById('btn-pause').addEventListener('click', togglePause);
+
+// Filter tabs
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => {
+      t.classList.remove('active', 'bg-primary-container', 'text-on-primary-container', 'font-bold', 'shadow-[0_0_12px_rgba(184,255,0,0.3)]');
+      t.classList.add('text-on-surface-variant');
+    });
+    tab.classList.add('active', 'bg-primary-container', 'text-on-primary-container', 'font-bold', 'shadow-[0_0_12px_rgba(184,255,0,0.3)]');
+    tab.classList.remove('text-on-surface-variant');
+  });
+});
+
+// Dynamic greeting based on time
+(function setGreeting() {
+  const h = new Date().getHours();
+  let greeting = 'Good morning';
+  if (h >= 12 && h < 17) greeting = 'Good afternoon';
+  else if (h >= 17) greeting = 'Good evening';
+  const el = document.querySelector('#page-home h1');
+  if (el) el.innerHTML = `${greeting}, <span class="text-primary-container">Alex</span>.`;
+})();
+</script>
+</body>
+</html>
