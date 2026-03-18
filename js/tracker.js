@@ -341,7 +341,8 @@ export function getRunState() {
     calories: run.calories,
     elevationGain: run.elevationGain,
     heartRate: null,
-    lastPosition: run.lastPosition
+    lastPosition: run.lastPosition,
+    currentSegment: run.currentSegment
   };
 }
 

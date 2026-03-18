@@ -7,11 +7,12 @@ service cloud.firestore {
       allow create: if request.auth.uid == userId;
       allow update: if request.auth.uid == userId;
 
-      // Friends: each user only writes to their own subcollection
+      // Friends: user writes to own subcollection, or acceptor adds self to sender's list
       match /friends/{friendId} {
         allow read: if request.auth != null
           && (request.auth.uid == userId || request.auth.uid == friendId);
-        allow create, delete: if request.auth.uid == userId;
+        allow create: if request.auth.uid == userId || request.auth.uid == friendId;
+        allow delete: if request.auth.uid == userId;
       }
     }
 

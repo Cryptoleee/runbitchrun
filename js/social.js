@@ -234,7 +234,7 @@ export function openComments(runId) {
 export function renderFeedItem(run) {
   const units = state.profile?.units || 'metric';
   const dist = formatDistance(run.distance || 0, units);
-  const pace = formatPace(run.pace || 0, units);
+  const pace = formatPace(run.avgPace || 0, units);
   const duration = formatDuration(run.duration || 0);
   const timeAgo = run.startedAt?.toDate ? formatTimeAgo(run.startedAt.toDate()) : (run.startedAt ? formatTimeAgo(run.startedAt) : '');
 

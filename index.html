@@ -1373,7 +1373,7 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
 
         // Update map
         if (runState.lastPosition) {
-          updateLiveMap(runState.lastPosition.lat, runState.lastPosition.lng, 0);
+          updateLiveMap(runState.lastPosition.lat, runState.lastPosition.lng, runState.currentSegment);
         }
       });
     },
