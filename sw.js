@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rbr-v2';
+const CACHE_NAME = 'rbr-v3';
 
 const STATIC_ASSETS = [
   '/',

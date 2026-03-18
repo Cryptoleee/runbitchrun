@@ -24,43 +24,46 @@ function initAuth() {
     }
   });
 
-  // Handle redirect result first (mobile sign-in flow)
-  auth.getRedirectResult().catch((err) => {
-    console.error('Redirect sign-in error:', err);
-    showToast('Sign-in failed: ' + (err.message || 'Unknown error'), 'error');
-  });
-
-  auth.onAuthStateChanged(async (user) => {
-    if (user) {
-      try {
-        const profile = await getOrCreateProfile(user);
-        setUser(user, profile);
-        hideSplash();
-        navigateTo('home', { force: true });
-      } catch (err) {
-        console.error('Profile load error:', err);
-        // Still navigate to home even if profile fails — user is authenticated
-        setUser(user, {
-          displayName: user.displayName || 'Runner',
-          photoURL: user.photoURL || '',
-          customPhoto: '',
-          email: user.email || '',
-          weight: 70,
-          units: 'metric',
-          autoPause: true,
-          defaultVisibility: 'public',
-          stats: { totalRuns: 0, totalKm: 0, totalTime: 0, bestPace: 0 }
-        });
-        hideSplash();
-        navigateTo('home', { force: true });
-        showToast('Could not load profile. Check your connection.', 'error');
-      }
-    } else {
-      setUser(null, null);
-      hideSplash();
-      navigateTo('login', { force: true, skipHistory: true });
-    }
-  });
+  // Wait for redirect result to resolve BEFORE setting up auth state listener.
+  // This prevents the race condition where onAuthStateChanged fires with null
+  // before the redirect sign-in result is processed (causing a flash of login page).
+  auth.getRedirectResult()
+    .catch((err) => {
+      console.error('Redirect sign-in error:', err);
+      showToast('Sign-in failed: ' + (err.message || 'Unknown error'), 'error');
+    })
+    .then(() => {
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          try {
+            const profile = await getOrCreateProfile(user);
+            setUser(user, profile);
+            hideSplash();
+            navigateTo('home', { force: true });
+          } catch (err) {
+            console.error('Profile load error:', err);
+            setUser(user, {
+              displayName: user.displayName || 'Runner',
+              photoURL: user.photoURL || '',
+              customPhoto: '',
+              email: user.email || '',
+              weight: 70,
+              units: 'metric',
+              autoPause: true,
+              defaultVisibility: 'public',
+              stats: { totalRuns: 0, totalKm: 0, totalTime: 0, bestPace: 0 }
+            });
+            hideSplash();
+            navigateTo('home', { force: true });
+            showToast('Could not load profile. Check your connection.', 'error');
+          }
+        } else {
+          setUser(null, null);
+          hideSplash();
+          navigateTo('login', { force: true, skipHistory: true });
+        }
+      });
+    });
 
   const loginBtn = document.querySelector('#btn-google-login');
   if (loginBtn) {

@@ -134,6 +134,17 @@ export async function initApp() {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
       reg.update();
+      // Auto-reload when a new SW activates (busts old cached files)
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'activated' && navigator.serviceWorker.controller) {
+              window.location.reload();
+            }
+          });
+        }
+      });
     } catch (err) {
       console.warn('SW registration failed:', err);
     }
