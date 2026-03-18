@@ -1,12 +1,12 @@
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDbmFD208Va9_dOMN9jG6DswN-xjVLHBw8",
+  authDomain: "rubbish-run-2039c.firebaseapp.com",
+  projectId: "rubbish-run-2039c",
+  storageBucket: "rubbish-run-2039c.firebasestorage.app",
+  messagingSenderId: "633842129729",
+  appId: "1:633842129729:web:6eed879b02cfc727455fc0"
 };
-export const MAPBOX_TOKEN = "YOUR_MAPBOX_TOKEN";
+export const MAPBOX_TOKEN = "pk.eyJ1Ijoid2lqemlqbndvbGYiLCJhIjoiY21rd2JoM3loMjdtZjJwcjJpZGRtd2p1ZyJ9.I1J_CSM_iZcx5ZoimCvEew";
 export const APP_NAME = "Run bitch! Run!";
 export const DEFAULT_WEIGHT_KG = 70;
 export const MAX_RUN_PHOTOS = 4;
