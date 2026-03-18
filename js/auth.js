@@ -28,12 +28,17 @@ function initAuth() {
   // This prevents the race condition where onAuthStateChanged fires with null
   // before the redirect sign-in result is processed (causing a flash of login page).
   auth.getRedirectResult()
+    .then((result) => {
+      console.log('[auth] getRedirectResult:', result ? 'has user' : 'no redirect');
+    })
     .catch((err) => {
-      console.error('Redirect sign-in error:', err);
-      showToast('Sign-in failed: ' + (err.message || 'Unknown error'), 'error');
+      console.error('[auth] Redirect error:', err);
+      showToast('Redirect error: ' + (err.code || err.message), 'error');
     })
     .then(() => {
+      console.log('[auth] Setting up onAuthStateChanged');
       auth.onAuthStateChanged(async (user) => {
+        console.log('[auth] onAuthStateChanged:', user ? user.email : 'null');
         if (user) {
           try {
             const profile = await getOrCreateProfile(user);
@@ -41,7 +46,8 @@ function initAuth() {
             hideSplash();
             navigateTo('home', { force: true });
           } catch (err) {
-            console.error('Profile load error:', err);
+            console.error('[auth] Profile error:', err);
+            showToast('Profile error: ' + (err.code || err.message), 'error');
             setUser(user, {
               displayName: user.displayName || 'Runner',
               photoURL: user.photoURL || '',
@@ -55,7 +61,6 @@ function initAuth() {
             });
             hideSplash();
             navigateTo('home', { force: true });
-            showToast('Could not load profile. Check your connection.', 'error');
           }
         } else {
           setUser(null, null);

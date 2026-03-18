@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rbr-v3';
+const CACHE_NAME = 'rbr-v4';
 
 const STATIC_ASSETS = [
   '/',
@@ -26,7 +26,8 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate: clean old caches and claim clients
+// Activate: clean old caches, claim clients, and force-reload all open tabs
+// so they pick up the new cached files immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
@@ -38,6 +39,10 @@ self.addEventListener('activate', (event) => {
         )
       )
       .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: 'window' }))
+      .then((clients) => {
+        clients.forEach((client) => client.navigate(client.url));
+      })
   );
 });
 
