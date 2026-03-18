@@ -85,7 +85,7 @@ export async function saveRun(runData, photoBlobs = []) {
   };
 
   // Update bestPace if this run is faster (lower pace and > 0)
-  const pace = runData.pace || 0;
+  const pace = runData.avgPace || 0;
   const currentBest = (state.profile.stats && state.profile.stats.bestPace) || 0;
   if (pace > 0 && (currentBest === 0 || pace < currentBest)) {
     statsUpdate['stats.bestPace'] = pace;
