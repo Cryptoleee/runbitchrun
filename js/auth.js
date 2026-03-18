@@ -103,18 +103,21 @@ async function getOrCreateProfile(user) {
 
 async function signIn(provider) {
   try {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
-
-    if (isMobile) {
-      await auth.signInWithRedirect(provider);
-    } else {
-      await auth.signInWithPopup(provider);
-    }
+    // Use popup for all platforms — redirect has known issues on mobile
+    // (Safari ITP, SW interference, session storage loss during redirect)
+    await auth.signInWithPopup(provider);
   } catch (error) {
     console.error('Sign-in error:', error);
-    showToast(error.message || 'Sign-in failed. Please try again.');
+    // If popup was blocked/closed, fall back to redirect
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
+      try {
+        await auth.signInWithRedirect(provider);
+      } catch (redirectErr) {
+        showToast(redirectErr.message || 'Sign-in failed. Please try again.', 'error');
+      }
+    } else {
+      showToast(error.message || 'Sign-in failed. Please try again.', 'error');
+    }
   }
 }
 
