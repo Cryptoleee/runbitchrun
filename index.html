@@ -262,9 +262,7 @@
 <!-- PAGE: ACTIVE RUN (no bottom nav)                                        -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div id="page-run" class="page h-screen overflow-hidden">
-  <main class="relative flex-1 flex flex-col overflow-hidden h-full">
-    <!-- Live Mapbox Map -->
-    <div id="run-map" class="w-full h-[22vh] map-mask shrink-0 bg-surface-container-low"></div>
+  <main class="relative flex-1 flex flex-col justify-center h-full px-6">
 
     <!-- Paused Indicator -->
     <div id="run-paused-indicator" class="hidden absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
@@ -273,68 +271,66 @@
       </div>
     </div>
 
-    <section class="flex-1 px-6 pb-4 flex flex-col justify-between overflow-hidden pt-2">
-      <!-- Pace -->
-      <div class="flex flex-col items-start">
-        <span class="font-label text-[10px] text-on-surface-variant uppercase tracking-[0.2em] mb-0.5">Current Pace</span>
+    <!-- Pace (hero stat) -->
+    <div class="flex flex-col items-center mb-6">
+      <span class="font-label text-[10px] text-on-surface-variant uppercase tracking-[0.2em] mb-1">Current Pace</span>
+      <div class="flex items-baseline gap-1">
+        <h1 id="run-pace" class="font-headline font-extrabold text-8xl text-primary-fixed-dim pace-glow italic tracking-tighter">0:00</h1>
+        <span class="font-headline font-bold text-xl text-primary-fixed-dim/60 italic">/KM</span>
+      </div>
+    </div>
+
+    <!-- Distance + Time 2-col -->
+    <div class="grid grid-cols-2 gap-4 mb-5">
+      <div class="flex flex-col items-center bg-surface-container rounded-2xl p-5">
+        <span class="font-label text-[9px] text-on-surface-variant uppercase tracking-widest mb-1">Distance</span>
         <div class="flex items-baseline gap-1">
-          <h1 id="run-pace" class="font-headline font-extrabold text-7xl text-primary-fixed-dim pace-glow italic tracking-tighter">0:00</h1>
-          <span class="font-headline font-bold text-xl text-primary-fixed-dim/60 italic">/KM</span>
+          <span id="run-distance" class="font-headline font-bold text-4xl text-on-surface">0.00</span>
+          <span class="font-label text-xs text-on-surface-variant uppercase">KM</span>
         </div>
       </div>
+      <div class="flex flex-col items-center bg-surface-container rounded-2xl p-5">
+        <span class="font-label text-[9px] text-on-surface-variant uppercase tracking-widest mb-1">Elapsed Time</span>
+        <span id="run-time" class="font-headline font-bold text-4xl text-on-surface">00:00</span>
+      </div>
+    </div>
 
-      <!-- Distance + Time 2-col -->
-      <div class="grid grid-cols-2 gap-4 my-3">
-        <div class="flex flex-col border-l-2 border-primary-container/30 pl-4">
-          <span class="font-label text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Distance</span>
-          <div class="flex items-baseline gap-1">
-            <span id="run-distance" class="font-headline font-bold text-4xl text-on-surface">0.00</span>
-            <span class="font-label text-xs text-on-surface-variant uppercase">KM</span>
-          </div>
-        </div>
-        <div class="flex flex-col border-l-2 border-surface-container-highest pl-4">
-          <span class="font-label text-[9px] text-on-surface-variant uppercase tracking-widest mb-0.5">Elapsed Time</span>
-          <span id="run-time" class="font-headline font-bold text-4xl text-on-surface">00:00</span>
+    <!-- HR / Cal / Elev micro cards -->
+    <div class="grid grid-cols-3 gap-3 mb-6">
+      <div class="bg-surface-container p-4 rounded-xl flex flex-col items-center justify-between h-24">
+        <span class="material-symbols-outlined text-[#B8FF00] text-xl" style="font-variation-settings:'FILL' 1;">favorite</span>
+        <div class="text-center">
+          <span id="run-hr" class="block font-headline font-bold text-xl">--</span>
+          <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">BPM</span>
         </div>
       </div>
+      <div class="bg-surface-container p-4 rounded-xl flex flex-col items-center justify-between h-24">
+        <span class="material-symbols-outlined text-[#B8FF00] text-xl" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+        <div class="text-center">
+          <span id="run-cal" class="block font-headline font-bold text-xl">0</span>
+          <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">KCAL</span>
+        </div>
+      </div>
+      <div class="bg-surface-container p-4 rounded-xl flex flex-col items-center justify-between h-24">
+        <span class="material-symbols-outlined text-[#B8FF00] text-xl">terrain</span>
+        <div class="text-center">
+          <span id="run-elev" class="block font-headline font-bold text-xl">0</span>
+          <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">ELEV M</span>
+        </div>
+      </div>
+    </div>
 
-      <!-- HR / Cal / Elev micro cards -->
-      <div class="grid grid-cols-3 gap-3">
-        <div class="bg-surface-container p-4 rounded-xl flex flex-col justify-between h-24">
-          <span class="material-symbols-outlined text-[#B8FF00] text-xl" style="font-variation-settings:'FILL' 1;">favorite</span>
-          <div>
-            <span id="run-hr" class="block font-headline font-bold text-xl">--</span>
-            <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">BPM HEART</span>
-          </div>
-        </div>
-        <div class="bg-surface-container p-4 rounded-xl flex flex-col justify-between h-24">
-          <span class="material-symbols-outlined text-[#B8FF00] text-xl" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
-          <div>
-            <span id="run-cal" class="block font-headline font-bold text-xl">0</span>
-            <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">KCAL BURNED</span>
-          </div>
-        </div>
-        <div class="bg-surface-container p-4 rounded-xl flex flex-col justify-between h-24">
-          <span class="material-symbols-outlined text-[#B8FF00] text-xl">terrain</span>
-          <div>
-            <span id="run-elev" class="block font-headline font-bold text-xl">0</span>
-            <span class="font-label text-[8px] text-on-surface-variant uppercase tracking-tighter leading-none">M ELEVATION</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pause / Stop Buttons -->
-      <div class="flex items-center gap-3 w-full mt-4 pb-2">
-        <button id="btn-pause" class="flex-1 h-14 rounded-xl bg-surface-container-highest/60 backdrop-blur-xl flex items-center justify-center gap-2 transition-all active:scale-95 border border-outline-variant/10">
-          <span class="material-symbols-outlined text-on-surface text-xl" id="pause-icon">pause</span>
-          <span class="font-headline font-bold uppercase tracking-widest text-xs" id="pause-label">Pause</span>
-        </button>
-        <button id="btn-stop" class="flex-[1.5] h-14 rounded-xl bg-primary-container flex items-center justify-center gap-2 transition-all active:scale-95 shadow-[0_8px_32px_rgba(184,255,0,0.3)]">
-          <span class="material-symbols-outlined text-on-primary text-xl" style="font-variation-settings:'FILL' 1;">stop</span>
-          <span class="font-headline font-black uppercase tracking-widest text-xs text-on-primary">Stop Run</span>
-        </button>
-      </div>
-    </section>
+    <!-- Pause / Stop Buttons -->
+    <div class="flex items-center gap-3 w-full pb-safe">
+      <button id="btn-pause" class="flex-1 h-14 rounded-xl bg-surface-container-highest/60 backdrop-blur-xl flex items-center justify-center gap-2 transition-all active:scale-95 border border-outline-variant/10">
+        <span class="material-symbols-outlined text-on-surface text-xl" id="pause-icon">pause</span>
+        <span class="font-headline font-bold uppercase tracking-widest text-xs" id="pause-label">Pause</span>
+      </button>
+      <button id="btn-stop" class="flex-[1.5] h-14 rounded-xl bg-primary-container flex items-center justify-center gap-2 transition-all active:scale-95 shadow-[0_8px_32px_rgba(184,255,0,0.3)]">
+        <span class="material-symbols-outlined text-on-primary text-xl" style="font-variation-settings:'FILL' 1;">stop</span>
+        <span class="font-headline font-black uppercase tracking-widest text-xs text-on-primary">Stop Run</span>
+      </button>
+    </div>
   </main>
 </div>
 
@@ -343,13 +339,8 @@
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div id="page-summary" class="page min-h-screen">
   <main class="pb-10 page-enter">
-    <!-- Map Snapshot -->
-    <div id="summary-map" class="w-full h-52 bg-surface-container-low map-mask relative">
-      <img id="summary-map-img" class="w-full h-full object-cover opacity-0 transition-opacity duration-500" src="" alt="Run route" />
-      <div class="absolute inset-0 flex items-center justify-center text-on-surface-variant" id="summary-map-placeholder">
-        <span class="material-symbols-outlined text-4xl opacity-30">map</span>
-      </div>
-    </div>
+    <!-- Interactive Route Map -->
+    <div id="summary-map" class="w-full h-64 bg-surface-container-low map-mask"></div>
 
     <div class="px-5 pt-6">
       <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-[0.2em] mb-1">Run Complete</p>
@@ -474,7 +465,7 @@
     </div>
 
     <!-- Static Map -->
-    <div id="detail-map" class="w-full h-52 bg-surface-container-low map-mask mb-6"></div>
+    <div id="detail-map" class="w-full h-64 bg-surface-container-low map-mask mb-6"></div>
 
     <div class="px-5">
       <!-- Stats Grid -->
@@ -805,7 +796,7 @@
 import { initApp, navigateTo, goBack, state } from './js/app.js';
 import { initAuth, signOut } from './js/auth.js';
 import { startRun, stopRun, togglePause, getRunState, getRunData, checkBattery } from './js/tracker.js';
-import { initLiveMap, updateLiveMap, destroyLiveMap, initStaticMap, getMapSnapshotUrl } from './js/map.js';
+import { initStaticMap, getMapSnapshotUrl } from './js/map.js';
 import { saveRun, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions } from './js/firestore.js';
 import { loadFriends, loadPendingRequests, loadFeed, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderReactions } from './js/social.js';
 import { showToast, showConfirm, formatDistance, formatPace, formatDuration, formatTimeAgo, getGreeting, resizeImage, resizeImageSquare, openBottomSheet, closeBottomSheet } from './js/ui.js';
@@ -832,8 +823,10 @@ function formatRunCard(run, units = 'metric') {
   const pace = formatPace(run.avgPace || 0, units);
   const duration = formatDuration(run.duration || 0);
   const timeAgo = run.startedAt?.toDate ? formatTimeAgo(run.startedAt.toDate()) : '';
-  const mapThumb = run.mapSnapshot
-    ? `<img src="${escapeHtml(run.mapSnapshot)}" class="w-20 h-20 rounded-xl object-cover opacity-70" alt="Route" />`
+  // Always regenerate snapshot URL with current token instead of using stored URL
+  const snapshotUrl = (run.route && run.route.length > 1) ? getMapSnapshotUrl(run.route) : '';
+  const mapThumb = snapshotUrl
+    ? `<img src="${escapeHtml(snapshotUrl)}" class="w-20 h-20 rounded-xl object-cover opacity-70" alt="Route" />`
     : `<div class="w-20 h-20 rounded-xl bg-surface-container-lowest flex items-center justify-center text-on-surface-variant/30"><span class="material-symbols-outlined text-2xl">map</span></div>`;
 
   return `
@@ -1255,6 +1248,8 @@ async function initDetailPage() {
     }
 
     // Static map
+    const detailMapEl = document.getElementById('detail-map');
+    detailMapEl.innerHTML = '';
     if (run.route && run.route.length > 1) {
       initStaticMap('detail-map', run.route);
     }
@@ -1357,10 +1352,7 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
       const { latitude, longitude } = position.coords;
       navigateTo('run');
 
-      // Init map
-      initLiveMap('run-map', latitude, longitude);
-
-      // Start tracker
+      // Start tracker (no live map — stats-focused view)
       startRun((runState) => {
         // Update DOM
         const units = state.profile?.units || 'metric';
@@ -1382,11 +1374,6 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
         // Paused indicator
         const paused = runState.isPaused || runState.isAutoPaused;
         document.getElementById('run-paused-indicator').classList.toggle('hidden', !paused);
-
-        // Update map
-        if (runState.lastPosition) {
-          updateLiveMap(runState.lastPosition.lat, runState.lastPosition.lng, runState.currentSegment);
-        }
       });
     },
     (err) => {
@@ -1401,7 +1388,6 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
 
 document.getElementById('btn-stop').addEventListener('click', () => {
   const runData = stopRun();
-  destroyLiveMap();
   pendingRunData = runData;
   pendingPhotoBlobs = [];
 
@@ -1431,25 +1417,22 @@ document.getElementById('btn-stop').addEventListener('click', () => {
   document.getElementById('summary-elevation').textContent = runData.elevationGain || 0;
   document.getElementById('summary-splits').innerHTML = renderSplits(runData.splits, units);
 
-  // Map snapshot
+  // Store map snapshot URL for Firestore (used in feed cards)
   if (runData.route && runData.route.length > 1) {
     const snapshotUrl = getMapSnapshotUrl(runData.route);
     if (snapshotUrl) {
       pendingRunData.mapSnapshot = snapshotUrl;
-      const img = document.getElementById('summary-map-img');
-      const placeholder = document.getElementById('summary-map-placeholder');
-      if (img) {
-        img.src = snapshotUrl;
-        img.onload = () => {
-          img.classList.remove('opacity-0');
-          img.classList.add('opacity-100');
-          if (placeholder) placeholder.classList.add('hidden');
-        };
-      }
     }
   }
 
   navigateTo('summary');
+
+  // Render interactive route map after navigation (DOM needs to be visible)
+  if (runData.route && runData.route.length > 1) {
+    // Clear any previous map in the container
+    document.getElementById('summary-map').innerHTML = '';
+    initStaticMap('summary-map', runData.route);
+  }
 });
 
 // ─── PAUSE RUN ────────────────────────────────────────────────────────────

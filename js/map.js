@@ -4,108 +4,14 @@ const DARK_STYLE = 'mapbox://styles/mapbox/dark-v11';
 const ROUTE_COLOR = '#B8FF00';
 const ROUTE_WIDTH = 4;
 
-let map = null;
-let positionMarker = null;
-let routeSegments = null;
-
 // ---------------------------------------------------------------------------
-// Live map
-// ---------------------------------------------------------------------------
-
-export function initLiveMap(containerId, startLat, startLng) {
-  mapboxgl.accessToken = MAPBOX_TOKEN;
-
-  map = new mapboxgl.Map({
-    container: containerId,
-    style: DARK_STYLE,
-    center: [startLng, startLat],
-    zoom: 15,
-    attributionControl: false,
-    interactive: true
-  });
-
-  // Pulsing marker element
-  const el = document.createElement('div');
-  el.className = 'pulse-marker';
-
-  const dot = document.createElement('div');
-  dot.className = 'pulse-dot';
-  el.appendChild(dot);
-
-  const ring = document.createElement('div');
-  ring.className = 'pulse-ring';
-  el.appendChild(ring);
-
-  positionMarker = new mapboxgl.Marker({ element: el })
-    .setLngLat([startLng, startLat])
-    .addTo(map);
-
-  routeSegments = {};
-
-  map.on('load', () => {
-    map.addSource('route', {
-      type: 'geojson',
-      data: { type: 'FeatureCollection', features: [] }
-    });
-
-    map.addLayer({
-      id: 'route-line',
-      type: 'line',
-      source: 'route',
-      layout: {
-        'line-join': 'round',
-        'line-cap': 'round'
-      },
-      paint: {
-        'line-color': ROUTE_COLOR,
-        'line-width': ROUTE_WIDTH,
-        'line-opacity': 0.9
-      }
-    });
-  });
-}
-
-export function updateLiveMap(lat, lng, segment) {
-  if (!map) return;
-
-  positionMarker.setLngLat([lng, lat]);
-
-  if (!routeSegments[segment]) {
-    routeSegments[segment] = [];
-  }
-  routeSegments[segment].push([lng, lat]);
-
-  const features = Object.keys(routeSegments).map(key => ({
-    type: 'Feature',
-    geometry: {
-      type: 'LineString',
-      coordinates: routeSegments[key]
-    }
-  }));
-
-  const source = map.getSource('route');
-  if (source) {
-    source.setData({ type: 'FeatureCollection', features });
-  }
-
-  map.panTo([lng, lat], { duration: 500 });
-}
-
-export function destroyLiveMap() {
-  if (map) {
-    map.remove();
-    map = null;
-  }
-  positionMarker = null;
-  routeSegments = null;
-}
-
-// ---------------------------------------------------------------------------
-// Static map (for run detail view)
+// Static map (for summary + detail views)
 // ---------------------------------------------------------------------------
 
 export function initStaticMap(containerId, route) {
   mapboxgl.accessToken = MAPBOX_TOKEN;
+
+  if (!route || route.length < 2) return null;
 
   // Compute bounds from route
   const bounds = new mapboxgl.LngLatBounds();
@@ -115,12 +21,15 @@ export function initStaticMap(containerId, route) {
     container: containerId,
     style: DARK_STYLE,
     bounds: bounds,
-    fitBoundsOptions: { padding: 40 },
+    fitBoundsOptions: { padding: 50 },
     attributionControl: false,
     interactive: false
   });
 
-  staticMap.on('load', () => {
+  // Force resize after a tick to handle container layout timing
+  requestAnimationFrame(() => staticMap.resize());
+
+  function addRouteLayer() {
     // Group points by segment
     const segments = {};
     route.forEach(pt => {
@@ -137,9 +46,29 @@ export function initStaticMap(containerId, route) {
       }
     }));
 
+    console.log('[map] Route points:', route.length, 'Segments:', Object.keys(segments).length, 'First point:', route[0]);
+
+    if (staticMap.getSource('route')) return; // already added
+
     staticMap.addSource('route', {
       type: 'geojson',
       data: { type: 'FeatureCollection', features }
+    });
+
+    // Route glow (wider, semi-transparent behind the main line)
+    staticMap.addLayer({
+      id: 'route-glow',
+      type: 'line',
+      source: 'route',
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': ROUTE_COLOR,
+        'line-width': 10,
+        'line-opacity': 0.15
+      }
     });
 
     staticMap.addLayer({
@@ -157,28 +86,42 @@ export function initStaticMap(containerId, route) {
       }
     });
 
-    // Start marker (green)
+    // Start marker (lime dot)
     if (route.length > 0) {
       const start = route[0];
-      new mapboxgl.Marker({ color: '#00FF00' })
+      const startEl = document.createElement('div');
+      startEl.style.cssText = 'width:14px;height:14px;background:#B8FF00;border-radius:50%;border:2px solid #0e0e0e;box-shadow:0 0 8px rgba(184,255,0,0.5);';
+      new mapboxgl.Marker({ element: startEl })
         .setLngLat([start.lng, start.lat])
         .addTo(staticMap);
     }
 
-    // End marker (red)
+    // End marker (white dot)
     if (route.length > 1) {
       const end = route[route.length - 1];
-      new mapboxgl.Marker({ color: '#FF0000' })
+      const endEl = document.createElement('div');
+      endEl.style.cssText = 'width:14px;height:14px;background:#ffffff;border-radius:50%;border:2px solid #0e0e0e;box-shadow:0 0 8px rgba(255,255,255,0.4);';
+      new mapboxgl.Marker({ element: endEl })
         .setLngLat([end.lng, end.lat])
         .addTo(staticMap);
     }
-  });
+
+    // Fit bounds after route is added
+    staticMap.fitBounds(bounds, { padding: 50 });
+  }
+
+  // Use both load and idle events for reliability
+  if (staticMap.isStyleLoaded()) {
+    addRouteLayer();
+  } else {
+    staticMap.on('load', addRouteLayer);
+  }
 
   return staticMap;
 }
 
 // ---------------------------------------------------------------------------
-// Static Image snapshot URL
+// Static Image snapshot URL (for feed cards)
 // ---------------------------------------------------------------------------
 
 export function getMapSnapshotUrl(route) {
@@ -186,16 +129,6 @@ export function getMapSnapshotUrl(route) {
 
   const simplified = simplifyRoute(route, 100);
 
-  const geojson = {
-    type: 'LineString',
-    coordinates: simplified.map(pt => [pt.lng, pt.lat]),
-    properties: {
-      stroke: ROUTE_COLOR,
-      'stroke-width': 3
-    }
-  };
-
-  // Mapbox Static Images API expects GeoJSON as a Feature for styling props
   const feature = {
     type: 'Feature',
     properties: {

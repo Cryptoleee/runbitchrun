@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rbr-v5';
+const CACHE_NAME = 'rbr-v8';
 
 const STATIC_ASSETS = [
   '/',
@@ -26,8 +26,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate: clean old caches, claim clients, and force-reload all open tabs
-// so they pick up the new cached files immediately
+// Activate: clean old caches and claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
@@ -39,53 +38,31 @@ self.addEventListener('activate', (event) => {
         )
       )
       .then(() => self.clients.claim())
-      .then(() => self.clients.matchAll({ type: 'window' }))
-      .then((clients) => {
-        clients.forEach((client) => client.navigate(client.url));
-      })
   );
 });
 
-// Fetch: cache-first for same-origin, skip external API calls
+// Fetch: network-first for same-origin, fall back to cache when offline
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Skip caching for Firebase, Mapbox, and Google API calls
-  if (
-    url.hostname.includes('firebaseio.com') ||
-    url.hostname.includes('firebase.googleapis.com') ||
-    url.hostname.includes('firestore.googleapis.com') ||
-    url.hostname.includes('firebasestorage.googleapis.com') ||
-    url.hostname.includes('identitytoolkit.googleapis.com') ||
-    url.hostname.includes('securetoken.googleapis.com') ||
-    url.hostname.includes('api.mapbox.com') ||
-    url.hostname.includes('tiles.mapbox.com') ||
-    url.hostname.includes('events.mapbox.com') ||
-    url.hostname.includes('googleapis.com')
-  ) {
-    return;
-  }
+  // Skip caching for external API calls entirely
+  if (url.origin !== self.location.origin) return;
 
-  // Only handle same-origin requests with cache-first strategy
-  if (url.origin === self.location.origin) {
-    event.respondWith(
-      caches.match(event.request)
-        .then((cached) => {
-          if (cached) {
-            return cached;
-          }
-          return fetch(event.request).then((response) => {
-            // Only cache successful responses
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-            return response;
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // Update cache with fresh response
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
           });
-        })
-    );
-  }
+        }
+        return response;
+      })
+      .catch(() => {
+        // Network failed — serve from cache (offline fallback)
+        return caches.match(event.request);
+      })
+  );
 });
