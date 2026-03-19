@@ -7,7 +7,7 @@ export const firebaseConfig = {
   appId: "1:633842129729:web:6eed879b02cfc727455fc0"
 };
 export const MAPBOX_TOKEN = "pk.eyJ1Ijoid2lqemlqbndvbGYiLCJhIjoiY21teGlkbXpuMzA3czJyczJ4bDQ4MmIzbiJ9.ofgpN4u6XWTBAHgbY2Ekgg";
-export const APP_NAME = "Run bitch! Run!";
+export const APP_NAME = "Work bitch! Work!";
 export const DEFAULT_WEIGHT_KG = 70;
 export const MAX_RUN_PHOTOS = 4;
 export const MAX_FRIENDS = 100;

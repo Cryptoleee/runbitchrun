@@ -57,7 +57,7 @@ function initAuth() {
               units: 'metric',
               autoPause: true,
               defaultVisibility: 'public',
-              stats: { totalRuns: 0, totalKm: 0, totalTime: 0, bestPace: 0 }
+              stats: { totalRuns: 0, totalKm: 0, totalTime: 0, bestPace: 0, totalWorkouts: 0, totalWorkoutTime: 0 }
             });
             hideSplash();
             navigateTo('home', { force: true });
@@ -93,7 +93,7 @@ async function getOrCreateProfile(user) {
     units: 'metric',
     autoPause: true,
     defaultVisibility: 'public',
-    stats: { totalRuns: 0, totalKm: 0, totalTime: 0, bestPace: 0 },
+    stats: { totalRuns: 0, totalKm: 0, totalTime: 0, bestPace: 0, totalWorkouts: 0, totalWorkoutTime: 0 },
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   };
 

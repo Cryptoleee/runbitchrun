@@ -1,7 +1,7 @@
 {
-  "name": "Run bitch! Run!",
-  "short_name": "RBR",
-  "description": "GPS run tracking with friends",
+  "name": "Work bitch! Work!",
+  "short_name": "WBW",
+  "description": "GPS run tracking & interval workouts with friends",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

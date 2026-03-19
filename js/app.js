@@ -16,7 +16,7 @@ export function setUser(user, profile) {
 // ── Page History ──────────────────────────────────────
 
 const pageHistory = [];
-const HIDE_NAV_PAGES = ['run', 'summary'];
+const HIDE_NAV_PAGES = ['run', 'summary', 'workout'];
 
 // ── Navigation ────────────────────────────────────────
 
@@ -158,8 +158,8 @@ export async function initApp() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   if (isIOS && !isStandalone) {
-    const visitCount = parseInt(localStorage.getItem('rbr_visit_count') || '0', 10) + 1;
-    localStorage.setItem('rbr_visit_count', String(visitCount));
+    const visitCount = parseInt(localStorage.getItem('wbw_visit_count') || '0', 10) + 1;
+    localStorage.setItem('wbw_visit_count', String(visitCount));
     if (visitCount >= 2) {
       showIOSInstallBanner();
     }

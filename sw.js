@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rbr-v8';
+const CACHE_NAME = 'wbw-v3';
 
 const STATIC_ASSETS = [
   '/',
@@ -9,12 +9,36 @@ const STATIC_ASSETS = [
   '/js/auth.js',
   '/js/firestore.js',
   '/js/tracker.js',
+  '/js/timer.js',
   '/js/map.js',
   '/js/social.js',
   '/js/ui.js',
   '/manifest.json',
   '/assets/icons/icon-192.png',
-  '/assets/icons/icon-512.png'
+  '/assets/icons/icon-512.png',
+  '/assets/audio/three.mp3',
+  '/assets/audio/two.mp3',
+  '/assets/audio/one.mp3',
+  '/assets/audio/work.mp3',
+  '/assets/audio/rest.mp3',
+  '/assets/audio/getready.mp3',
+  '/assets/audio/done.mp3',
+  '/assets/audio/hype_home_1.mp3',
+  '/assets/audio/hype_home_2.mp3',
+  '/assets/audio/hype_home_3.mp3',
+  '/assets/audio/hype_home_4.mp3',
+  '/assets/audio/hype_home_5.mp3',
+  '/assets/audio/hype_home_6.mp3',
+  '/assets/audio/hype_home_7.mp3',
+  '/assets/audio/hype_home_8.mp3',
+  '/assets/audio/hype_done_1.mp3',
+  '/assets/audio/hype_done_2.mp3',
+  '/assets/audio/hype_done_3.mp3',
+  '/assets/audio/hype_done_4.mp3',
+  '/assets/audio/hype_done_5.mp3',
+  '/assets/audio/hype_done_6.mp3',
+  '/assets/audio/hype_done_7.mp3',
+  '/assets/audio/hype_done_8.mp3'
 ];
 
 // Install: cache static assets and skip waiting

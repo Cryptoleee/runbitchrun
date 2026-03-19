@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-  <title>Run bitch! Run!</title>
+  <title>Work bitch! Work!</title>
   <meta name="theme-color" content="#0e0e0e" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Run bitch! Run!" />
+  <meta name="apple-mobile-web-app-title" content="Work bitch! Work!" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:ital,wght@0,300..900;1,300..900&family=Inter:wght@300..700&family=Lexend:wght@300..700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Inter:wght@300..700&family=Lexend:wght@300..700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
@@ -78,8 +78,8 @@
           "on-error-container": "#ffd2c8"
         },
         fontFamily: {
-          "headline": ["Outfit"],
-          "display": ["Bebas Neue", "sans-serif"],
+          "headline": ["Space Grotesk", "sans-serif"],
+          "display": ["Space Grotesk", "sans-serif"],
           "body": ["Inter"],
           "label": ["Lexend"]
         },
@@ -121,7 +121,7 @@
   <div class="w-16 h-16 rounded-[1.5rem] kinetic-gradient flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(184,255,0,0.3)]">
     <span class="material-symbols-outlined text-3xl text-on-primary" style="font-variation-settings:'FILL' 1;">directions_run</span>
   </div>
-  <h1 class="font-headline font-black text-2xl tracking-tight italic text-[#B8FF00]">Run bitch! Run!</h1>
+  <h1 class="font-headline font-black text-2xl tracking-tight italic text-[#B8FF00]">Work bitch! Work!</h1>
   <div class="mt-6 w-6 h-6 border-2 border-primary-container border-t-transparent rounded-full animate-spin"></div>
 </div>
 
@@ -135,8 +135,8 @@
       <div class="w-20 h-20 rounded-[2rem] kinetic-gradient flex items-center justify-center mb-6 mx-auto shadow-[0_0_40px_rgba(184,255,0,0.3)]">
         <span class="material-symbols-outlined text-4xl text-on-primary" style="font-variation-settings:'FILL' 1;">directions_run</span>
       </div>
-      <h1 class="font-headline font-black text-4xl tracking-tight italic text-[#B8FF00] mb-2">Run bitch! Run!</h1>
-      <p class="font-label text-on-surface-variant text-sm tracking-wide">Track every step. Own every mile.</p>
+      <h1 class="font-headline font-black text-4xl tracking-tight italic text-[#B8FF00] mb-2">Work bitch! Work!</h1>
+      <p class="font-label text-on-surface-variant text-sm tracking-wide">Run harder. Train smarter. No excuses.</p>
     </div>
 
     <!-- Google Sign-In -->
@@ -164,7 +164,7 @@
   <!-- PWA Install Banners (hidden by default) -->
   <div id="install-banner" class="hidden fixed top-0 inset-x-0 z-40 bg-surface-container-high border-b border-outline-variant/20 px-4 py-3 flex items-center gap-3">
     <span class="material-symbols-outlined text-primary-container flex-shrink-0">download</span>
-    <p class="flex-1 text-sm font-label text-on-surface">Install Run bitch! Run! for the best experience.</p>
+    <p class="flex-1 text-sm font-label text-on-surface">Install Work bitch! Work! for the best experience.</p>
     <button data-install class="font-label font-bold text-xs text-primary-container uppercase tracking-widest px-3 py-1.5 rounded-lg bg-primary-container/10 active:scale-95 transition-all">Install</button>
     <button data-dismiss class="text-on-surface-variant p-1 active:scale-95 transition-all">
       <span class="material-symbols-outlined text-sm">close</span>
@@ -183,11 +183,22 @@
     </div>
   </div>
 
-  <main class="pt-14 pb-32 px-5 max-w-lg mx-auto page-enter">
+  <!-- Top App Bar -->
+  <header class="fixed top-0 w-full z-50 bg-[#0E0E0E] h-20 flex items-center justify-between px-6 py-4">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-[#B8FF00] text-2xl" style="font-variation-settings:'FILL' 1;">bolt</span>
+      <h1 class="text-2xl font-black italic tracking-tighter text-[#B8FF00] font-headline uppercase">Work bitch! Work!</h1>
+    </div>
+    <button id="btn-home-profile" class="h-10 w-10 rounded-full overflow-hidden border-2 border-surface-container-highest active:scale-95 duration-150 transition-opacity hover:opacity-80">
+      <img id="home-profile-photo" alt="Profile" class="w-full h-full object-cover" src="" />
+    </button>
+  </header>
+
+  <main class="pt-24 pb-32 px-6 max-w-2xl mx-auto page-enter">
     <!-- Greeting -->
-    <section class="mb-8 pt-6">
-      <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-[0.2em] mb-1">Dashboard</p>
-      <h1 id="home-greeting" class="font-headline font-bold text-3xl tracking-tight leading-tight">Good morning, Runner.</h1>
+    <section class="mb-10">
+      <p id="home-date" class="font-label text-on-surface-variant text-xs uppercase tracking-[0.2em] mb-1"></p>
+      <h1 id="home-greeting" class="font-headline text-4xl font-bold tracking-tighter">Good morning, Runner</h1>
     </section>
 
     <!-- Battery Warning -->
@@ -196,62 +207,71 @@
       <p class="font-label text-sm text-error">Low battery — GPS tracking may drain your battery quickly.</p>
     </div>
 
-    <!-- Start Run CTA -->
-    <section class="mb-10">
-      <button id="btn-start-run" class="kinetic-gradient w-full py-5 rounded-[20px] flex items-center justify-between px-7 shadow-[0_0_24px_rgba(184,255,0,0.25)] active:scale-[0.98] transition-transform duration-100">
-        <div class="flex flex-col items-start">
-          <span class="font-display text-3xl text-on-primary tracking-tight italic">START RUN</span>
-          <span class="font-label text-[10px] text-on-primary/60 uppercase tracking-widest">GPS ready &bull; high accuracy</span>
-        </div>
-        <div class="bg-on-primary text-primary-container w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
-          <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1;">play_arrow</span>
-        </div>
+    <!-- Mode Toggle -->
+    <section class="mb-8 p-1.5 bg-surface-container rounded-xl flex items-center">
+      <button id="btn-mode-run" class="flex-1 py-3 px-4 rounded-lg bg-surface-container-highest text-[#B8FF00] font-headline font-bold text-sm tracking-tight transition-all active:scale-95">
+        RUN
+      </button>
+      <button id="btn-mode-workout" class="flex-1 py-3 px-4 rounded-lg text-on-surface-variant font-headline font-bold text-sm tracking-tight hover:text-on-surface transition-all active:scale-95">
+        WORKOUT
       </button>
     </section>
 
-    <!-- Performance Metrics Bento -->
-    <section class="mb-10">
-      <h3 class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-3">Performance Metrics</h3>
-      <div class="grid grid-cols-12 gap-3">
-        <!-- Weekly Distance -->
-        <div class="col-span-7 bg-surface-container rounded-2xl p-5 border-l-2 border-primary-container/30">
-          <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-5">Weekly Distance</p>
+    <!-- Hero Action Card -->
+    <section class="mb-12 relative overflow-hidden rounded-[2rem] aspect-[4/5] flex flex-col justify-end p-8 bg-surface-container">
+      <div class="absolute inset-0 z-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
+      <div class="relative z-10 flex flex-col items-start">
+        <div class="mb-6">
+          <span id="home-hero-label" class="font-label text-[10px] text-primary font-bold uppercase tracking-[0.3em] bg-primary/10 px-3 py-1 rounded-full mb-4 inline-block">Daily Goal: 5km</span>
+          <h3 id="home-hero-text" class="font-headline text-5xl font-extrabold tracking-tighter leading-none mb-2">READY TO<br/>EAT DUST?</h3>
+        </div>
+        <button id="btn-start-run" class="w-full kinetic-gradient text-on-primary-fixed font-headline font-black text-xl py-5 rounded-2xl shadow-[0_0_24px_rgba(184,255,0,0.25)] active:scale-95 transition-all flex items-center justify-center gap-3">
+          <span id="home-cta-text">START WORKOUT</span>
+          <span class="material-symbols-outlined font-bold" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Weekly Performance -->
+    <section class="mb-12">
+      <div class="flex justify-between items-end mb-6">
+        <h4 class="font-headline text-xl font-bold tracking-tight">Weekly Performance</h4>
+        <span id="home-weekly-change" class="font-label text-[10px] text-[#B8FF00] font-bold uppercase tracking-widest"></span>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-surface-container p-6 rounded-3xl border-l-2 border-[#B8FF00]">
+          <div class="flex items-center gap-2 mb-8">
+            <span class="material-symbols-outlined text-on-surface-variant text-sm">distance</span>
+            <span class="font-label text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Distance</span>
+          </div>
           <div class="flex items-baseline gap-1">
-            <span id="home-weekly-distance" class="font-display text-6xl tracking-tight">0.0</span>
-            <span class="font-label text-sm text-on-surface-variant">KM</span>
+            <span id="home-weekly-distance" class="font-headline text-4xl font-bold tracking-tighter">0.0</span>
+            <span class="font-headline text-sm font-medium text-on-surface-variant uppercase tracking-tighter">KM</span>
           </div>
         </div>
-        <!-- Time + Avg Pace -->
-        <div class="col-span-5 flex flex-col gap-3">
-          <div class="bg-surface-container rounded-2xl p-4 flex-1">
-            <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Time</p>
-            <div class="flex items-baseline gap-1">
-              <span id="home-weekly-time" class="font-headline font-bold text-xl">0:00</span>
-              <span class="font-label text-[10px] text-on-surface-variant">HR</span>
-            </div>
+        <div class="bg-surface-container-high p-6 rounded-3xl">
+          <div class="flex items-center gap-2 mb-8">
+            <span class="material-symbols-outlined text-on-surface-variant text-sm">timer</span>
+            <span class="font-label text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Avg Pace</span>
           </div>
-          <div class="bg-surface-container rounded-2xl p-4 flex-1">
-            <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Avg Pace</p>
-            <div class="flex items-baseline gap-1">
-              <span id="home-avg-pace" class="font-headline font-bold text-xl">--:--</span>
-              <span class="font-label text-[10px] text-on-surface-variant">/KM</span>
-            </div>
+          <div class="flex items-baseline gap-1">
+            <span id="home-avg-pace" class="font-headline text-4xl font-bold tracking-tighter">--:--</span>
+            <span class="font-headline text-sm font-medium text-on-surface-variant uppercase tracking-tighter">/KM</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Recent Activity / Feed -->
+    <!-- Recent Activity -->
     <section class="mb-8">
-      <div class="flex justify-between items-center mb-5">
-        <h3 class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest">Recent Activity</h3>
-        <button id="btn-view-all-runs" class="font-label text-primary-container text-[10px] uppercase tracking-widest active:opacity-70 transition-opacity">View All</button>
+      <div class="flex justify-between items-center mb-6 px-2">
+        <h4 class="font-headline text-xl font-bold tracking-tight">Recent Activity</h4>
+        <button id="btn-view-all-runs" class="font-label text-[10px] text-on-surface-variant font-bold uppercase tracking-widest hover:text-[#B8FF00] transition-colors">View All</button>
       </div>
       <div id="home-feed" class="space-y-3">
-        <!-- Feed items rendered by JS -->
         <div class="text-center py-8 text-on-surface-variant font-label text-xs">
           <span class="material-symbols-outlined text-3xl block mb-2 opacity-40">directions_run</span>
-          No runs yet. Start your first run!
+          No activity yet. Start your first workout!
         </div>
       </div>
     </section>
@@ -430,7 +450,7 @@
   <main class="pt-14 px-5 max-w-lg mx-auto pb-32 page-enter">
     <section class="mb-8 pt-6">
       <p class="font-label text-on-surface-variant text-[10px] tracking-[0.2em] uppercase mb-2">Training Archive</p>
-      <h2 class="font-display text-5xl tracking-tight leading-none mb-6">RUN LOG</h2>
+      <h2 class="font-display text-5xl tracking-tight leading-none mb-6">ACTIVITY LOG</h2>
 
       <!-- Filter Tabs -->
       <div class="flex items-center gap-2 p-1 bg-surface-container rounded-full w-fit">
@@ -584,6 +604,17 @@
           <span class="material-symbols-outlined text-on-surface-variant text-xl mb-2">schedule</span>
           <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Total Time</p>
           <h3 id="stat-total-time" class="font-headline text-2xl font-bold tracking-tighter">0h</h3>
+        </div>
+        <div class="col-span-5 bg-secondary-container/20 border border-secondary/10 p-5 rounded-3xl">
+          <div class="absolute -right-2 -top-2 text-secondary/10">
+            <span class="material-symbols-outlined text-5xl">fitness_center</span>
+          </div>
+          <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-6">Workouts</p>
+          <h3 id="stat-total-workouts" class="font-display text-5xl tracking-tight">0</h3>
+        </div>
+        <div class="col-span-7 bg-surface-container p-5 rounded-3xl">
+          <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-5">Workout Time</p>
+          <h3 id="stat-workout-time" class="font-headline text-2xl font-bold tracking-tighter">0m</h3>
         </div>
       </div>
     </section>
@@ -766,25 +797,195 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- PAGE: TRAINING (Workout Config / Interval Timer Setup)                   -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="page-training" class="page min-h-screen">
+  <main class="pt-14 pb-32 px-5 max-w-lg mx-auto page-enter">
+    <!-- Header -->
+    <section class="mb-10 pt-6">
+      <p class="font-label text-on-surface-variant text-xs tracking-[0.2em] mb-2 uppercase">Workout Mode</p>
+      <h2 class="font-headline text-5xl font-extrabold tracking-tighter italic uppercase text-primary-fixed">Interval Timer</h2>
+    </section>
+
+    <!-- Rounds Selector -->
+    <div class="bg-surface-container rounded-xl p-8 mb-4">
+      <div class="flex justify-between items-start mb-4">
+        <span class="font-label text-xs font-semibold tracking-widest text-on-surface-variant uppercase">Rounds</span>
+        <span class="material-symbols-outlined text-primary/40">cycle</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <button id="btn-rounds-minus" class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform">
+          <span class="material-symbols-outlined text-on-surface">remove</span>
+        </button>
+        <div class="flex flex-col items-center">
+          <span id="training-rounds" class="font-headline text-8xl font-black text-primary-fixed leading-none" style="text-shadow: 0 0 20px rgba(184,255,0,0.3);">08</span>
+          <span class="font-label text-[10px] text-on-surface-variant mt-2 tracking-widest uppercase">Sets Total</span>
+        </div>
+        <button id="btn-rounds-plus" class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform">
+          <span class="material-symbols-outlined text-on-surface">add</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <!-- Work Duration -->
+      <div class="bg-surface-container rounded-xl p-6">
+        <div class="flex justify-between items-start mb-6">
+          <span class="font-label text-xs font-semibold tracking-widest text-on-surface-variant uppercase">Work</span>
+          <span class="material-symbols-outlined text-error/60">timer</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <button id="btn-work-minus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
+            <span class="material-symbols-outlined text-on-surface text-sm">remove</span>
+          </button>
+          <span id="training-work" class="font-headline text-4xl font-bold text-on-surface tabular-nums">00:45</span>
+          <button id="btn-work-plus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
+            <span class="material-symbols-outlined text-on-surface text-sm">add</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Rest Duration -->
+      <div class="bg-surface-container rounded-xl p-6">
+        <div class="flex justify-between items-start mb-6">
+          <span class="font-label text-xs font-semibold tracking-widest text-on-surface-variant uppercase">Rest</span>
+          <span class="material-symbols-outlined text-secondary/60">self_improvement</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <button id="btn-rest-minus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
+            <span class="material-symbols-outlined text-on-surface text-sm">remove</span>
+          </button>
+          <span id="training-rest" class="font-headline text-4xl font-bold text-on-surface tabular-nums">00:15</span>
+          <button id="btn-rest-plus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
+            <span class="material-symbols-outlined text-on-surface text-sm">add</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preparation Time -->
+    <div class="bg-surface-container-low border border-outline-variant/10 rounded-xl p-6 flex items-center justify-between mb-10">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant">hourglass_top</span>
+        </div>
+        <div>
+          <span class="font-label text-xs font-semibold tracking-widest text-on-surface-variant uppercase block">Preparation</span>
+          <span class="font-headline text-2xl font-bold text-on-surface"><span id="training-prep">10</span> SECONDS</span>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button id="btn-prep-minus" class="material-symbols-outlined p-2 text-on-surface/60 hover:text-primary active:scale-90 transition-all">remove_circle</button>
+        <button id="btn-prep-plus" class="material-symbols-outlined p-2 text-on-surface/60 hover:text-primary active:scale-90 transition-all">add_circle</button>
+      </div>
+    </div>
+
+    <!-- Start Button -->
+    <button id="btn-start-intervals" class="w-full kinetic-gradient text-[#334A00] py-6 rounded-xl font-headline font-black text-2xl tracking-widest uppercase italic shadow-[0_8px_24px_rgba(184,255,0,0.2)] active:scale-95 transition-all duration-150">
+      Start Intervals
+    </button>
+    <p id="training-total" class="text-center mt-4 font-label text-[10px] text-on-surface-variant tracking-[0.3em] uppercase opacity-60">Total Duration: 08:00 Minutes</p>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- PAGE: ACTIVE WORKOUT (Interval Timer - no bottom nav)                   -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="page-workout" class="page h-screen overflow-hidden">
+  <main class="relative flex-1 flex flex-col items-center justify-between h-full px-6 pt-20 pb-10">
+    <!-- Brand header -->
+    <div class="absolute top-6 left-6 flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary-container">bolt</span>
+      <span class="font-headline font-black italic text-lg tracking-tighter text-primary-container uppercase">Work bitch! Work!</span>
+    </div>
+
+    <!-- Phase Badge + Round -->
+    <div class="flex flex-col items-center gap-4 mt-4">
+      <div id="workout-phase-badge" class="px-6 py-2 rounded-full phase-work shadow-[0_0_20px_rgba(184,255,0,0.3)]">
+        <span id="workout-phase-text" class="font-label text-sm font-extrabold tracking-[0.2em] uppercase">WORK</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <h2 id="workout-round" class="font-headline font-bold italic text-3xl tracking-tighter text-white">
+          ROUND <span id="workout-round-current" class="text-primary-container">01</span> / <span id="workout-round-total">08</span>
+        </h2>
+        <div class="w-12 h-1 bg-primary-container/20 mt-2 rounded-full overflow-hidden">
+          <div id="workout-round-progress" class="h-full bg-primary-container transition-all duration-300" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Circular Progress Ring -->
+    <div class="relative flex items-center justify-center w-full aspect-square max-w-[300px]">
+      <div class="absolute inset-0 bg-primary-container/5 blur-[80px] rounded-full"></div>
+      <svg class="absolute inset-0 w-full h-full" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#262626" stroke-width="3"/>
+        <circle id="workout-progress-ring" class="progress-ring-circle" cx="100" cy="100" r="90" fill="none"
+                stroke="#B8FF00" stroke-width="6" stroke-linecap="round"
+                stroke-dasharray="565.49" stroke-dashoffset="0"
+                transform="rotate(-90 100 100)"
+                style="filter: drop-shadow(0 0 8px rgba(184,255,0,0.6));"/>
+      </svg>
+      <div class="flex flex-col items-center z-10">
+        <span id="workout-countdown" class="font-headline font-bold text-8xl tracking-tighter tabular-nums leading-none">00:45</span>
+        <span class="font-label text-[10px] tracking-[0.4em] text-on-surface-variant uppercase mt-4">Remaining</span>
+      </div>
+    </div>
+
+    <!-- Next Up Card -->
+    <div class="w-full max-w-sm">
+      <div id="workout-next-up" class="bg-surface-container border border-outline-variant/10 rounded-xl p-5 flex items-center justify-between backdrop-blur-md">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-surface-variant">hourglass_empty</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase">Next Up</span>
+            <span id="workout-next-label" class="font-headline font-bold text-lg tracking-tight">REST (00:15)</span>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-primary-container">chevron_right</span>
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="w-full max-w-md flex items-center justify-between gap-4 px-4 pb-safe">
+      <button id="btn-workout-stop" class="w-16 h-16 rounded-2xl bg-surface-container-high flex items-center justify-center text-white active:scale-90 transition-transform duration-200">
+        <span class="material-symbols-outlined text-3xl">stop</span>
+      </button>
+      <button id="btn-workout-pause" class="flex-1 h-20 bg-primary-container rounded-3xl flex items-center justify-center active:scale-95 transition-all duration-300 shadow-[0_10px_30px_rgba(184,255,0,0.2)]">
+        <div class="flex flex-col items-center justify-center leading-none">
+          <span id="workout-pause-icon" class="material-symbols-outlined text-on-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">pause_circle</span>
+          <span id="workout-pause-label" class="font-label font-black text-on-primary-container text-[10px] tracking-widest uppercase mt-1">PAUSE WORKOUT</span>
+        </div>
+      </button>
+      <button id="btn-workout-music" class="w-16 h-16 rounded-2xl bg-surface-container-high flex items-center justify-center text-white active:scale-90 transition-transform duration-200">
+        <span class="material-symbols-outlined text-3xl">music_note</span>
+      </button>
+    </div>
+  </main>
+  <!-- Vignette overlay -->
+  <div class="pointer-events-none fixed inset-0 z-[60] shadow-[inset_0_0_120px_rgba(0,0,0,0.8)]"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
 <!-- BOTTOM NAV                                                              -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
-<nav id="bottom-nav" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-safe bg-[#1A1919]/80 backdrop-blur-xl h-20 rounded-t-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.5)]">
-  <button class="nav-btn flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="home">
-    <span class="material-symbols-outlined">home</span>
-    <span class="font-label text-[10px] uppercase tracking-widest mt-1">HOME</span>
+<nav id="bottom-nav" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-safe bg-[#0E0E0E]/90 backdrop-blur-xl h-20 rounded-t-2xl shadow-[0_-8px_24px_rgba(184,255,0,0.12)]">
+  <button class="nav-btn flex flex-col items-center justify-center transition-all duration-200 active:scale-90" data-page="home">
+    <span class="material-symbols-outlined text-2xl">home</span>
+    <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">Home</span>
   </button>
-  <button class="nav-btn flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="home">
-    <!-- "GO" button navigates to home, run is started via btn-start-run CTA -->
-    <span class="material-symbols-outlined">directions_run</span>
-    <span class="font-label text-[10px] uppercase tracking-widest mt-1">GO</span>
+  <button class="nav-btn flex flex-col items-center justify-center transition-all duration-200 active:scale-90" data-page="training">
+    <span class="material-symbols-outlined text-2xl">fitness_center</span>
+    <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">Training</span>
   </button>
-  <button class="nav-btn flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="history">
-    <span class="material-symbols-outlined">history</span>
-    <span class="font-label text-[10px] uppercase tracking-widest mt-1">LOGS</span>
+  <button class="nav-btn flex flex-col items-center justify-center transition-all duration-200 active:scale-90" data-page="history">
+    <span class="material-symbols-outlined text-2xl">history</span>
+    <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">History</span>
   </button>
-  <button class="nav-btn relative flex flex-col items-center justify-center transition-all duration-300 active:scale-90" data-page="profile">
-    <span class="material-symbols-outlined">person</span>
-    <span class="font-label text-[10px] uppercase tracking-widest mt-1">ME</span>
+  <button class="nav-btn relative flex flex-col items-center justify-center transition-all duration-200 active:scale-90" data-page="profile">
+    <span class="material-symbols-outlined text-2xl">person</span>
+    <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">Profile</span>
     <span id="pending-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-error rounded-full text-[10px] font-bold flex items-center justify-center text-on-error">0</span>
   </button>
 </nav>
@@ -796,8 +997,9 @@
 import { initApp, navigateTo, goBack, state } from './js/app.js';
 import { initAuth, signOut } from './js/auth.js';
 import { startRun, stopRun, togglePause, getRunState, getRunData, checkBattery } from './js/tracker.js';
+import { startWorkout, stopWorkout, togglePauseWorkout, getWorkoutState, getWorkoutData, isWorkoutRunning, playRandomHypeHome, playRandomHypeDone } from './js/timer.js';
 import { initStaticMap, getMapSnapshotUrl } from './js/map.js';
-import { saveRun, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions } from './js/firestore.js';
+import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions } from './js/firestore.js';
 import { loadFriends, loadPendingRequests, loadFeed, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderReactions } from './js/social.js';
 import { showToast, showConfirm, formatDistance, formatPace, formatDuration, formatTimeAgo, getGreeting, resizeImage, resizeImageSquare, openBottomSheet, closeBottomSheet } from './js/ui.js';
 
@@ -809,6 +1011,15 @@ let currentFilter = 'all';
 let currentDetailRunId = null;
 let currentFriendUserId = null;
 let friendSearchDebounceTimer = null;
+let homeMode = 'run';             // 'run' | 'workout'
+
+// ─── Interval Timer Config ───────────────────────────────────────────────
+let timerConfig = {
+  rounds: 8,
+  workSeconds: 45,
+  restSeconds: 15,
+  prepSeconds: 10
+};
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -818,19 +1029,22 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-function formatRunCard(run, units = 'metric') {
-  const dist = formatDistance(run.distance || 0, units);
-  const pace = formatPace(run.avgPace || 0, units);
-  const duration = formatDuration(run.duration || 0);
-  const timeAgo = run.startedAt?.toDate ? formatTimeAgo(run.startedAt.toDate()) : '';
-  // Always regenerate snapshot URL with current token instead of using stored URL
-  const snapshotUrl = (run.route && run.route.length > 1) ? getMapSnapshotUrl(run.route) : '';
+function formatRunCard(item, units = 'metric') {
+  if ((item.type || 'run') === 'interval') {
+    return formatWorkoutCard(item);
+  }
+
+  const dist = formatDistance(item.distance || 0, units);
+  const pace = formatPace(item.avgPace || 0, units);
+  const duration = formatDuration(item.duration || 0);
+  const timeAgo = item.startedAt?.toDate ? formatTimeAgo(item.startedAt.toDate()) : '';
+  const snapshotUrl = (item.route && item.route.length > 1) ? getMapSnapshotUrl(item.route) : '';
   const mapThumb = snapshotUrl
     ? `<img src="${escapeHtml(snapshotUrl)}" class="w-20 h-20 rounded-xl object-cover opacity-70" alt="Route" />`
     : `<div class="w-20 h-20 rounded-xl bg-surface-container-lowest flex items-center justify-center text-on-surface-variant/30"><span class="material-symbols-outlined text-2xl">map</span></div>`;
 
   return `
-    <div class="history-card bg-[#1A1919] rounded-[2rem] p-5 relative overflow-hidden cursor-pointer active:scale-[0.98] transition-all group" data-run-id="${run.id}">
+    <div class="history-card bg-[#1A1919] rounded-[2rem] p-5 relative overflow-hidden cursor-pointer active:scale-[0.98] transition-all group" data-run-id="${item.id}">
       <div class="flex justify-between items-start mb-6">
         <div>
           <p class="font-label text-[10px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">${timeAgo}</p>
@@ -849,6 +1063,42 @@ function formatRunCard(run, units = 'metric') {
         </div>
       </div>
       <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[60px] rounded-full pointer-events-none"></div>
+    </div>
+  `;
+}
+
+function formatWorkoutCard(workout) {
+  const duration = formatDuration(workout.duration || 0);
+  const timeAgo = workout.startedAt?.toDate ? formatTimeAgo(workout.startedAt.toDate()) : '';
+  const rounds = workout.completedRounds || 0;
+  const totalRounds = workout.config?.rounds || 0;
+
+  return `
+    <div class="history-card bg-[#1A1919] rounded-[2rem] p-5 relative overflow-hidden cursor-pointer active:scale-[0.98] transition-all group" data-run-id="${workout.id}">
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <p class="font-label text-[10px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">${timeAgo}</p>
+          <h3 class="font-display text-4xl text-secondary tracking-tight">INTERVAL</h3>
+        </div>
+        <div class="w-14 h-14 rounded-2xl bg-secondary/20 flex items-center justify-center">
+          <span class="material-symbols-outlined text-secondary text-2xl">fitness_center</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Duration</p>
+          <p class="font-headline font-medium text-xl">${duration}</p>
+        </div>
+        <div>
+          <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Rounds</p>
+          <p class="font-headline font-medium text-xl">${rounds}/${totalRounds}</p>
+        </div>
+        <div>
+          <p class="font-label text-[9px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">Calories</p>
+          <p class="font-headline font-medium text-xl">${workout.calories || 0}</p>
+        </div>
+      </div>
+      <div class="absolute top-0 right-0 w-32 h-32 bg-secondary/5 blur-[60px] rounded-full pointer-events-none"></div>
     </div>
   `;
 }
@@ -892,37 +1142,52 @@ async function updatePendingBadge() {
 // ─── Page: HOME ───────────────────────────────────────────────────────────
 
 async function initHomePage() {
+  // Profile photo in header
+  const homePhoto = document.getElementById('home-profile-photo');
+  if (homePhoto && state.profile) {
+    homePhoto.src = state.profile.customPhoto || state.profile.photoURL || '';
+  }
+
+  // Date
+  const dateEl = document.getElementById('home-date');
+  if (dateEl) {
+    const now = new Date();
+    const options = { weekday: 'long', month: 'short', day: 'numeric' };
+    dateEl.textContent = now.toLocaleDateString('en-US', options);
+  }
+
   // Greeting
   const greetingEl = document.getElementById('home-greeting');
   if (greetingEl && state.profile) {
-    greetingEl.textContent = `${getGreeting()}, ${state.profile.displayName || 'Runner'}.`;
+    greetingEl.textContent = `${getGreeting()}, ${state.profile.displayName || 'Runner'}`;
   }
+
+  // Set mode toggle initial state
+  updateHomeMode();
+
+  // Play random hype greeting
+  playRandomHypeHome();
 
   // Weekly stats
   try {
     const weeklyRuns = await getWeeklyRuns(1);
     const units = state.profile?.units || 'metric';
     let totalKm = 0;
-    let totalSecs = 0;
     let totalPaceSecs = 0;
     let paceCount = 0;
 
     for (const run of weeklyRuns) {
-      totalKm += run.distance || 0;
-      totalSecs += run.duration || 0;
-      if (run.avgPace > 0) {
-        totalPaceSecs += run.avgPace;
-        paceCount++;
+      if ((run.type || 'run') === 'run') {
+        totalKm += run.distance || 0;
+        if (run.avgPace > 0) {
+          totalPaceSecs += run.avgPace;
+          paceCount++;
+        }
       }
     }
 
     const dist = formatDistance(totalKm, units);
     document.getElementById('home-weekly-distance').textContent = dist.value;
-
-    // Format total time as h:mm
-    const h = Math.floor(totalSecs / 3600);
-    const m = Math.floor((totalSecs % 3600) / 60);
-    document.getElementById('home-weekly-time').textContent = h > 0 ? `${h}:${String(m).padStart(2, '0')}` : `0:${String(m).padStart(2, '0')}`;
 
     if (paceCount > 0) {
       const avgPace = formatPace(totalPaceSecs / paceCount, units);
@@ -934,38 +1199,84 @@ async function initHomePage() {
     console.warn('Failed to load weekly stats:', err);
   }
 
-  // Feed
+  // Recent Activity (personal + feed combined)
   try {
     const feedContainer = document.getElementById('home-feed');
-    const feedItems = await loadFeed();
-    if (feedItems.length === 0) {
+    const myRuns = await getMyRuns('all');
+    const recentItems = myRuns.slice(0, 5);
+
+    if (recentItems.length === 0) {
       feedContainer.innerHTML = `
         <div class="text-center py-8 text-on-surface-variant font-label text-xs">
           <span class="material-symbols-outlined text-3xl block mb-2 opacity-40">directions_run</span>
-          No activity yet. Add friends to see their runs!
+          No activity yet. Start your first workout!
         </div>
       `;
     } else {
-      feedContainer.innerHTML = feedItems.map(run => renderFeedItem(run)).join('');
-      // Wire reaction and comment buttons
-      // Reaction/comment buttons use event delegation (wired once below)
-      // Load reactions per feed item
-      for (const run of feedItems) {
-        const container = document.getElementById(`reactions-${run.id}`);
-        if (container) {
-          const reactions = await getReactions(run.id);
-          container.innerHTML = renderReactions(reactions, run.id);
-        }
-      }
-      // view-run custom events from feed item map snapshots
-      feedContainer.addEventListener('view-run', (e) => {
-        currentDetailRunId = e.detail.runId;
-        navigateTo('detail');
+      feedContainer.innerHTML = recentItems.map(item => formatActivityItem(item)).join('');
+      feedContainer.querySelectorAll('.activity-item').forEach(card => {
+        card.addEventListener('click', () => {
+          currentDetailRunId = card.dataset.runId;
+          navigateTo('detail');
+        });
       });
     }
   } catch (err) {
     console.warn('Failed to load feed:', err);
   }
+}
+
+function updateHomeMode() {
+  const runBtn = document.getElementById('btn-mode-run');
+  const workoutBtn = document.getElementById('btn-mode-workout');
+  const heroText = document.getElementById('home-hero-text');
+  const heroLabel = document.getElementById('home-hero-label');
+  const ctaText = document.getElementById('home-cta-text');
+
+  if (homeMode === 'run') {
+    runBtn.className = 'flex-1 py-3 px-4 rounded-lg bg-surface-container-highest text-[#B8FF00] font-headline font-bold text-sm tracking-tight transition-all active:scale-95';
+    workoutBtn.className = 'flex-1 py-3 px-4 rounded-lg text-on-surface-variant font-headline font-bold text-sm tracking-tight hover:text-on-surface transition-all active:scale-95';
+    heroText.innerHTML = 'READY TO<br/>EAT DUST?';
+    heroLabel.textContent = 'Daily Goal: 5km';
+    ctaText.textContent = 'START RUN';
+  } else {
+    workoutBtn.className = 'flex-1 py-3 px-4 rounded-lg bg-surface-container-highest text-[#B8FF00] font-headline font-bold text-sm tracking-tight transition-all active:scale-95';
+    runBtn.className = 'flex-1 py-3 px-4 rounded-lg text-on-surface-variant font-headline font-bold text-sm tracking-tight hover:text-on-surface transition-all active:scale-95';
+    heroText.innerHTML = 'TIME TO<br/>GRIND';
+    heroLabel.textContent = 'Interval Training';
+    ctaText.textContent = 'START WORKOUT';
+  }
+}
+
+function formatActivityItem(item) {
+  const isWorkout = item.type === 'interval';
+  const icon = isWorkout ? 'fitness_center' : 'directions_run';
+  const title = isWorkout ? 'Interval Workout' : (item.distance ? `${formatDistance(item.distance, state.profile?.units || 'metric').value} km Run` : 'Run');
+  const timeAgo = item.startedAt?.toDate ? formatTimeAgo(item.startedAt.toDate()) : '';
+  const detail = isWorkout
+    ? `${item.completedRounds || 0}/${item.config?.rounds || 0} rounds`
+    : formatDuration(item.duration || 0);
+  const stat = isWorkout
+    ? `${item.calories || 0} kcal`
+    : formatDuration(item.duration || 0);
+
+  return `
+    <div class="activity-item bg-surface-container p-5 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-surface-container-highest transition-colors" data-run-id="${item.id}">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center group-hover:bg-[#B8FF00] group-hover:text-black transition-colors">
+          <span class="material-symbols-outlined">${icon}</span>
+        </div>
+        <div>
+          <p class="font-headline font-bold text-lg tracking-tight">${escapeHtml(title)}</p>
+          <p class="font-label text-[10px] text-on-surface-variant font-medium uppercase tracking-widest">${timeAgo}</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="font-headline font-bold text-[#B8FF00]">${isWorkout ? stat : detail}</p>
+        <span class="material-symbols-outlined text-on-surface-variant text-sm">chevron_right</span>
+      </div>
+    </div>
+  `;
 }
 
 // ─── Page: HISTORY ────────────────────────────────────────────────────────
@@ -1036,6 +1347,16 @@ async function initProfilePage() {
   document.getElementById('stat-total-time').textContent = totalH > 0
     ? `${totalH}h ${totalM > 0 ? totalM + 'm' : ''}`
     : `${totalM}m`;
+
+  // Workout stats
+  const totalWorkouts = stats.totalWorkouts || 0;
+  const totalWorkoutTimeSecs = stats.totalWorkoutTime || 0;
+  document.getElementById('stat-total-workouts').textContent = totalWorkouts;
+  const wH = Math.floor(totalWorkoutTimeSecs / 3600);
+  const wM = Math.floor((totalWorkoutTimeSecs % 3600) / 60);
+  document.getElementById('stat-workout-time').textContent = wH > 0
+    ? `${wH}h ${wM > 0 ? wM + 'm' : ''}`
+    : `${wM}m`;
 
   // Settings inputs
   const weightInput = document.getElementById('setting-weight');
@@ -1221,20 +1542,43 @@ async function initDetailPage() {
       return;
     }
 
-    const dist = formatDistance(run.distance || 0, units);
-    const pace = formatPace(run.avgPace || 0, units);
-    const duration = formatDuration(run.duration || 0);
+    const isWorkout = (run.type || 'run') === 'interval';
+    const detailMapEl = document.getElementById('detail-map');
 
-    document.getElementById('detail-distance').textContent = dist.value;
-    document.getElementById('detail-distance-unit').textContent = dist.unit;
-    document.getElementById('detail-duration').textContent = duration;
-    document.getElementById('detail-pace').textContent = pace.value;
-    document.getElementById('detail-pace-unit').textContent = pace.unit;
-    document.getElementById('detail-calories').textContent = run.calories || 0;
-    document.getElementById('detail-elevation').textContent = run.elevationGain || 0;
+    if (isWorkout) {
+      // Workout detail
+      document.getElementById('detail-distance').textContent = formatDuration(run.duration || 0);
+      document.getElementById('detail-distance-unit').textContent = 'TOTAL';
+      document.getElementById('detail-duration').textContent = `${run.completedRounds || 0}/${run.config?.rounds || 0}`;
+      document.getElementById('detail-pace').textContent = formatDuration(run.totalWorkTime || 0);
+      document.getElementById('detail-pace-unit').textContent = 'WORK';
+      document.getElementById('detail-calories').textContent = run.calories || 0;
+      document.getElementById('detail-elevation').textContent = formatDuration(run.totalRestTime || 0);
+      document.getElementById('detail-splits').innerHTML = '';
+      detailMapEl.innerHTML = '';
+      detailMapEl.style.display = 'none';
+    } else {
+      // Run detail
+      const dist = formatDistance(run.distance || 0, units);
+      const pace = formatPace(run.avgPace || 0, units);
+      const duration = formatDuration(run.duration || 0);
 
-    // Splits
-    document.getElementById('detail-splits').innerHTML = renderSplits(run.splits, units);
+      document.getElementById('detail-distance').textContent = dist.value;
+      document.getElementById('detail-distance-unit').textContent = dist.unit;
+      document.getElementById('detail-duration').textContent = duration;
+      document.getElementById('detail-pace').textContent = pace.value;
+      document.getElementById('detail-pace-unit').textContent = pace.unit;
+      document.getElementById('detail-calories').textContent = run.calories || 0;
+      document.getElementById('detail-elevation').textContent = run.elevationGain || 0;
+
+      document.getElementById('detail-splits').innerHTML = renderSplits(run.splits, units);
+
+      detailMapEl.style.display = '';
+      detailMapEl.innerHTML = '';
+      if (run.route && run.route.length > 1) {
+        initStaticMap('detail-map', run.route);
+      }
+    }
 
     // Photos
     const photosContainer = document.getElementById('detail-photos');
@@ -1245,13 +1589,6 @@ async function initDetailPage() {
           ${run.photos.map(p => `<img src="${p.thumbnail || p.full}" class="h-24 rounded-xl object-cover flex-shrink-0" />`).join('')}
         </div>
       `;
-    }
-
-    // Static map
-    const detailMapEl = document.getElementById('detail-map');
-    detailMapEl.innerHTML = '';
-    if (run.route && run.route.length > 1) {
-      initStaticMap('detail-map', run.route);
     }
 
     // Reactions (click handling via global event delegation)
@@ -1331,17 +1668,228 @@ async function initFriendPage() {
   }
 }
 
-// ─── START RUN Flow ───────────────────────────────────────────────────────
+// ─── Page: TRAINING ──────────────────────────────────────────────────────
+
+function initTrainingPage() {
+  updateTrainingDisplay();
+}
+
+function updateTrainingDisplay() {
+  const pad2 = (n) => String(n).padStart(2, '0');
+  document.getElementById('training-rounds').textContent = pad2(timerConfig.rounds);
+
+  const workMin = Math.floor(timerConfig.workSeconds / 60);
+  const workSec = timerConfig.workSeconds % 60;
+  document.getElementById('training-work').textContent = `${pad2(workMin)}:${pad2(workSec)}`;
+
+  const restMin = Math.floor(timerConfig.restSeconds / 60);
+  const restSec = timerConfig.restSeconds % 60;
+  document.getElementById('training-rest').textContent = `${pad2(restMin)}:${pad2(restSec)}`;
+
+  document.getElementById('training-prep').textContent = timerConfig.prepSeconds;
+
+  const totalSecs = timerConfig.rounds * (timerConfig.workSeconds + timerConfig.restSeconds) + timerConfig.prepSeconds;
+  const totalMin = Math.floor(totalSecs / 60);
+  const totalRemSec = totalSecs % 60;
+  document.getElementById('training-total').textContent = `Total Duration: ${pad2(totalMin)}:${pad2(totalRemSec)} Minutes`;
+}
+
+// Training page button wiring
+document.getElementById('btn-rounds-minus').addEventListener('click', () => {
+  timerConfig.rounds = Math.max(1, timerConfig.rounds - 1);
+  updateTrainingDisplay();
+});
+document.getElementById('btn-rounds-plus').addEventListener('click', () => {
+  timerConfig.rounds = Math.min(99, timerConfig.rounds + 1);
+  updateTrainingDisplay();
+});
+document.getElementById('btn-work-minus').addEventListener('click', () => {
+  timerConfig.workSeconds = Math.max(5, timerConfig.workSeconds - 5);
+  updateTrainingDisplay();
+});
+document.getElementById('btn-work-plus').addEventListener('click', () => {
+  timerConfig.workSeconds = Math.min(300, timerConfig.workSeconds + 5);
+  updateTrainingDisplay();
+});
+document.getElementById('btn-rest-minus').addEventListener('click', () => {
+  timerConfig.restSeconds = Math.max(5, timerConfig.restSeconds - 5);
+  updateTrainingDisplay();
+});
+document.getElementById('btn-rest-plus').addEventListener('click', () => {
+  timerConfig.restSeconds = Math.min(300, timerConfig.restSeconds + 5);
+  updateTrainingDisplay();
+});
+document.getElementById('btn-prep-minus').addEventListener('click', () => {
+  timerConfig.prepSeconds = Math.max(0, timerConfig.prepSeconds - 5);
+  updateTrainingDisplay();
+});
+document.getElementById('btn-prep-plus').addEventListener('click', () => {
+  timerConfig.prepSeconds = Math.min(30, timerConfig.prepSeconds + 5);
+  updateTrainingDisplay();
+});
+
+// ─── START INTERVALS ──────────────────────────────────────────────────────
+
+document.getElementById('btn-start-intervals').addEventListener('click', () => {
+  navigateTo('workout');
+  const weight = state.profile?.weight || 70;
+  startWorkout(timerConfig, onWorkoutUpdate, weight);
+});
+
+function onWorkoutUpdate(ws) {
+  const pad2 = (n) => String(n).padStart(2, '0');
+
+  // Phase badge
+  const badge = document.getElementById('workout-phase-badge');
+  const phaseText = document.getElementById('workout-phase-text');
+  badge.className = 'px-6 py-2 rounded-full shadow-[0_0_20px_rgba(184,255,0,0.3)]';
+  if (ws.currentPhase === 'work') {
+    badge.classList.add('phase-work');
+    phaseText.textContent = 'WORK';
+  } else if (ws.currentPhase === 'rest') {
+    badge.classList.add('phase-rest');
+    phaseText.textContent = 'REST';
+  } else if (ws.currentPhase === 'prep') {
+    badge.classList.add('phase-prep');
+    phaseText.textContent = 'GET READY';
+  } else if (ws.currentPhase === 'complete') {
+    badge.classList.add('phase-complete');
+    phaseText.textContent = 'DONE!';
+    handleWorkoutComplete();
+    return;
+  }
+
+  // Round
+  document.getElementById('workout-round-current').textContent = pad2(Math.max(1, ws.currentRound));
+  document.getElementById('workout-round-total').textContent = pad2(ws.totalRounds);
+  const roundPct = ws.totalRounds > 0 ? (ws.completedRounds / ws.totalRounds) * 100 : 0;
+  document.getElementById('workout-round-progress').style.width = `${roundPct}%`;
+
+  // Countdown
+  const min = Math.floor(ws.phaseTimeRemaining / 60);
+  const sec = ws.phaseTimeRemaining % 60;
+  document.getElementById('workout-countdown').textContent = `${pad2(min)}:${pad2(sec)}`;
+
+  // Progress ring (circumference = 2 * PI * 90 = 565.49)
+  const circumference = 565.49;
+  const progress = ws.phaseDuration > 0 ? ws.phaseTimeRemaining / ws.phaseDuration : 0;
+  const offset = circumference * (1 - progress);
+  const ring = document.getElementById('workout-progress-ring');
+  ring.setAttribute('stroke-dashoffset', offset);
+
+  // Ring color per phase
+  if (ws.currentPhase === 'work') {
+    ring.setAttribute('stroke', '#B8FF00');
+    ring.style.filter = 'drop-shadow(0 0 8px rgba(184,255,0,0.6))';
+  } else if (ws.currentPhase === 'rest') {
+    ring.setAttribute('stroke', '#E3EA5C');
+    ring.style.filter = 'drop-shadow(0 0 8px rgba(227,234,92,0.6))';
+  } else {
+    ring.setAttribute('stroke', '#767575');
+    ring.style.filter = 'none';
+  }
+
+  // Next up
+  const nextMin = Math.floor(ws.nextPhaseDuration / 60);
+  const nextSec = ws.nextPhaseDuration % 60;
+  const nextLabel = ws.currentPhase === 'work'
+    ? `REST (${pad2(nextMin)}:${pad2(nextSec)})`
+    : `WORK (${pad2(nextMin)}:${pad2(nextSec)})`;
+  document.getElementById('workout-next-label').textContent = nextLabel;
+
+  // Pause state
+  const pauseIcon = document.getElementById('workout-pause-icon');
+  const pauseLabel = document.getElementById('workout-pause-label');
+  if (ws.isPaused) {
+    pauseIcon.textContent = 'play_circle';
+    pauseLabel.textContent = 'RESUME';
+  } else {
+    pauseIcon.textContent = 'pause_circle';
+    pauseLabel.textContent = 'PAUSE WORKOUT';
+  }
+}
+
+function handleWorkoutComplete() {
+  const workoutData = stopWorkout();
+  playRandomHypeDone();
+  pendingRunData = workoutData;
+  pendingPhotoBlobs = [];
+  selectedVisibility = state.profile?.defaultVisibility || 'public';
+
+  // Populate summary for interval workout
+  document.getElementById('summary-distance').textContent = formatDuration(workoutData.duration || 0);
+  document.getElementById('summary-distance-unit').textContent = 'TOTAL';
+  document.getElementById('summary-duration').textContent = `${workoutData.completedRounds || 0}/${workoutData.config?.rounds || 0}`;
+  document.getElementById('summary-pace').textContent = formatDuration(workoutData.totalWorkTime || 0);
+  document.getElementById('summary-pace-unit').textContent = 'WORK';
+  document.getElementById('summary-calories').textContent = workoutData.calories || 0;
+  document.getElementById('summary-elevation').textContent = formatDuration(workoutData.totalRestTime || 0);
+
+  // Hide map for workouts
+  document.getElementById('summary-map').innerHTML = '';
+  document.getElementById('summary-map').style.display = 'none';
+  document.getElementById('summary-splits').innerHTML = '';
+
+  // Update visibility pills
+  document.querySelectorAll('.visibility-btn').forEach(btn => {
+    const isActive = btn.dataset.visibility === selectedVisibility;
+    btn.classList.toggle('bg-primary-container', isActive);
+    btn.classList.toggle('text-on-primary-container', isActive);
+    btn.classList.toggle('border-transparent', isActive);
+    btn.classList.toggle('text-on-surface-variant', !isActive);
+  });
+
+  // Update save button text
+  document.getElementById('btn-save-run').textContent = 'Save Workout';
+  navigateTo('summary', { skipHistory: true });
+}
+
+// ─── WORKOUT CONTROLS ─────────────────────────────────────────────────────
+
+document.getElementById('btn-workout-pause').addEventListener('click', () => {
+  togglePauseWorkout();
+});
+
+document.getElementById('btn-workout-stop').addEventListener('click', async () => {
+  const confirmed = await showConfirm('Stop Workout', 'Are you sure you want to stop this workout?');
+  if (confirmed) {
+    handleWorkoutComplete();
+  }
+});
+
+document.getElementById('btn-workout-music').addEventListener('click', () => {
+  showToast('Music control coming soon', 'info');
+});
+
+// ─── HOME: Mode Toggle ────────────────────────────────────────────────────
+
+document.getElementById('btn-mode-run').addEventListener('click', () => {
+  homeMode = 'run';
+  updateHomeMode();
+});
+
+document.getElementById('btn-mode-workout').addEventListener('click', () => {
+  homeMode = 'workout';
+  updateHomeMode();
+});
+
+document.getElementById('btn-home-profile').addEventListener('click', () => navigateTo('profile'));
+
+// ─── START RUN / WORKOUT Flow ─────────────────────────────────────────────
 
 document.getElementById('btn-start-run').addEventListener('click', async () => {
-  // Check battery
+  if (homeMode === 'workout') {
+    navigateTo('training');
+    return;
+  }
+
+  // Run mode: GPS flow
   const battery = await checkBattery();
   if (battery && battery.level < 0.2 && !battery.charging) {
     const batteryWarning = document.getElementById('battery-warning');
     if (batteryWarning) batteryWarning.classList.remove('hidden');
   }
 
-  // Get position
   if (!navigator.geolocation) {
     showToast('GPS not available on this device', 'error');
     return;
@@ -1349,12 +1897,8 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
-      const { latitude, longitude } = position.coords;
       navigateTo('run');
-
-      // Start tracker (no live map — stats-focused view)
       startRun((runState) => {
-        // Update DOM
         const units = state.profile?.units || 'metric';
 
         if (runState.currentPace > 0) {
@@ -1371,7 +1915,6 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
         document.getElementById('run-elev').textContent = Math.round(runState.elevationGain || 0);
         document.getElementById('run-hr').textContent = runState.heartRate || '--';
 
-        // Paused indicator
         const paused = runState.isPaused || runState.isAutoPaused;
         document.getElementById('run-paused-indicator').classList.toggle('hidden', !paused);
       });
@@ -1388,8 +1931,12 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
 
 document.getElementById('btn-stop').addEventListener('click', () => {
   const runData = stopRun();
-  pendingRunData = runData;
+  pendingRunData = { ...runData, type: 'run' };
   pendingPhotoBlobs = [];
+
+  // Ensure summary shows run-specific labels
+  document.getElementById('summary-map').style.display = '';
+  document.getElementById('btn-save-run').textContent = 'Save Run';
 
   // Set default visibility from profile
   selectedVisibility = state.profile?.defaultVisibility || 'public';
@@ -1459,12 +2006,20 @@ document.getElementById('btn-save-run').addEventListener('click', async () => {
   saveBtn.textContent = 'Saving…';
 
   try {
-    const runToSave = { ...pendingRunData, visibility: selectedVisibility };
-    await saveRun(runToSave, pendingPhotoBlobs);
+    const dataToSave = { ...pendingRunData, visibility: selectedVisibility };
+    if (dataToSave.type === 'interval') {
+      await saveWorkout(dataToSave);
+      showToast('Workout saved!', 'success');
+    } else {
+      await saveRun(dataToSave, pendingPhotoBlobs);
+      showToast('Run saved!', 'success');
+    }
     pendingRunData = null;
     pendingPhotoBlobs = [];
     document.getElementById('photo-previews').innerHTML = '';
-    showToast('Run saved!', 'success');
+    // Restore summary map visibility for next run
+    document.getElementById('summary-map').style.display = '';
+    document.getElementById('btn-save-run').textContent = 'Save Run';
     navigateTo('home', { skipHistory: true });
   } catch (err) {
     console.error('Save run error:', err);
@@ -1478,11 +2033,17 @@ document.getElementById('btn-save-run').addEventListener('click', async () => {
 // ─── DISCARD RUN ─────────────────────────────────────────────────────────
 
 document.getElementById('btn-discard-run').addEventListener('click', async () => {
-  const confirmed = await showConfirm('Discard Run', 'Are you sure? This run will not be saved.');
+  const isWorkout = pendingRunData?.type === 'interval';
+  const confirmed = await showConfirm(
+    isWorkout ? 'Discard Workout' : 'Discard Run',
+    'Are you sure? This will not be saved.'
+  );
   if (confirmed) {
     pendingRunData = null;
     pendingPhotoBlobs = [];
     document.getElementById('photo-previews').innerHTML = '';
+    document.getElementById('summary-map').style.display = '';
+    document.getElementById('btn-save-run').textContent = 'Save Run';
     navigateTo('home', { skipHistory: true });
   }
 });
@@ -1738,6 +2299,12 @@ window.addEventListener('page:enter', async (e) => {
       break;
     case 'friend':
       initFriendPage();
+      break;
+    case 'training':
+      initTrainingPage();
+      break;
+    case 'workout':
+      // Active timer UI driven by onWorkoutUpdate callback
       break;
   }
 

@@ -68,6 +68,7 @@ export async function saveRun(runData, photoBlobs = []) {
     userId: uid(),
     userName: state.profile.displayName || '',
     userPhoto: state.profile.customPhoto || state.profile.photoURL || '',
+    type: 'run',
     ...runData,
     photos,
     createdAt: ts()
@@ -106,6 +107,37 @@ export async function saveRun(runData, photoBlobs = []) {
   }
 
   return runRef.id;
+}
+
+export async function saveWorkout(workoutData) {
+  const db = getDb();
+
+  const workoutRef = db.collection('runs').doc();
+  const workout = {
+    userId: uid(),
+    userName: state.profile.displayName || '',
+    userPhoto: state.profile.customPhoto || state.profile.photoURL || '',
+    type: 'interval',
+    ...workoutData,
+    createdAt: ts()
+  };
+
+  const batch = db.batch();
+  batch.set(workoutRef, workout);
+
+  const userRef = db.collection('users').doc(uid());
+  batch.update(userRef, {
+    'stats.totalWorkouts': inc(1),
+    'stats.totalWorkoutTime': inc(workoutData.duration || 0)
+  });
+
+  await batch.commit();
+
+  if (!state.profile.stats) state.profile.stats = {};
+  state.profile.stats.totalWorkouts = (state.profile.stats.totalWorkouts || 0) + 1;
+  state.profile.stats.totalWorkoutTime = (state.profile.stats.totalWorkoutTime || 0) + (workoutData.duration || 0);
+
+  return workoutRef.id;
 }
 
 export async function getRun(runId) {
