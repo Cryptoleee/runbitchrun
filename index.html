@@ -11,7 +11,7 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..900&family=Inter:wght@300..700&family=Lexend:wght@300..700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:ital,wght@0,300..900;1,300..900&family=Inter:wght@300..700&family=Lexend:wght@300..700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
@@ -78,7 +78,8 @@
           "on-error-container": "#ffd2c8"
         },
         fontFamily: {
-          "headline": ["Space Grotesk"],
+          "headline": ["Outfit"],
+          "display": ["Bebas Neue", "sans-serif"],
           "body": ["Inter"],
           "label": ["Lexend"]
         },
@@ -95,7 +96,7 @@
     body {
       background-color: #0e0e0e;
       color: #ffffff;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       min-height: 100dvh;
       overscroll-behavior: none;
     }
@@ -120,7 +121,7 @@
   <div class="w-16 h-16 rounded-[1.5rem] kinetic-gradient flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(184,255,0,0.3)]">
     <span class="material-symbols-outlined text-3xl text-on-primary" style="font-variation-settings:'FILL' 1;">directions_run</span>
   </div>
-  <h1 class="font-headline font-black text-2xl tracking-tighter text-[#B8FF00]">Run bitch! Run!</h1>
+  <h1 class="font-headline font-black text-2xl tracking-tight italic text-[#B8FF00]">Run bitch! Run!</h1>
   <div class="mt-6 w-6 h-6 border-2 border-primary-container border-t-transparent rounded-full animate-spin"></div>
 </div>
 
@@ -134,7 +135,7 @@
       <div class="w-20 h-20 rounded-[2rem] kinetic-gradient flex items-center justify-center mb-6 mx-auto shadow-[0_0_40px_rgba(184,255,0,0.3)]">
         <span class="material-symbols-outlined text-4xl text-on-primary" style="font-variation-settings:'FILL' 1;">directions_run</span>
       </div>
-      <h1 class="font-headline font-black text-4xl tracking-tighter text-[#B8FF00] mb-2">Run bitch! Run!</h1>
+      <h1 class="font-headline font-black text-4xl tracking-tight italic text-[#B8FF00] mb-2">Run bitch! Run!</h1>
       <p class="font-label text-on-surface-variant text-sm tracking-wide">Track every step. Own every mile.</p>
     </div>
 
@@ -199,7 +200,7 @@
     <section class="mb-10">
       <button id="btn-start-run" class="kinetic-gradient w-full py-5 rounded-[20px] flex items-center justify-between px-7 shadow-[0_0_24px_rgba(184,255,0,0.25)] active:scale-[0.98] transition-transform duration-100">
         <div class="flex flex-col items-start">
-          <span class="font-headline font-black text-2xl text-on-primary tracking-tighter italic">START RUN</span>
+          <span class="font-display text-3xl text-on-primary tracking-tight italic">START RUN</span>
           <span class="font-label text-[10px] text-on-primary/60 uppercase tracking-widest">GPS ready &bull; high accuracy</span>
         </div>
         <div class="bg-on-primary text-primary-container w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
@@ -216,7 +217,7 @@
         <div class="col-span-7 bg-surface-container rounded-2xl p-5 border-l-2 border-primary-container/30">
           <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-5">Weekly Distance</p>
           <div class="flex items-baseline gap-1">
-            <span id="home-weekly-distance" class="font-headline font-bold text-5xl tracking-tighter">0.0</span>
+            <span id="home-weekly-distance" class="font-display text-6xl tracking-tight">0.0</span>
             <span class="font-label text-sm text-on-surface-variant">KM</span>
           </div>
         </div>
@@ -268,7 +269,7 @@
     <!-- Paused Indicator -->
     <div id="run-paused-indicator" class="hidden absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
       <div class="px-8 py-3 bg-surface-container-highest/90 backdrop-blur-xl rounded-full border border-outline-variant/20">
-        <span class="font-headline font-black text-2xl text-on-surface-variant tracking-[0.3em] uppercase">PAUSED</span>
+        <span class="font-display text-3xl text-on-surface-variant tracking-[0.3em]">PAUSED</span>
       </div>
     </div>
 
@@ -359,7 +360,7 @@
         <div class="bg-surface-container rounded-2xl p-5 col-span-2">
           <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Distance</p>
           <div class="flex items-baseline gap-1.5">
-            <span id="summary-distance" class="font-headline font-bold text-5xl tracking-tighter text-[#B8FF00]">0.00</span>
+            <span id="summary-distance" class="font-display text-6xl tracking-tight text-[#B8FF00]">0.00</span>
             <span class="font-label text-base text-on-surface-variant" id="summary-distance-unit">KM</span>
           </div>
         </div>
@@ -438,7 +439,7 @@
   <main class="pt-14 px-5 max-w-lg mx-auto pb-32 page-enter">
     <section class="mb-8 pt-6">
       <p class="font-label text-on-surface-variant text-[10px] tracking-[0.2em] uppercase mb-2">Training Archive</p>
-      <h2 class="font-headline font-black text-4xl tracking-tighter leading-none mb-6">RUN LOG</h2>
+      <h2 class="font-display text-5xl tracking-tight leading-none mb-6">RUN LOG</h2>
 
       <!-- Filter Tabs -->
       <div class="flex items-center gap-2 p-1 bg-surface-container rounded-full w-fit">
@@ -481,7 +482,7 @@
         <div class="bg-surface-container rounded-2xl p-5 col-span-2">
           <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Distance</p>
           <div class="flex items-baseline gap-1.5">
-            <span id="detail-distance" class="font-headline font-bold text-5xl tracking-tighter text-[#B8FF00]">0.00</span>
+            <span id="detail-distance" class="font-display text-6xl tracking-tight text-[#B8FF00]">0.00</span>
             <span class="font-label text-base text-on-surface-variant" id="detail-distance-unit">KM</span>
           </div>
         </div>
@@ -555,21 +556,21 @@
         </div>
         <div>
           <h2 id="profile-name" class="font-headline font-bold text-2xl tracking-tight">Runner</h2>
-          <p class="font-label text-on-surface-variant text-xs tracking-widest uppercase">Elite Athlete</p>
+          <p class="font-label text-primary-container text-[10px] tracking-widest uppercase">Elite Athlete</p>
+          <h2 class="font-display text-5xl tracking-tight leading-none">THE STATS</h2>
         </div>
       </div>
     </section>
 
     <!-- Stats Bento Grid -->
     <section class="mb-6">
-      <h3 class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-3">Stats</h3>
       <div class="grid grid-cols-12 gap-3">
         <div class="col-span-5 bg-surface-container p-5 rounded-3xl relative overflow-hidden">
           <div class="absolute -right-2 -top-2 text-primary/5">
             <span class="material-symbols-outlined text-6xl">directions_run</span>
           </div>
           <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-6">Total Runs</p>
-          <h3 id="stat-total-runs" class="font-headline text-5xl font-bold tracking-tighter">0</h3>
+          <h3 id="stat-total-runs" class="font-display text-6xl tracking-tight">0</h3>
         </div>
         <div class="col-span-7 bg-surface-container p-5 rounded-3xl">
           <div class="flex justify-between items-start mb-5">
@@ -577,14 +578,14 @@
             <span class="material-symbols-outlined text-primary-fixed text-lg">auto_graph</span>
           </div>
           <div class="flex items-baseline gap-1">
-            <h3 id="stat-total-km" class="font-headline text-5xl font-bold tracking-tighter">0</h3>
-            <span class="font-headline text-lg font-bold text-on-surface-variant">KM</span>
+            <h3 id="stat-total-km" class="font-display text-6xl tracking-tight">0</h3>
+            <span class="font-display text-xl text-on-surface-variant">KM</span>
           </div>
         </div>
         <div class="col-span-7 bg-primary-container p-5 rounded-3xl">
           <p class="font-label text-on-primary-container text-[10px] uppercase tracking-widest font-bold mb-5">Best Pace</p>
           <div class="flex items-baseline gap-1">
-            <h3 id="stat-best-pace" class="font-headline text-4xl font-black tracking-tighter text-on-primary-container">--:--</h3>
+            <h3 id="stat-best-pace" class="font-display text-5xl tracking-tight text-on-primary-container">--:--</h3>
             <span class="font-label text-on-primary-container/60 text-xs">/KM</span>
           </div>
         </div>
@@ -840,7 +841,7 @@ function formatRunCard(run, units = 'metric') {
       <div class="flex justify-between items-start mb-6">
         <div>
           <p class="font-label text-[10px] text-on-surface-variant tracking-[0.2em] uppercase mb-1">${timeAgo}</p>
-          <h3 class="font-headline font-bold text-4xl text-[#B8FF00] tracking-tight glow-primary">${dist.value} <span class="text-lg font-medium tracking-normal text-on-surface-variant">${dist.unit}</span></h3>
+          <h3 class="font-display text-5xl text-[#B8FF00] tracking-tight glow-primary">${dist.value} <span class="text-lg font-label font-medium tracking-normal text-on-surface-variant">${dist.unit}</span></h3>
         </div>
         ${mapThumb}
       </div>
