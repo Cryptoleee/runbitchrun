@@ -629,15 +629,27 @@
             <p class="text-on-surface-variant text-xs">Last 7 days</p>
           </div>
         </div>
-        <div id="weekly-chart" class="flex items-end justify-between gap-2 px-1" style="height:96px">
-          <!-- 7 bars — MON through SUN — set by JS -->
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="0"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">MON</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="1"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">TUE</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="2"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">WED</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="3"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">THU</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="4"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">FRI</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="5"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">SAT</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="6"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">SUN</span></div>
+        <div id="weekly-chart" class="px-1">
+          <!-- Bar area — fixed height, bars grow upward from bottom -->
+          <div class="flex items-end justify-between gap-2" style="height:72px">
+            <div class="chart-bar flex-1 h-full flex items-end" data-day="0"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:2%"></div></div>
+            <div class="chart-bar flex-1 h-full flex items-end" data-day="1"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:2%"></div></div>
+            <div class="chart-bar flex-1 h-full flex items-end" data-day="2"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:2%"></div></div>
+            <div class="chart-bar flex-1 h-full flex items-end" data-day="3"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:2%"></div></div>
+            <div class="chart-bar flex-1 h-full flex items-end" data-day="4"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:2%"></div></div>
+            <div class="chart-bar flex-1 h-full flex items-end" data-day="5"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:2%"></div></div>
+            <div class="chart-bar flex-1 h-full flex items-end" data-day="6"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:2%"></div></div>
+          </div>
+          <!-- Day labels — fixed row below bars -->
+          <div class="flex justify-between gap-2 mt-2">
+            <span class="flex-1 text-center font-label text-[9px] text-on-surface-variant">MON</span>
+            <span class="flex-1 text-center font-label text-[9px] text-on-surface-variant">TUE</span>
+            <span class="flex-1 text-center font-label text-[9px] text-on-surface-variant">WED</span>
+            <span class="flex-1 text-center font-label text-[9px] text-on-surface-variant">THU</span>
+            <span class="flex-1 text-center font-label text-[9px] text-on-surface-variant">FRI</span>
+            <span class="flex-1 text-center font-label text-[9px] text-on-surface-variant">SAT</span>
+            <span class="flex-1 text-center font-label text-[9px] text-on-surface-variant">SUN</span>
+          </div>
         </div>
       </div>
     </section>
@@ -1406,10 +1418,11 @@ async function initProfilePage() {
 
     const maxKm = Math.max(...dayTotals, 1);
     const bars = document.querySelectorAll('#weekly-chart .chart-bar');
+    const labels = document.querySelectorAll('#weekly-chart > div:last-child > span');
+    const todayIdx = (todayDow + 6) % 7;
     bars.forEach((bar, i) => {
       const pct = Math.round((dayTotals[i] / maxKm) * 100);
       const barEl = bar.querySelector('div');
-      const labelEl = bar.querySelector('span');
       if (barEl) {
         barEl.style.height = `${Math.max(pct, 2)}%`;
         if (pct > 0) {
@@ -1418,12 +1431,11 @@ async function initProfilePage() {
           barEl.className = 'w-full bg-surface-container-highest rounded-t-lg transition-all duration-700';
         }
       }
-      // Highlight today
-      const todayIdx = (todayDow + 6) % 7;
-      if (labelEl && i === todayIdx) {
-        labelEl.className = 'font-label text-[9px] text-primary-container font-bold';
-      }
     });
+    // Highlight today's label
+    if (labels[todayIdx]) {
+      labels[todayIdx].className = 'flex-1 text-center font-label text-[9px] text-primary-container font-bold';
+    }
   } catch (err) {
     console.warn('Chart error:', err);
   }
