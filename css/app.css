@@ -37,6 +37,12 @@
   padding-bottom: env(safe-area-inset-bottom, 8px);
 }
 
+/* ── Bottom Nav Stability ────────────────────────── */
+#bottom-nav {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
 /* ── Base ─────────────────────────────────────────── */
 *,
 *::before,

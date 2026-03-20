@@ -971,7 +971,8 @@
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <!-- BOTTOM NAV                                                              -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
-<nav id="bottom-nav" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-8 pb-safe bg-[#0E0E0E]/90 backdrop-blur-xl h-20 rounded-t-2xl shadow-[0_-8px_24px_rgba(184,255,0,0.12)]">
+<nav id="bottom-nav" class="fixed bottom-0 left-0 w-full z-50 px-8 bg-[#0E0E0E]/90 backdrop-blur-xl rounded-t-2xl shadow-[0_-8px_24px_rgba(184,255,0,0.12)]" style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+  <div class="flex justify-around items-center h-20">
   <button class="nav-btn flex flex-col items-center justify-center transition-all duration-200 active:scale-90" data-page="home">
     <span class="material-symbols-outlined text-2xl">home</span>
     <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">Home</span>
@@ -989,6 +990,7 @@
     <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">Profile</span>
     <span id="pending-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-error rounded-full text-[10px] font-bold flex items-center justify-center text-on-error">0</span>
   </button>
+  </div>
 </nav>
 
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
