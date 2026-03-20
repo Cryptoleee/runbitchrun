@@ -4,7 +4,8 @@ import {
   acceptFriendRequest, declineFriendRequest, removeFriend,
   searchUsers, syncAcceptedRequests, getFeed,
   addReaction, removeReaction, getReactions,
-  addComment, deleteComment, subscribeToComments
+  addComment, deleteComment, subscribeToComments,
+  getWeeklyLeaderboard
 } from './firestore.js';
 import {
   showToast, openBottomSheet, closeBottomSheet,
@@ -67,11 +68,22 @@ export async function handleSearchUsers(query) {
   return searchUsers(query);
 }
 
+// ── Leaderboard ─────────────────────────────────────
+
+export async function loadLeaderboard() {
+  return getWeeklyLeaderboard(state.friends || []);
+}
+
 // ── Feed ─────────────────────────────────────────────
 
 export async function loadFeed() {
-  if (!state.friends || state.friends.length === 0) return [];
-  return getFeed(state.friends);
+  // Include self in the social feed
+  const feedIds = [...(state.friends || [])];
+  if (state.user && !feedIds.includes(state.user.uid)) {
+    feedIds.push(state.user.uid);
+  }
+  if (feedIds.length === 0) return [];
+  return getFeed(feedIds);
 }
 
 // ── Reactions ────────────────────────────────────────
@@ -229,6 +241,92 @@ export function openComments(runId) {
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
+// ── Social Feed Item Renderer (Stitch design) ───────
+
+export function renderSocialFeedItem(run) {
+  const units = state.profile?.units || 'metric';
+  const isWorkout = (run.type || 'run') === 'interval';
+  const timeAgo = run.startedAt?.toDate ? formatTimeAgo(run.startedAt.toDate()) : (run.startedAt ? formatTimeAgo(run.startedAt) : '');
+
+  const photo = run.userPhoto || '';
+  const avatarHtml = photo
+    ? `<img class="w-full h-full object-cover" src="${escapeHtml(photo)}" alt="" />`
+    : `<div class="w-full h-full flex items-center justify-center font-headline font-bold text-on-surface-variant">${escapeHtml((run.userName || '?')[0])}</div>`;
+
+  const borderColor = isWorkout ? 'border-[#FF5C00]' : 'border-[#B8FF00]';
+  const glowColor = isWorkout ? '#FF5C00' : '#B8FF00';
+  const typeIcon = isWorkout ? 'fitness_center' : 'directions_run';
+  const label = isWorkout ? 'Interval Workout' : 'Run';
+
+  let statsHtml;
+  if (isWorkout) {
+    const rounds = run.completedRounds || run.config?.rounds || 0;
+    const workSec = run.config?.workSeconds || 0;
+    const restSec = run.config?.restSeconds || 0;
+    statsHtml = `
+      <div class="space-y-1">
+        <p class="font-label text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Rounds</p>
+        <p class="font-headline text-2xl font-bold">${rounds}</p>
+      </div>
+      <div class="space-y-1">
+        <p class="font-label text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Work</p>
+        <p class="font-headline text-2xl font-bold">${workSec}<span class="text-xs ml-1 text-on-surface-variant">SEC</span></p>
+      </div>
+      <div class="space-y-1">
+        <p class="font-label text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Rest</p>
+        <p class="font-headline text-2xl font-bold">${restSec}<span class="text-xs ml-1 text-on-surface-variant">SEC</span></p>
+      </div>
+    `;
+  } else {
+    const dist = formatDistance(run.distance || 0, units);
+    const pace = formatPace(run.avgPace || 0, units);
+    const duration = formatDuration(run.duration || 0);
+    statsHtml = `
+      <div class="space-y-1">
+        <p class="font-label text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Distance</p>
+        <p class="font-headline text-2xl font-bold">${dist.value}<span class="text-xs ml-1 text-on-surface-variant">${dist.unit}</span></p>
+      </div>
+      <div class="space-y-1">
+        <p class="font-label text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Pace</p>
+        <p class="font-headline text-2xl font-bold">${pace.value}<span class="text-xs ml-1 text-on-surface-variant">${pace.unit}</span></p>
+      </div>
+      <div class="space-y-1">
+        <p class="font-label text-[9px] text-on-surface-variant font-bold uppercase tracking-widest">Time</p>
+        <p class="font-headline text-2xl font-bold">${duration}</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="social-feed-card rounded-2xl p-5 border-l-4 ${borderColor} backdrop-blur-md" style="background:linear-gradient(135deg, #1a1919 40%, ${glowColor}12 100%);" data-run-id="${run.id}" data-run-type="${run.type || 'run'}">
+      <div class="flex justify-between items-start mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl overflow-hidden bg-surface-container-highest">
+            ${avatarHtml}
+          </div>
+          <div>
+            <h4 class="font-headline font-bold text-sm uppercase">${escapeHtml(run.userName || 'Unknown')}</h4>
+            <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-tighter">${escapeHtml(label)} &bull; ${timeAgo}</p>
+          </div>
+        </div>
+        <span class="material-symbols-outlined text-on-surface-variant text-xl">${typeIcon}</span>
+      </div>
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        ${statsHtml}
+      </div>
+      <div class="flex items-center justify-between pt-4 border-t border-white/5">
+        <div id="reactions-${run.id}"></div>
+        <div class="flex items-center gap-4 text-on-surface-variant">
+          <button class="comment-btn relative flex items-center gap-1.5 active:scale-90 transition-transform" data-run-id="${run.id}">
+            <span class="material-symbols-outlined text-xl">chat_bubble</span>
+            ${(run.commentCount || 0) > 0 ? `<span class="text-[10px] font-bold text-on-surface-variant">${run.commentCount}</span>` : ''}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // ── Feed Item Renderer ───────────────────────────────
 
 export function renderFeedItem(run) {
@@ -281,7 +379,7 @@ export function renderFeedItem(run) {
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;">
         <div id="reactions-${run.id}"></div>
         <button class="comment-btn" data-run-id="${run.id}" style="background:none;border:none;color:#aaa;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:4px;padding:6px 12px;">
-          <span style="font-size:18px;">&#128172;</span> Comment
+          <span style="font-size:18px;">&#128172;</span>${(run.commentCount || 0) > 0 ? ` <span style="font-size:12px;font-weight:600;">${run.commentCount}</span>` : ' Comment'}
         </button>
       </div>
     </div>

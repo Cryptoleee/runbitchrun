@@ -189,9 +189,15 @@
       <span class="material-symbols-outlined text-[#B8FF00] text-2xl" style="font-variation-settings:'FILL' 1;">bolt</span>
       <h1 class="text-2xl font-black italic tracking-tighter text-[#B8FF00] font-headline uppercase">Work bitch! Work!</h1>
     </div>
-    <button id="btn-home-profile" class="h-10 w-10 rounded-full overflow-hidden border-2 border-surface-container-highest active:scale-95 duration-150 transition-opacity hover:opacity-80">
-      <img id="home-profile-photo" alt="Profile" class="w-full h-full object-cover" src="" />
-    </button>
+    <div class="flex items-center gap-3">
+      <button id="btn-notifications" class="relative active:scale-90 transition-transform">
+        <span class="material-symbols-outlined text-2xl text-on-surface-variant">notifications</span>
+        <span id="notif-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-error rounded-full text-[9px] font-bold flex items-center justify-center text-on-error">0</span>
+      </button>
+      <button id="btn-home-profile" class="h-10 w-10 rounded-full overflow-hidden border-2 border-surface-container-highest active:scale-95 duration-150 transition-opacity hover:opacity-80">
+        <img id="home-profile-photo" alt="Profile" class="w-full h-full object-cover" src="" />
+      </button>
+    </div>
   </header>
 
   <main class="pt-24 pb-32 px-6 max-w-2xl mx-auto page-enter">
@@ -482,7 +488,7 @@
       <button id="btn-detail-back" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container active:scale-90 transition-all">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
-      <h2 class="font-headline font-bold text-xl tracking-tight">Run Detail</h2>
+      <h2 id="detail-title" class="font-headline font-bold text-xl tracking-tight">Run Detail</h2>
     </div>
 
     <!-- Static Map -->
@@ -499,11 +505,11 @@
           </div>
         </div>
         <div class="bg-surface-container rounded-2xl p-4">
-          <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Duration</p>
+          <p id="detail-duration-label" class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Duration</p>
           <span id="detail-duration" class="font-headline font-bold text-2xl">--:--</span>
         </div>
         <div class="bg-surface-container rounded-2xl p-4">
-          <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Avg Pace</p>
+          <p id="detail-pace-label" class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Avg Pace</p>
           <div class="flex items-baseline gap-1">
             <span id="detail-pace" class="font-headline font-bold text-2xl">--:--</span>
             <span class="font-label text-[10px] text-on-surface-variant" id="detail-pace-unit">/KM</span>
@@ -517,10 +523,10 @@
           </div>
         </div>
         <div class="bg-surface-container rounded-2xl p-4">
-          <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Elevation</p>
+          <p id="detail-elevation-label" class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Elevation</p>
           <div class="flex items-baseline gap-1">
             <span id="detail-elevation" class="font-headline font-bold text-2xl">0</span>
-            <span class="font-label text-[10px] text-on-surface-variant">M</span>
+            <span id="detail-elevation-unit" class="font-label text-[10px] text-on-surface-variant">M</span>
           </div>
         </div>
       </div>
@@ -534,9 +540,9 @@
       <!-- Reactions -->
       <div class="flex items-center justify-between bg-surface-container rounded-2xl px-4 py-3 mb-4">
         <div id="detail-reactions"></div>
-        <button id="btn-detail-comment" class="flex items-center gap-1.5 text-on-surface-variant text-sm font-label active:opacity-70 transition-opacity">
+        <button id="btn-detail-comment" class="comment-btn flex items-center gap-1.5 text-on-surface-variant text-sm font-label active:opacity-70 transition-opacity" data-run-id="">
           <span class="material-symbols-outlined text-xl">chat_bubble_outline</span>
-          Comment
+          <span id="detail-comment-label">Comment</span>
         </button>
       </div>
 
@@ -545,6 +551,67 @@
         Delete Run
       </button>
     </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- PAGE: SOCIAL                                                             -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="page-social" class="page min-h-screen">
+  <!-- Top App Bar -->
+  <header class="fixed top-0 w-full z-50 bg-[#0E0E0E] flex justify-between items-center px-6 h-16">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-[#B8FF00]" style="font-variation-settings:'FILL' 1;">bolt</span>
+      <h1 class="text-2xl font-black italic tracking-tighter text-[#B8FF00] uppercase font-headline">Work bitch! Work!</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <button id="btn-social-search" class="active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-white">search</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="mt-20 px-6 pb-32 space-y-10 max-w-2xl mx-auto page-enter">
+    <!-- Section: Leaderboard -->
+    <section>
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <span class="font-label text-[10px] font-bold uppercase tracking-[0.2em] text-primary-container/60 mb-1 block">Standings</span>
+          <h2 class="font-headline text-3xl font-bold tracking-tight">Weekly Elite</h2>
+        </div>
+        <div class="bg-surface-container-high px-4 py-1.5 rounded-full border border-white/5">
+          <span class="font-label text-[10px] font-bold uppercase tracking-widest text-[#B8FF00]">Weekly</span>
+        </div>
+      </div>
+      <div id="social-leaderboard" class="flex items-end justify-center gap-2 h-64 mb-6">
+        <!-- Podium rendered by JS -->
+        <div class="flex items-center justify-center w-full h-full">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity Feed -->
+    <section class="space-y-6">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-[2px] bg-[#B8FF00]"></span>
+        <h2 class="font-headline text-xl font-bold tracking-tight uppercase">Recent Activity</h2>
+      </div>
+
+      <!-- Feed Filter Chips -->
+      <div class="flex gap-3" id="social-filter-chips">
+        <button class="social-filter-btn bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label text-xs font-bold uppercase tracking-wider kinetic-glow active:scale-95 transition-all" data-filter="all">All</button>
+        <button class="social-filter-btn bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-label text-xs font-bold uppercase tracking-wider active:scale-95 transition-all" data-filter="run">Runs</button>
+        <button class="social-filter-btn bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-label text-xs font-bold uppercase tracking-wider active:scale-95 transition-all" data-filter="interval">Workouts</button>
+      </div>
+
+      <!-- Feed Cards -->
+      <div id="social-feed" class="space-y-4">
+        <div class="flex items-center justify-center py-12">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -568,6 +635,7 @@
         </div>
         <div>
           <h2 id="profile-name" class="font-headline font-bold text-2xl tracking-tight">Runner</h2>
+          <p id="profile-username-display" class="font-label text-[#B8FF00] text-xs tracking-wide"></p>
           <p class="font-label text-primary-container text-[10px] tracking-widest uppercase">Elite Athlete</p>
           <h2 class="font-display text-5xl tracking-tight leading-none">THE STATS</h2>
         </div>
@@ -673,6 +741,23 @@
     <section class="mb-6">
       <h3 class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-3">Settings</h3>
       <div class="space-y-3">
+        <!-- Username -->
+        <div class="bg-surface-container rounded-2xl px-4 py-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-label font-bold text-sm text-on-surface">Username</p>
+              <p class="font-label text-xs text-on-surface-variant">How people find you</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-label text-xs text-on-surface-variant">@</span>
+              <input type="text" id="setting-username" maxlength="30" placeholder="username" class="w-28 bg-surface-container-highest border border-outline-variant/20 rounded-lg px-2 py-1.5 text-sm font-headline font-bold text-right text-on-surface focus:outline-none focus:border-primary-container/50 lowercase" value="" />
+            </div>
+          </div>
+          <div id="username-feedback" class="mt-2 hidden">
+            <p id="username-feedback-text" class="font-label text-[10px] text-on-surface-variant"></p>
+          </div>
+        </div>
+
         <!-- Weight -->
         <div class="bg-surface-container rounded-2xl px-4 py-3 flex items-center justify-between">
           <div>
@@ -997,6 +1082,11 @@
     <span class="material-symbols-outlined text-2xl">history</span>
     <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">History</span>
   </button>
+  <button class="nav-btn relative flex flex-col items-center justify-center transition-all duration-200 active:scale-90" data-page="social">
+    <span class="material-symbols-outlined text-2xl">group</span>
+    <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">Social</span>
+    <span id="pending-badge-social" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-error rounded-full text-[10px] font-bold flex items-center justify-center text-on-error">0</span>
+  </button>
   <button class="nav-btn relative flex flex-col items-center justify-center transition-all duration-200 active:scale-90" data-page="profile">
     <span class="material-symbols-outlined text-2xl">person</span>
     <span class="font-label text-[10px] font-medium uppercase tracking-widest mt-1">Profile</span>
@@ -1014,8 +1104,8 @@ import { initAuth, signOut } from './js/auth.js';
 import { startRun, stopRun, togglePause, getRunState, getRunData, checkBattery } from './js/tracker.js';
 import { startWorkout, stopWorkout, togglePauseWorkout, getWorkoutState, getWorkoutData, isWorkoutRunning, playRandomHypeHome, playRandomHypeDone } from './js/timer.js';
 import { initStaticMap, getMapSnapshotUrl } from './js/map.js';
-import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions } from './js/firestore.js';
-import { loadFriends, loadPendingRequests, loadFeed, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderReactions } from './js/social.js';
+import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions, checkUsernameAvailable, subscribeToNotifications, markNotificationsRead } from './js/firestore.js';
+import { loadFriends, loadPendingRequests, loadFeed, loadLeaderboard, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderSocialFeedItem, renderReactions } from './js/social.js';
 import { showToast, showConfirm, formatDistance, formatPace, formatDuration, formatTimeAgo, getGreeting, resizeImage, resizeImageSquare, openBottomSheet, closeBottomSheet } from './js/ui.js';
 
 // ─── Module-level run data storage ────────────────────────────────────────
@@ -1027,6 +1117,8 @@ let currentDetailRunId = null;
 let currentFriendUserId = null;
 let friendSearchDebounceTimer = null;
 let homeMode = 'run';             // 'run' | 'workout'
+let socialFilter = 'all';         // 'all' | 'run' | 'interval'
+let usernameDebounceTimer = null;
 
 // ─── Interval Timer Config ───────────────────────────────────────────────
 let timerConfig = {
@@ -1143,13 +1235,15 @@ function renderSplits(splits, units = 'metric') {
 async function updatePendingBadge() {
   try {
     const pending = await loadPendingRequests();
-    const badge = document.getElementById('pending-badge');
-    if (!badge) return;
-    if (pending.length > 0) {
-      badge.textContent = pending.length > 9 ? '9+' : String(pending.length);
-      badge.classList.remove('hidden');
-    } else {
-      badge.classList.add('hidden');
+    const badges = [document.getElementById('pending-badge'), document.getElementById('pending-badge-social')];
+    for (const badge of badges) {
+      if (!badge) continue;
+      if (pending.length > 0) {
+        badge.textContent = pending.length > 9 ? '9+' : String(pending.length);
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
     }
   } catch (_) {}
 }
@@ -1157,6 +1251,9 @@ async function updatePendingBadge() {
 // ─── Page: HOME ───────────────────────────────────────────────────────────
 
 async function initHomePage() {
+  // Start notification listener
+  if (state.user) startNotifications();
+
   // Profile photo in header
   const homePhoto = document.getElementById('home-profile-photo');
   if (homePhoto && state.profile) {
@@ -1174,8 +1271,8 @@ async function initHomePage() {
   // Greeting
   const greetingEl = document.getElementById('home-greeting');
   if (greetingEl && state.profile) {
-    const firstName = (state.profile.displayName || 'Runner').split(' ')[0];
-    greetingEl.textContent = `${getGreeting()}, ${firstName}!`;
+    const homeName = state.profile.username || (state.profile.displayName || 'Runner').split(' ')[0];
+    greetingEl.textContent = `${getGreeting()}, ${homeName}!`;
   }
 
   // Set mode toggle initial state
@@ -1355,6 +1452,21 @@ async function initProfilePage() {
   // Name
   const nameEl = document.getElementById('profile-name');
   if (nameEl) nameEl.textContent = state.profile.displayName || 'Runner';
+
+  // Username display
+  const usernameDisplay = document.getElementById('profile-username-display');
+  if (usernameDisplay) {
+    if (state.profile.username) {
+      usernameDisplay.textContent = `@${state.profile.username}`;
+      usernameDisplay.classList.remove('hidden');
+    } else {
+      usernameDisplay.textContent = '';
+    }
+  }
+
+  // Username setting
+  const usernameInput = document.getElementById('setting-username');
+  if (usernameInput) usernameInput.value = state.profile.username || '';
 
   // Stats
   const stats = state.profile.stats || {};
@@ -1575,13 +1687,41 @@ async function initDetailPage() {
     const isWorkout = (run.type || 'run') === 'interval';
     const detailMapEl = document.getElementById('detail-map');
 
+    // Set title based on type
+    document.getElementById('detail-title').textContent = isWorkout ? 'Workout Detail' : 'Run Detail';
+
+    // Set comment button run id and count
+    const commentBtn = document.getElementById('btn-detail-comment');
+    commentBtn.dataset.runId = currentDetailRunId;
+    const commentLabel = document.getElementById('detail-comment-label');
+    if (run.commentCount > 0) {
+      commentLabel.textContent = run.commentCount;
+    } else {
+      // Check subcollection for older entries
+      try {
+        const db = firebase.firestore();
+        const snap = await db.collection('runs').doc(currentDetailRunId).collection('comments').get();
+        commentLabel.textContent = snap.size > 0 ? snap.size : 'Comment';
+      } catch (_) {
+        commentLabel.textContent = 'Comment';
+      }
+    }
+
+    // Update delete button label
+    document.getElementById('btn-delete-run').textContent = isWorkout ? 'Delete Workout' : 'Delete Run';
+
     if (isWorkout) {
-      // Workout detail
+      // Workout detail — update labels
+      document.getElementById('detail-duration-label').textContent = 'Rounds';
+      document.getElementById('detail-pace-label').textContent = 'Work Time';
+      document.getElementById('detail-elevation-label').textContent = 'Rest Time';
+      document.getElementById('detail-elevation-unit').textContent = '';
+
       document.getElementById('detail-distance').textContent = formatDuration(run.duration || 0);
       document.getElementById('detail-distance-unit').textContent = 'TOTAL';
       document.getElementById('detail-duration').textContent = `${run.completedRounds || 0}/${run.config?.rounds || 0}`;
       document.getElementById('detail-pace').textContent = formatDuration(run.totalWorkTime || 0);
-      document.getElementById('detail-pace-unit').textContent = 'WORK';
+      document.getElementById('detail-pace-unit').textContent = '';
       document.getElementById('detail-calories').textContent = run.calories || 0;
       document.getElementById('detail-elevation').textContent = formatDuration(run.totalRestTime || 0);
       document.getElementById('detail-splits').innerHTML = '';
@@ -1592,6 +1732,12 @@ async function initDetailPage() {
       const dist = formatDistance(run.distance || 0, units);
       const pace = formatPace(run.avgPace || 0, units);
       const duration = formatDuration(run.duration || 0);
+
+      // Reset labels for run
+      document.getElementById('detail-duration-label').textContent = 'Duration';
+      document.getElementById('detail-pace-label').textContent = 'Avg Pace';
+      document.getElementById('detail-elevation-label').textContent = 'Elevation';
+      document.getElementById('detail-elevation-unit').textContent = 'M';
 
       document.getElementById('detail-distance').textContent = dist.value;
       document.getElementById('detail-distance-unit').textContent = dist.unit;
@@ -1970,6 +2116,83 @@ document.getElementById('btn-mode-workout').addEventListener('click', () => {
 
 document.getElementById('btn-home-profile').addEventListener('click', () => navigateTo('profile'));
 
+// ─── Notifications ───────────────────────────────────────────────────────
+
+let _notifUnsub = null;
+let _notifications = [];
+
+function startNotifications() {
+  if (_notifUnsub) return;
+  _notifUnsub = subscribeToNotifications((notifs) => {
+    _notifications = notifs;
+    const unread = notifs.filter(n => !n.read).length;
+    const badge = document.getElementById('notif-badge');
+    if (badge) {
+      if (unread > 0) {
+        badge.textContent = unread > 9 ? '9+' : unread;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+  });
+}
+
+document.getElementById('btn-notifications').addEventListener('click', () => {
+  openNotificationsSheet();
+});
+
+function openNotificationsSheet() {
+  markNotificationsRead();
+  const badge = document.getElementById('notif-badge');
+  if (badge) badge.classList.add('hidden');
+
+  const sheet = openBottomSheet(`
+    <div style="display:flex;flex-direction:column;height:100%;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px;">
+        <h3 style="font-size:18px;font-weight:700;color:#fff;font-family:var(--font-headline);">Notifications</h3>
+        <button id="notif-close" style="background:none;border:none;color:#aaa;font-size:24px;cursor:pointer;padding:4px;">&times;</button>
+      </div>
+      <div id="notif-list" style="flex:1;overflow-y:auto;padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  `);
+
+  sheet.querySelector('#notif-close').addEventListener('click', closeBottomSheet);
+
+  const list = sheet.querySelector('#notif-list');
+  if (_notifications.length === 0) {
+    list.innerHTML = '<p style="color:#666;text-align:center;padding:24px;font-size:14px;">No notifications yet.</p>';
+  } else {
+    list.innerHTML = _notifications.map(n => {
+      const photo = n.fromPhoto
+        ? `<img src="${n.fromPhoto}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" />`
+        : `<div style="width:36px;height:36px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;">${(n.fromName || '?')[0]}</div>`;
+      const time = n.createdAt?.toDate ? formatTimeAgo(n.createdAt.toDate()) : '';
+      const preview = n.text ? n.text.slice(0, 60) + (n.text.length > 60 ? '...' : '') : '';
+      return `
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;border-radius:12px;background:${n.read ? 'transparent' : 'rgba(183,254,0,0.05)'};cursor:pointer;" class="notif-item" data-run-id="${n.runId || ''}">
+          ${photo}
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:13px;color:#fff;"><strong>${n.fromName || 'Someone'}</strong> commented</p>
+            ${preview ? `<p style="font-size:12px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"${preview}"</p>` : ''}
+            <p style="font-size:11px;color:#555;margin-top:2px;">${time}</p>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    list.querySelectorAll('.notif-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const runId = item.dataset.runId;
+        if (runId) {
+          closeBottomSheet();
+          openComments(runId);
+        }
+      });
+    });
+  }
+}
+
 // ─── START RUN / WORKOUT Flow ─────────────────────────────────────────────
 
 document.getElementById('btn-start-run').addEventListener('click', async () => {
@@ -2216,9 +2439,7 @@ document.querySelectorAll('.filter-tab').forEach(tab => {
 
 document.getElementById('btn-detail-back').addEventListener('click', () => goBack());
 
-document.getElementById('btn-detail-comment').addEventListener('click', () => {
-  if (currentDetailRunId) openComments(currentDetailRunId);
-});
+// Detail comment button handled by global .comment-btn delegation
 
 document.getElementById('btn-delete-run').addEventListener('click', async () => {
   const confirmed = await showConfirm('Delete Run', 'This will permanently delete your run. Are you sure?');
@@ -2272,6 +2493,87 @@ document.getElementById('setting-autopause').addEventListener('change', (e) => {
 
 document.getElementById('setting-visibility').addEventListener('change', (e) => {
   updateProfile({ defaultVisibility: e.target.value }).catch(() => showToast('Failed to save settings', 'error'));
+});
+
+// Username save with validation
+document.getElementById('setting-username').addEventListener('input', (e) => {
+  const raw = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+  e.target.value = raw;
+  const feedback = document.getElementById('username-feedback');
+  const feedbackText = document.getElementById('username-feedback-text');
+
+  clearTimeout(usernameDebounceTimer);
+
+  if (!raw) {
+    feedback.classList.add('hidden');
+    return;
+  }
+
+  if (raw.length < 3) {
+    feedback.classList.remove('hidden');
+    feedbackText.textContent = 'Username must be at least 3 characters';
+    feedbackText.className = 'font-label text-[10px] text-error';
+    return;
+  }
+
+  feedbackText.textContent = 'Checking availability...';
+  feedbackText.className = 'font-label text-[10px] text-on-surface-variant';
+  feedback.classList.remove('hidden');
+
+  usernameDebounceTimer = setTimeout(async () => {
+    try {
+      const available = await checkUsernameAvailable(raw);
+      if (available) {
+        feedbackText.textContent = 'Available! Tap save to claim.';
+        feedbackText.className = 'font-label text-[10px] text-[#B8FF00]';
+      } else {
+        feedbackText.textContent = 'Username already taken';
+        feedbackText.className = 'font-label text-[10px] text-error';
+      }
+    } catch (_) {
+      feedbackText.textContent = 'Could not check availability';
+      feedbackText.className = 'font-label text-[10px] text-on-surface-variant';
+    }
+  }, 500);
+});
+
+document.getElementById('setting-username').addEventListener('change', async (e) => {
+  const raw = e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+  e.target.value = raw;
+  const feedback = document.getElementById('username-feedback');
+  const feedbackText = document.getElementById('username-feedback-text');
+
+  if (!raw && state.profile.username) {
+    // Clear username
+    try {
+      await updateProfile({ username: '' });
+      document.getElementById('profile-username-display').textContent = '';
+      feedback.classList.add('hidden');
+      showToast('Username removed');
+    } catch (_) {
+      showToast('Failed to save', 'error');
+    }
+    return;
+  }
+
+  if (raw.length < 3) return;
+
+  try {
+    const available = await checkUsernameAvailable(raw);
+    if (available) {
+      await updateProfile({ username: raw });
+      document.getElementById('profile-username-display').textContent = `@${raw}`;
+      feedbackText.textContent = 'Saved!';
+      feedbackText.className = 'font-label text-[10px] text-[#B8FF00]';
+      showToast('Username saved!', 'success');
+      setTimeout(() => feedback.classList.add('hidden'), 2000);
+    } else {
+      feedbackText.textContent = 'Username already taken';
+      feedbackText.className = 'font-label text-[10px] text-error';
+    }
+  } catch (_) {
+    showToast('Failed to save username', 'error');
+  }
 });
 
 // ─── PROFILE: Sign Out ────────────────────────────────────────────────────
@@ -2388,6 +2690,179 @@ document.getElementById('btn-remove-friend').addEventListener('click', async () 
   }
 });
 
+// ─── Page: SOCIAL ────────────────────────────────────────────────────────
+
+let socialAllFeed = [];
+
+async function initSocialPage() {
+  socialFilter = 'all';
+
+  // Reset filter chip UI
+  document.querySelectorAll('.social-filter-btn').forEach(btn => {
+    if (btn.dataset.filter === 'all') {
+      btn.className = 'social-filter-btn bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label text-xs font-bold uppercase tracking-wider kinetic-glow active:scale-95 transition-all';
+    } else {
+      btn.className = 'social-filter-btn bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-label text-xs font-bold uppercase tracking-wider active:scale-95 transition-all';
+    }
+  });
+
+  // Load leaderboard
+  try {
+    const leaders = await loadLeaderboard();
+    renderLeaderboard(leaders);
+  } catch (err) {
+    console.warn('Leaderboard error:', err);
+    document.getElementById('social-leaderboard').innerHTML = `
+      <div class="flex items-center justify-center w-full h-full text-on-surface-variant font-label text-xs opacity-60">
+        <span class="material-symbols-outlined text-2xl mr-2">leaderboard</span>
+        Add friends to see the leaderboard
+      </div>
+    `;
+  }
+
+  // Load feed
+  try {
+    await loadFriends();
+    socialAllFeed = await loadFeed();
+    renderSocialFeed(socialAllFeed);
+  } catch (err) {
+    console.warn('Social feed error:', err);
+    document.getElementById('social-feed').innerHTML = `
+      <div class="text-center py-12 text-on-surface-variant font-label text-xs opacity-60">
+        <span class="material-symbols-outlined text-3xl block mb-2 opacity-40">group</span>
+        Add friends to see their activity here
+      </div>
+    `;
+  }
+}
+
+function renderLeaderboard(leaders) {
+  const container = document.getElementById('social-leaderboard');
+  if (!leaders || leaders.length === 0) {
+    container.innerHTML = `
+      <div class="flex items-center justify-center w-full h-full text-on-surface-variant font-label text-xs opacity-60">
+        <span class="material-symbols-outlined text-2xl mr-2">leaderboard</span>
+        No activity this week yet
+      </div>
+    `;
+    return;
+  }
+
+  const top3 = leaders.slice(0, 3);
+  const first = top3[0];
+  const second = top3[1];
+  const third = top3[2];
+
+  function avatarHtml(entry, size) {
+    if (!entry) return `<div class="w-${size} h-${size} rounded-2xl bg-surface-container-highest"></div>`;
+    const photo = entry.userPhoto;
+    if (photo) return `<img class="w-full h-full object-cover" src="${escapeHtml(photo)}" alt="" />`;
+    return `<div class="w-full h-full flex items-center justify-center font-headline font-bold text-on-surface-variant bg-surface-container-highest">${escapeHtml((entry.userName || '?')[0])}</div>`;
+  }
+
+  function formatPts(pts) {
+    return pts >= 1000 ? `${(pts / 1000).toFixed(1)}k` : String(pts);
+  }
+
+  const secondHtml = second ? `
+    <div class="flex flex-col items-center w-1/3">
+      <div class="relative mb-4">
+        <div class="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-white/10">
+          ${avatarHtml(second, 16)}
+        </div>
+        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-surface-container-highest text-white font-headline font-bold px-2 py-0.5 rounded text-xs border border-white/10">2nd</div>
+      </div>
+      <div class="w-full h-28 bg-surface-container-high rounded-t-xl flex flex-col items-center justify-end pb-4 space-y-1">
+        <span class="font-headline font-bold text-sm uppercase">${escapeHtml((second.userName || '').split(' ')[0])}</span>
+        <span class="font-label text-[10px] text-on-surface-variant">${formatPts(second.points)} pts</span>
+      </div>
+    </div>
+  ` : '<div class="w-1/3"></div>';
+
+  const firstHtml = first ? `
+    <div class="flex flex-col items-center w-1/3">
+      <div class="relative mb-4 scale-110">
+        <div class="w-20 h-20 rounded-2xl overflow-hidden ring-4 ring-[#B8FF00] kinetic-glow">
+          ${avatarHtml(first, 20)}
+        </div>
+        <div class="absolute -top-3 -right-2 bg-[#B8FF00] p-1 rounded-lg">
+          <span class="material-symbols-outlined text-[#0E0E0E] text-base" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+        </div>
+        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#B8FF00] text-[#0E0E0E] font-headline font-black px-3 py-1 rounded text-xs">1st</div>
+      </div>
+      <div class="w-full h-40 bg-primary-container/10 border-x border-t border-[#B8FF00]/20 rounded-t-2xl flex flex-col items-center justify-end pb-6 space-y-1">
+        <span class="font-headline font-black text-base text-[#B8FF00] uppercase">${escapeHtml((first.userName || '').split(' ')[0])}</span>
+        <span class="font-label text-xs font-bold text-white">${formatPts(first.points)} pts</span>
+      </div>
+    </div>
+  ` : '<div class="w-1/3"></div>';
+
+  const thirdHtml = third ? `
+    <div class="flex flex-col items-center w-1/3">
+      <div class="relative mb-4">
+        <div class="w-16 h-16 rounded-2xl overflow-hidden ring-2 ring-white/10">
+          ${avatarHtml(third, 16)}
+        </div>
+        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-surface-container-highest text-white font-headline font-bold px-2 py-0.5 rounded text-xs border border-white/10">3rd</div>
+      </div>
+      <div class="w-full h-20 bg-surface-container-high rounded-t-xl flex flex-col items-center justify-end pb-4 space-y-1">
+        <span class="font-headline font-bold text-sm uppercase">${escapeHtml((third.userName || '').split(' ')[0])}</span>
+        <span class="font-label text-[10px] text-on-surface-variant">${formatPts(third.points)} pts</span>
+      </div>
+    </div>
+  ` : '<div class="w-1/3"></div>';
+
+  container.innerHTML = secondHtml + firstHtml + thirdHtml;
+}
+
+function renderSocialFeed(items) {
+  const container = document.getElementById('social-feed');
+  const filtered = socialFilter === 'all' ? items : items.filter(i => (i.type || 'run') === socialFilter);
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-12 text-on-surface-variant font-label text-xs opacity-60">
+        <span class="material-symbols-outlined text-3xl block mb-2 opacity-40">${socialFilter === 'interval' ? 'fitness_center' : 'directions_run'}</span>
+        ${socialFilter === 'all' ? 'No activity yet. Add friends or start working out!' : 'No ' + (socialFilter === 'interval' ? 'workouts' : 'runs') + ' to show.'}
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => renderSocialFeedItem(item)).join('');
+
+  // Load reactions for each feed item
+  filtered.forEach(async (item) => {
+    try {
+      const reactions = await getReactions(item.id);
+      const el = document.getElementById(`reactions-${item.id}`);
+      if (el) el.innerHTML = renderReactions(reactions, item.id);
+    } catch (_) {}
+  });
+}
+
+// Social filter chip wiring
+document.getElementById('social-filter-chips').addEventListener('click', (e) => {
+  const btn = e.target.closest('.social-filter-btn');
+  if (!btn) return;
+  socialFilter = btn.dataset.filter;
+
+  document.querySelectorAll('.social-filter-btn').forEach(b => {
+    if (b.dataset.filter === socialFilter) {
+      b.className = 'social-filter-btn bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label text-xs font-bold uppercase tracking-wider kinetic-glow active:scale-95 transition-all';
+    } else {
+      b.className = 'social-filter-btn bg-surface-container-high text-on-surface-variant px-6 py-2 rounded-full font-label text-xs font-bold uppercase tracking-wider active:scale-95 transition-all';
+    }
+  });
+
+  renderSocialFeed(socialAllFeed);
+});
+
+// Social search button
+document.getElementById('btn-social-search').addEventListener('click', () => {
+  navigateTo('friends');
+});
+
 // ─── page:enter dispatch handler ─────────────────────────────────────────
 
 window.addEventListener('page:enter', async (e) => {
@@ -2411,6 +2886,9 @@ window.addEventListener('page:enter', async (e) => {
       break;
     case 'friend':
       initFriendPage();
+      break;
+    case 'social':
+      initSocialPage();
       break;
     case 'training':
       initTrainingPage();

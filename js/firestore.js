@@ -12,6 +12,12 @@ function ts() {
   return firebase.firestore.FieldValue.serverTimestamp();
 }
 
+function feedName(profile) {
+  if (profile?.username) return profile.username;
+  const full = profile?.displayName || '';
+  return full.split(' ')[0] || '';
+}
+
 function inc(n) {
   return firebase.firestore.FieldValue.increment(n);
 }
@@ -66,7 +72,7 @@ export async function saveRun(runData, photoBlobs = []) {
   const runRef = db.collection('runs').doc();
   const run = {
     userId: uid(),
-    userName: state.profile.displayName || '',
+    userName: feedName(state.profile),
     userPhoto: state.profile.customPhoto || state.profile.photoURL || '',
     type: 'run',
     ...runData,
@@ -117,7 +123,7 @@ export async function saveWorkout(workoutData) {
   const workoutRef = db.collection('runs').doc();
   const workout = {
     userId: uid(),
-    userName: state.profile.displayName || '',
+    userName: feedName(state.profile),
     userPhoto: state.profile.customPhoto || state.profile.photoURL || '',
     type: 'interval',
     ...workoutData,
@@ -277,7 +283,38 @@ export async function getFeed(friendIds, lastDoc = null) {
     return bTime - aTime;
   });
 
-  return allRuns.slice(0, FEED_PAGE_SIZE);
+  const result = allRuns.slice(0, FEED_PAGE_SIZE);
+
+  // Resolve fresh display names from profiles
+  const uniqueUserIds = [...new Set(result.map(r => r.userId))];
+  const profiles = {};
+  await Promise.all(uniqueUserIds.map(async (id) => {
+    if (id === uid()) {
+      profiles[id] = state.profile;
+    } else {
+      try { profiles[id] = await getProfile(id); } catch (_) {}
+    }
+  }));
+  for (const entry of result) {
+    const p = profiles[entry.userId];
+    if (p) {
+      entry.userName = feedName(p) || entry.userName;
+    }
+  }
+
+  // Resolve comment counts for entries missing the field
+  await Promise.all(result.map(async (entry) => {
+    if (entry.commentCount == null) {
+      try {
+        const snap = await db.collection('runs').doc(entry.id).collection('comments').get();
+        entry.commentCount = snap.size;
+      } catch (_) {
+        entry.commentCount = 0;
+      }
+    }
+  }));
+
+  return result;
 }
 
 // ── Friends ──────────────────────────────────────────
@@ -391,15 +428,128 @@ export async function searchUsers(query) {
 
   const db = getDb();
   const q = query.trim();
-  const snapshot = await db.collection('users')
-    .where('displayName', '>=', q)
-    .where('displayName', '<=', q + '\uf8ff')
-    .limit(10)
-    .get();
+  const qLower = q.toLowerCase();
 
-  return snapshot.docs
-    .filter(doc => doc.id !== uid())
-    .map(doc => ({ id: doc.id, ...doc.data() }));
+  // Run parallel queries: displayName, email, and username
+  const [nameSnap, emailSnap, usernameSnap] = await Promise.all([
+    db.collection('users')
+      .where('displayName', '>=', q)
+      .where('displayName', '<=', q + '\uf8ff')
+      .limit(10)
+      .get(),
+    db.collection('users')
+      .where('email', '>=', qLower)
+      .where('email', '<=', qLower + '\uf8ff')
+      .limit(10)
+      .get(),
+    db.collection('users')
+      .where('username', '>=', qLower)
+      .where('username', '<=', qLower + '\uf8ff')
+      .limit(10)
+      .get()
+  ]);
+
+  // Merge and deduplicate
+  const seen = new Set();
+  const results = [];
+  for (const snap of [nameSnap, emailSnap, usernameSnap]) {
+    for (const doc of snap.docs) {
+      if (doc.id !== uid() && !seen.has(doc.id)) {
+        seen.add(doc.id);
+        results.push({ id: doc.id, ...doc.data() });
+      }
+    }
+  }
+
+  return results.slice(0, 15);
+}
+
+export async function checkUsernameAvailable(username) {
+  if (!username) return false;
+  const db = getDb();
+  const snapshot = await db.collection('users')
+    .where('username', '==', username.toLowerCase())
+    .limit(1)
+    .get();
+  // Available if no results, or only result is the current user
+  return snapshot.empty || (snapshot.docs.length === 1 && snapshot.docs[0].id === uid());
+}
+
+export async function getWeeklyLeaderboard(friendIds) {
+  const db = getDb();
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  // Include self in leaderboard
+  const allIds = [uid(), ...friendIds];
+
+  // Firestore 'in' max 30
+  const chunks = [];
+  for (let i = 0; i < allIds.length; i += 30) {
+    chunks.push(allIds.slice(i, i + 30));
+  }
+
+  const pointsMap = {}; // userId -> { points, userName, userPhoto, userId }
+
+  for (const chunk of chunks) {
+    const snapshot = await db.collection('runs')
+      .where('userId', 'in', chunk)
+      .where('startedAt', '>=', weekAgo)
+      .orderBy('startedAt', 'desc')
+      .get();
+
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      const userId = data.userId;
+      if (!pointsMap[userId]) {
+        pointsMap[userId] = {
+          userId,
+          userName: data.userName || 'Unknown',
+          userPhoto: data.userPhoto || '',
+          points: 0
+        };
+      }
+
+      if ((data.type || 'run') === 'run') {
+        // 10 points per km
+        pointsMap[userId].points += Math.round((data.distance || 0) * 10);
+      } else {
+        // 1 point per minute of workout
+        pointsMap[userId].points += Math.round((data.duration || 0) / 60);
+      }
+    }
+  }
+
+  // Ensure current user appears even with 0 points
+  if (!pointsMap[uid()]) {
+    pointsMap[uid()] = {
+      userId: uid(),
+      userName: feedName(state.profile) || 'You',
+      userPhoto: state.profile?.customPhoto || state.profile?.photoURL || '',
+      points: 0
+    };
+  }
+
+  // Also fetch fresh profile photos for the top users
+  const sorted = Object.values(pointsMap).sort((a, b) => b.points - a.points);
+
+  // Try to get updated profile info for top 3
+  for (const entry of sorted.slice(0, 3)) {
+    if (entry.userId === uid()) {
+      entry.userName = feedName(state.profile) || entry.userName;
+      entry.userPhoto = state.profile?.customPhoto || state.profile?.photoURL || entry.userPhoto;
+    } else {
+      try {
+        const profile = await getProfile(entry.userId);
+        if (profile) {
+          entry.userName = feedName(profile) || entry.userName;
+          entry.userPhoto = profile.customPhoto || profile.photoURL || entry.userPhoto;
+        }
+      } catch (_) {}
+    }
+  }
+
+  return sorted;
 }
 
 // ── Reactions ────────────────────────────────────────
@@ -411,7 +561,7 @@ export async function addReaction(runId, type) {
     .set({
       type,
       userId: uid(),
-      userName: state.profile.displayName || '',
+      userName: feedName(state.profile),
       createdAt: ts()
     });
 }
@@ -436,21 +586,46 @@ export async function getReactions(runId) {
 export async function addComment(runId, text) {
   const db = getDb();
   const ref = db.collection('runs').doc(runId).collection('comments').doc();
-  await ref.set({
+  const batch = db.batch();
+  batch.set(ref, {
     userId: uid(),
-    userName: state.profile.displayName || '',
+    userName: feedName(state.profile),
     userPhoto: state.profile.customPhoto || state.profile.photoURL || '',
     text,
     createdAt: ts()
   });
+  batch.update(db.collection('runs').doc(runId), {
+    commentCount: inc(1)
+  });
+  // Create notification for the run owner (if not self)
+  const runDoc = await db.collection('runs').doc(runId).get();
+  const runData = runDoc.data();
+  if (runData && runData.userId !== uid()) {
+    const notifRef = db.collection('notifications').doc();
+    batch.set(notifRef, {
+      userId: runData.userId,
+      type: 'comment',
+      fromId: uid(),
+      fromName: feedName(state.profile),
+      fromPhoto: state.profile.customPhoto || state.profile.photoURL || '',
+      runId,
+      text,
+      read: false,
+      createdAt: ts()
+    });
+  }
+  await batch.commit();
   return ref.id;
 }
 
 export async function deleteComment(runId, commentId) {
   const db = getDb();
-  await db.collection('runs').doc(runId)
-    .collection('comments').doc(commentId)
-    .delete();
+  const batch = db.batch();
+  batch.delete(db.collection('runs').doc(runId).collection('comments').doc(commentId));
+  batch.update(db.collection('runs').doc(runId), {
+    commentCount: inc(-1)
+  });
+  await batch.commit();
 }
 
 export function subscribeToComments(runId, callback) {
@@ -462,4 +637,29 @@ export function subscribeToComments(runId, callback) {
       const comments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       callback(comments);
     });
+}
+
+// ── Notifications ─────────────────────────────────────
+
+export function subscribeToNotifications(callback) {
+  const db = getDb();
+  return db.collection('notifications')
+    .where('userId', '==', uid())
+    .orderBy('createdAt', 'desc')
+    .limit(50)
+    .onSnapshot(snapshot => {
+      const notifs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      callback(notifs);
+    });
+}
+
+export async function markNotificationsRead() {
+  const db = getDb();
+  const snapshot = await db.collection('notifications')
+    .where('userId', '==', uid())
+    .where('read', '==', false)
+    .get();
+  const batch = db.batch();
+  snapshot.docs.forEach(doc => batch.update(doc.ref, { read: true }));
+  if (snapshot.docs.length > 0) await batch.commit();
 }
