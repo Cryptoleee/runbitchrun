@@ -90,6 +90,7 @@ export async function saveRun(runData, photoBlobs = []) {
   const currentBest = (state.profile.stats && state.profile.stats.bestPace) || 0;
   if (pace > 0 && (currentBest === 0 || pace < currentBest)) {
     statsUpdate['stats.bestPace'] = pace;
+    statsUpdate['stats.bestPaceRunId'] = runRef.id;
   }
 
   batch.update(userRef, statsUpdate);
@@ -104,6 +105,7 @@ export async function saveRun(runData, photoBlobs = []) {
   state.profile.stats.totalTime += (runData.duration || 0);
   if (pace > 0 && (currentBest === 0 || pace < currentBest)) {
     state.profile.stats.bestPace = pace;
+    state.profile.stats.bestPaceRunId = runRef.id;
   }
 
   return runRef.id;

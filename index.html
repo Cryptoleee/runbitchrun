@@ -198,7 +198,7 @@
     <!-- Greeting -->
     <section class="mb-10">
       <p id="home-date" class="font-label text-on-surface-variant text-xs uppercase tracking-[0.2em] mb-1"></p>
-      <h1 id="home-greeting" class="font-headline text-4xl font-bold tracking-tighter">Good morning, Runner</h1>
+      <h1 id="home-greeting" class="font-headline text-4xl font-bold tracking-tighter">Sup, Runner!</h1>
     </section>
 
     <!-- Battery Warning -->
@@ -577,13 +577,13 @@
     <!-- Stats Bento Grid -->
     <section class="mb-6">
       <div class="grid grid-cols-12 gap-3">
-        <div class="col-span-5 bg-surface-container p-5 rounded-3xl relative overflow-hidden">
+        <button id="btn-stat-runs" class="col-span-5 bg-surface-container p-5 rounded-3xl relative overflow-hidden text-left active:scale-95 transition-all">
           <div class="absolute -right-2 -top-2 text-primary/5">
             <span class="material-symbols-outlined text-6xl">directions_run</span>
           </div>
           <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-6">Total Runs</p>
           <h3 id="stat-total-runs" class="font-display text-6xl tracking-tight">0</h3>
-        </div>
+        </button>
         <div class="col-span-7 bg-surface-container p-5 rounded-3xl">
           <div class="flex justify-between items-start mb-5">
             <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest">Total KM</p>
@@ -594,25 +594,25 @@
             <span class="font-display text-xl text-on-surface-variant">KM</span>
           </div>
         </div>
-        <div class="col-span-7 bg-primary-container p-5 rounded-3xl">
+        <button id="btn-stat-best-pace" class="col-span-7 bg-primary-container p-5 rounded-3xl text-left active:scale-95 transition-all">
           <p class="font-label text-on-primary-container text-[10px] uppercase tracking-widest font-bold mb-5">Best Pace</p>
           <div class="flex items-baseline gap-1">
             <h3 id="stat-best-pace" class="font-display text-5xl tracking-tight text-on-primary-container">--:--</h3>
             <span class="font-label text-on-primary-container/60 text-xs">/KM</span>
           </div>
-        </div>
+        </button>
         <div class="col-span-5 bg-surface-variant/40 border border-outline-variant/10 p-5 rounded-3xl flex flex-col justify-between">
           <span class="material-symbols-outlined text-on-surface-variant text-xl mb-2">schedule</span>
           <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-2">Total Time</p>
           <h3 id="stat-total-time" class="font-headline text-2xl font-bold tracking-tighter">0h</h3>
         </div>
-        <div class="col-span-5 bg-secondary-container/20 border border-secondary/10 p-5 rounded-3xl">
+        <button id="btn-stat-workouts" class="col-span-5 bg-secondary-container/20 border border-secondary/10 p-5 rounded-3xl text-left relative overflow-hidden active:scale-95 transition-all">
           <div class="absolute -right-2 -top-2 text-secondary/10">
             <span class="material-symbols-outlined text-5xl">fitness_center</span>
           </div>
           <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-6">Workouts</p>
           <h3 id="stat-total-workouts" class="font-display text-5xl tracking-tight">0</h3>
-        </div>
+        </button>
         <div class="col-span-7 bg-surface-container p-5 rounded-3xl">
           <p class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-5">Workout Time</p>
           <h3 id="stat-workout-time" class="font-headline text-2xl font-bold tracking-tighter">0m</h3>
@@ -629,15 +629,15 @@
             <p class="text-on-surface-variant text-xs">Last 7 days</p>
           </div>
         </div>
-        <div id="weekly-chart" class="flex-1 flex items-end justify-between gap-2 h-24 px-1">
+        <div id="weekly-chart" class="flex items-end justify-between gap-2 px-1" style="height:96px">
           <!-- 7 bars — MON through SUN — set by JS -->
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" data-day="0"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:0%"></div><span class="font-label text-[9px] text-on-surface-variant">MON</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" data-day="1"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:0%"></div><span class="font-label text-[9px] text-on-surface-variant">TUE</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" data-day="2"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:0%"></div><span class="font-label text-[9px] text-on-surface-variant">WED</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" data-day="3"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:0%"></div><span class="font-label text-[9px] text-on-surface-variant">THU</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" data-day="4"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:0%"></div><span class="font-label text-[9px] text-on-surface-variant">FRI</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" data-day="5"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:0%"></div><span class="font-label text-[9px] text-on-surface-variant">SAT</span></div>
-          <div class="chart-bar flex flex-col items-center gap-2 flex-1" data-day="6"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700" style="height:0%"></div><span class="font-label text-[9px] text-on-surface-variant">SUN</span></div>
+          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="0"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">MON</span></div>
+          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="1"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">TUE</span></div>
+          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="2"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">WED</span></div>
+          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="3"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">THU</span></div>
+          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="4"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">FRI</span></div>
+          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="5"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">SAT</span></div>
+          <div class="chart-bar flex flex-col items-center gap-2 flex-1" style="height:100%" data-day="6"><div class="w-full bg-surface-container-highest rounded-t-lg transition-all duration-700 mt-auto" style="height:2%"></div><span class="font-label text-[9px] text-on-surface-variant">SUN</span></div>
         </div>
       </div>
     </section>
@@ -1162,14 +1162,26 @@ async function initHomePage() {
   // Greeting
   const greetingEl = document.getElementById('home-greeting');
   if (greetingEl && state.profile) {
-    greetingEl.textContent = `${getGreeting()}, ${state.profile.displayName || 'Runner'}`;
+    const firstName = (state.profile.displayName || 'Runner').split(' ')[0];
+    greetingEl.textContent = `${getGreeting()}, ${firstName}!`;
   }
 
   // Set mode toggle initial state
   updateHomeMode();
 
-  // Play random hype greeting
-  playRandomHypeHome();
+  // Play random hype greeting — on initial load, browsers block autoplay
+  // without a user gesture, so queue it for the first tap/click
+  try {
+    await playRandomHypeHome();
+  } catch (_) {
+    const playOnce = () => {
+      playRandomHypeHome();
+      document.removeEventListener('click', playOnce);
+      document.removeEventListener('touchstart', playOnce);
+    };
+    document.addEventListener('click', playOnce);
+    document.addEventListener('touchstart', playOnce);
+  }
 
   // Weekly stats
   try {
@@ -2261,6 +2273,23 @@ document.getElementById('btn-signout').addEventListener('click', async () => {
 
 document.getElementById('btn-view-friends').addEventListener('click', () => navigateTo('friends'));
 document.getElementById('btn-view-all-runs').addEventListener('click', () => navigateTo('history'));
+
+// Stat card: Runs → History
+document.getElementById('btn-stat-runs').addEventListener('click', () => navigateTo('history'));
+
+// Stat card: Workouts → History
+document.getElementById('btn-stat-workouts').addEventListener('click', () => navigateTo('history'));
+
+// Stat card: Best Pace → that run's detail
+document.getElementById('btn-stat-best-pace').addEventListener('click', () => {
+  const runId = state.profile?.stats?.bestPaceRunId;
+  if (runId) {
+    currentDetailRunId = runId;
+    navigateTo('detail');
+  } else {
+    showToast('No best pace run recorded yet');
+  }
+});
 
 // ─── FRIENDS: Back ────────────────────────────────────────────────────────
 

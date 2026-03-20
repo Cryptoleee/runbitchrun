@@ -76,8 +76,10 @@ export function playRandomHypeHome() {
   try {
     const a = new Audio(src);
     a.volume = 1;
-    a.play().catch(() => {});
-  } catch (_) {}
+    return a.play();
+  } catch (_) {
+    return Promise.resolve();
+  }
 }
 
 export function playRandomHypeDone() {
