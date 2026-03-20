@@ -52,10 +52,10 @@ function playClip(name) {
   try {
     const audio = audioCache[name];
     if (!audio) return;
-    // Clone for overlapping playback support
-    const clone = audio.cloneNode();
-    clone.volume = 1;
-    clone.play().catch(() => {});
+    // Reset and replay the same element (cloneNode fails on iOS Safari)
+    audio.currentTime = 0;
+    audio.volume = 1;
+    audio.play().catch(() => {});
   } catch (_) {}
 }
 

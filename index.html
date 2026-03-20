@@ -2,7 +2,7 @@
 <html class="dark" lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
   <title>Work bitch! Work!</title>
   <meta name="theme-color" content="#0e0e0e" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -219,6 +219,7 @@
 
     <!-- Hero Action Card -->
     <section class="mb-12 relative overflow-hidden rounded-[2rem] aspect-[4/5] flex flex-col justify-end p-8 bg-surface-container">
+      <img id="home-hero-img" src="/assets/Work_1_small.webp" alt="" class="absolute inset-0 w-full h-full object-cover object-top z-0" />
       <div class="absolute inset-0 z-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
       <div class="relative z-10 flex flex-col items-start">
         <div class="mb-6">
@@ -818,7 +819,7 @@
           <span class="material-symbols-outlined text-on-surface">remove</span>
         </button>
         <div class="flex flex-col items-center">
-          <span id="training-rounds" class="font-headline text-8xl font-black text-primary-fixed leading-none" style="text-shadow: 0 0 20px rgba(184,255,0,0.3);">08</span>
+          <span id="training-rounds" class="font-headline text-8xl font-black text-primary-fixed leading-none cursor-pointer" style="text-shadow: 0 0 20px rgba(184,255,0,0.3);" data-tap-edit="rounds">08</span>
           <span class="font-label text-[10px] text-on-surface-variant mt-2 tracking-widest uppercase">Sets Total</span>
         </div>
         <button id="btn-rounds-plus" class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform">
@@ -838,7 +839,7 @@
           <button id="btn-work-minus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
             <span class="material-symbols-outlined text-on-surface text-sm">remove</span>
           </button>
-          <span id="training-work" class="font-headline text-4xl font-bold text-on-surface tabular-nums">00:45</span>
+          <span id="training-work" class="font-headline text-4xl font-bold text-on-surface tabular-nums cursor-pointer" data-tap-edit="work">00:45</span>
           <button id="btn-work-plus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
             <span class="material-symbols-outlined text-on-surface text-sm">add</span>
           </button>
@@ -855,7 +856,7 @@
           <button id="btn-rest-minus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
             <span class="material-symbols-outlined text-on-surface text-sm">remove</span>
           </button>
-          <span id="training-rest" class="font-headline text-4xl font-bold text-on-surface tabular-nums">00:15</span>
+          <span id="training-rest" class="font-headline text-4xl font-bold text-on-surface tabular-nums cursor-pointer" data-tap-edit="rest">00:15</span>
           <button id="btn-rest-plus" class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center active:scale-90 transition-transform flex-shrink-0">
             <span class="material-symbols-outlined text-on-surface text-sm">add</span>
           </button>
@@ -926,7 +927,7 @@
                 style="filter: drop-shadow(0 0 8px rgba(184,255,0,0.6));"/>
       </svg>
       <div class="flex flex-col items-center z-10">
-        <span id="workout-countdown" class="font-headline font-bold text-8xl tracking-tighter tabular-nums leading-none">00:45</span>
+        <span id="workout-countdown" class="font-headline font-bold text-7xl tracking-tighter tabular-nums leading-none">00:45</span>
         <span class="font-label text-[10px] tracking-[0.4em] text-on-surface-variant uppercase mt-4">Remaining</span>
       </div>
     </div>
@@ -1231,6 +1232,7 @@ function updateHomeMode() {
   const workoutBtn = document.getElementById('btn-mode-workout');
   const heroText = document.getElementById('home-hero-text');
   const heroLabel = document.getElementById('home-hero-label');
+  const heroImg = document.getElementById('home-hero-img');
   const ctaText = document.getElementById('home-cta-text');
 
   if (homeMode === 'run') {
@@ -1239,12 +1241,14 @@ function updateHomeMode() {
     heroText.innerHTML = 'READY TO<br/>EAT DUST?';
     heroLabel.textContent = 'Daily Goal: 5km';
     ctaText.textContent = 'START RUN';
+    heroImg.src = '/assets/Work_1_small.webp';
   } else {
     workoutBtn.className = 'flex-1 py-3 px-4 rounded-lg bg-surface-container-highest text-[#B8FF00] font-headline font-bold text-sm tracking-tight transition-all active:scale-95';
     runBtn.className = 'flex-1 py-3 px-4 rounded-lg text-on-surface-variant font-headline font-bold text-sm tracking-tight hover:text-on-surface transition-all active:scale-95';
     heroText.innerHTML = 'TIME TO<br/>GRIND';
     heroLabel.textContent = 'Interval Training';
     ctaText.textContent = 'START WORKOUT';
+    heroImg.src = '/assets/Work_2_small.webp';
   }
 }
 
@@ -1727,6 +1731,71 @@ document.getElementById('btn-prep-plus').addEventListener('click', () => {
   timerConfig.prepSeconds = Math.min(30, timerConfig.prepSeconds + 5);
   updateTrainingDisplay();
 });
+
+// ─── Tap-to-edit: tap on a value to type it directly ──────────────────────
+function showEditOverlay(field) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000;';
+
+  const isTime = (field === 'work' || field === 'rest');
+  const currentVal = field === 'rounds' ? timerConfig.rounds
+    : field === 'work' ? timerConfig.workSeconds
+    : field === 'rest' ? timerConfig.restSeconds
+    : timerConfig.prepSeconds;
+
+  const card = document.createElement('div');
+  card.style.cssText = 'background:#1e1e1e;border-radius:16px;padding:24px;width:280px;text-align:center;';
+
+  const label = field === 'rounds' ? 'Rounds' : field === 'work' ? 'Work (seconds)' : field === 'rest' ? 'Rest (seconds)' : 'Prep (seconds)';
+  const titleEl = document.createElement('p');
+  titleEl.style.cssText = 'font-size:12px;color:#aaa;margin-bottom:16px;letter-spacing:0.15em;text-transform:uppercase;';
+  titleEl.textContent = label;
+
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.inputMode = 'numeric';
+  input.pattern = '[0-9]*';
+  input.value = isTime ? currentVal : currentVal;
+  input.style.cssText = 'width:100%;text-align:center;font-size:48px;font-weight:800;background:#111;border:2px solid #333;border-radius:12px;color:#B8FF00;padding:12px;outline:none;-webkit-appearance:none;-moz-appearance:textfield;';
+
+  const btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:12px;margin-top:16px;';
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.style.cssText = 'flex:1;padding:12px;border-radius:12px;border:1px solid #333;background:transparent;color:#fff;font-size:14px;font-weight:600;';
+  cancelBtn.textContent = 'Cancel';
+
+  const okBtn = document.createElement('button');
+  okBtn.style.cssText = 'flex:1;padding:12px;border-radius:12px;border:none;background:#B8FF00;color:#0e0e0e;font-size:14px;font-weight:800;';
+  okBtn.textContent = 'OK';
+
+  function apply() {
+    const v = parseInt(input.value, 10);
+    if (isNaN(v) || v < 0) { overlay.remove(); return; }
+    if (field === 'rounds') timerConfig.rounds = Math.max(1, Math.min(99, v));
+    else if (field === 'work') timerConfig.workSeconds = Math.max(5, Math.min(300, v));
+    else if (field === 'rest') timerConfig.restSeconds = Math.max(5, Math.min(300, v));
+    else timerConfig.prepSeconds = Math.max(0, Math.min(30, v));
+    updateTrainingDisplay();
+    overlay.remove();
+  }
+
+  cancelBtn.addEventListener('click', () => overlay.remove());
+  okBtn.addEventListener('click', apply);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') apply(); });
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+  btnRow.append(cancelBtn, okBtn);
+  card.append(titleEl, input, btnRow);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+  input.focus();
+  input.select();
+}
+
+document.getElementById('training-rounds').addEventListener('click', () => showEditOverlay('rounds'));
+document.getElementById('training-work').addEventListener('click', () => showEditOverlay('work'));
+document.getElementById('training-rest').addEventListener('click', () => showEditOverlay('rest'));
 
 // ─── START INTERVALS ──────────────────────────────────────────────────────
 

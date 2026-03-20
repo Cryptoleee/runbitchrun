@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wbw-v3';
+const CACHE_NAME = 'wbw-v4';
 
 const STATIC_ASSETS = [
   '/',
