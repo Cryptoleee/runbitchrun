@@ -1,0 +1,15 @@
+{
+  "appId": "com.cryptolee.workbitchwork",
+  "appName": "Work bitch! Work!",
+  "webDir": "www",
+  "server": {
+    "iosScheme": "https",
+    "hostname": "localhost"
+  },
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": ["google.com"]
+    }
+  }
+}

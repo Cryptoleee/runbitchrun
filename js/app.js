@@ -130,6 +130,15 @@ export function showIOSInstallBanner() {
 // ── App Init ──────────────────────────────────────────
 
 export async function initApp() {
+  // Configure status bar for native iOS
+  if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) {
+    try {
+      const StatusBar = window.Capacitor.Plugins.StatusBar;
+      await StatusBar.setStyle({ style: 'DARK' });
+      await StatusBar.setOverlaysWebView({ overlay: true });
+    } catch (_) {}
+  }
+
   if ('serviceWorker' in navigator) {
     try {
       const reg = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
@@ -150,18 +159,22 @@ export async function initApp() {
     }
   }
 
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    showInstallBanner(e);
-  });
+  const isNativeApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-  if (isIOS && !isStandalone) {
-    const visitCount = parseInt(localStorage.getItem('wbw_visit_count') || '0', 10) + 1;
-    localStorage.setItem('wbw_visit_count', String(visitCount));
-    if (visitCount >= 2) {
-      showIOSInstallBanner();
+  if (!isNativeApp) {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      showInstallBanner(e);
+    });
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    if (isIOS && !isStandalone) {
+      const visitCount = parseInt(localStorage.getItem('wbw_visit_count') || '0', 10) + 1;
+      localStorage.setItem('wbw_visit_count', String(visitCount));
+      if (visitCount >= 2) {
+        showIOSInstallBanner();
+      }
     }
   }
 

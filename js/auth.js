@@ -2,6 +2,8 @@ import { firebaseConfig } from './config.js';
 import { navigateTo, setUser } from './app.js';
 import { showToast } from './ui.js';
 
+const isNative = typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+
 let auth;
 let db;
 
@@ -53,6 +55,7 @@ function initAuth() {
               photoURL: user.photoURL || '',
               customPhoto: '',
               email: user.email || '',
+              username: '',
               weight: 70,
               units: 'metric',
               autoPause: true,
@@ -89,6 +92,7 @@ async function getOrCreateProfile(user) {
     photoURL: user.photoURL || '',
     customPhoto: '',
     email: user.email || '',
+    username: '',
     weight: 70,
     units: 'metric',
     autoPause: true,
@@ -102,13 +106,23 @@ async function getOrCreateProfile(user) {
 }
 
 async function signIn(provider) {
+  if (isNative) {
+    try {
+      const FirebaseAuthentication = window.Capacitor.Plugins.FirebaseAuthentication;
+      const result = await FirebaseAuthentication.signInWithGoogle();
+      const credential = firebase.auth.GoogleAuthProvider.credential(result.credential?.idToken);
+      await auth.signInWithCredential(credential);
+    } catch (error) {
+      console.error('Native sign-in error:', error);
+      showToast(error.message || 'Sign-in failed. Please try again.', 'error');
+    }
+    return;
+  }
+
   try {
-    // Use popup for all platforms — redirect has known issues on mobile
-    // (Safari ITP, SW interference, session storage loss during redirect)
     await auth.signInWithPopup(provider);
   } catch (error) {
     console.error('Sign-in error:', error);
-    // If popup was blocked/closed, fall back to redirect
     if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user') {
       try {
         await auth.signInWithRedirect(provider);
@@ -121,8 +135,14 @@ async function signIn(provider) {
   }
 }
 
-function signOut() {
-  auth.signOut();
+async function signOut() {
+  if (isNative) {
+    try {
+      const FirebaseAuthentication = window.Capacitor.Plugins.FirebaseAuthentication;
+      await FirebaseAuthentication.signOut();
+    } catch (_) {}
+  }
+  await auth.signOut();
   showToast('Signed out successfully.');
 }
 

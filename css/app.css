@@ -197,6 +197,16 @@ body {
 .phase-prep { background: #262626; color: #adaaaa; }
 .phase-complete { background: #e9ffbc; color: #0e0e0e; }
 
+/* ── Social Kinetic Effects ───────────────────────── */
+.kinetic-glow {
+  box-shadow: 0 0 24px rgba(184, 255, 0, 0.12);
+}
+
+.glass-card {
+  background: rgba(38, 38, 38, 0.6);
+  backdrop-filter: blur(20px);
+}
+
 /* ── Spinner ──────────────────────────────────────── */
 .spinner {
   width: 24px;
