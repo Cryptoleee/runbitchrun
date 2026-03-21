@@ -2303,6 +2303,7 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
     return;
   }
 
+  showToast('Acquiring GPS...', 'info');
   navigator.geolocation.getCurrentPosition(
     (position) => {
       navigateTo('run');
@@ -2328,10 +2329,16 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
       });
     },
     (err) => {
-      console.warn('Geolocation error:', err);
-      showToast('Unable to get GPS location. Please enable location access.', 'error');
+      console.warn('Geolocation error:', err.code, err.message);
+      if (err.code === 1) {
+        showToast('Location access denied. Please enable it in Settings.', 'error');
+      } else if (err.code === 3) {
+        showToast('GPS timed out. Make sure you are outdoors.', 'error');
+      } else {
+        showToast('Unable to get GPS location.', 'error');
+      }
     },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
   );
 });
 
