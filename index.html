@@ -595,12 +595,8 @@
       </div>
     </section>
 
-    <!-- Pending Friend Requests (shown when there are pending requests) -->
+    <!-- Friend Requests (incoming + sent) -->
     <section id="social-pending-requests" class="hidden space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="w-8 h-[2px] bg-[#FF5C00]"></span>
-        <h2 class="font-headline text-xl font-bold tracking-tight uppercase">Friend Requests</h2>
-      </div>
       <div id="social-pending-list" class="space-y-3"></div>
     </section>
 
@@ -1135,7 +1131,7 @@ import { startRun, stopRun, togglePause, getRunState, getRunData, checkBattery }
 import { startWorkout, stopWorkout, togglePauseWorkout, getWorkoutState, getWorkoutData, isWorkoutRunning, playRandomHypeHome, playRandomHypeDone } from './js/timer.js';
 import { initStaticMap, getMapSnapshotUrl } from './js/map.js';
 import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions, checkUsernameAvailable, subscribeToNotifications, markNotificationsRead, getRequestStatus } from './js/firestore.js';
-import { loadFriends, loadPendingRequests, loadFeed, loadLeaderboard, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderSocialFeedItem, renderReactions } from './js/social.js';
+import { loadFriends, loadPendingRequests, loadSentRequests, loadFeed, loadLeaderboard, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderSocialFeedItem, renderReactions } from './js/social.js';
 import { showToast, showConfirm, formatDistance, formatPace, formatDuration, formatTimeAgo, getGreeting, resizeImage, resizeImageSquare, openBottomSheet, closeBottomSheet } from './js/ui.js';
 
 // ─── Module-level run data storage ────────────────────────────────────────
@@ -2797,24 +2793,60 @@ async function initSocialPage() {
 
 async function renderSocialPending() {
   try {
-    const pending = await loadPendingRequests();
+    const [pending, sent] = await Promise.all([loadPendingRequests(), loadSentRequests()]);
     const section = document.getElementById('social-pending-requests');
     const list = document.getElementById('social-pending-list');
-    if (pending.length > 0) {
+    const hasItems = pending.length > 0 || sent.length > 0;
+
+    if (hasItems) {
       section.classList.remove('hidden');
-      list.innerHTML = pending.map(req => `
-        <div class="bg-surface-container rounded-2xl px-4 py-3 flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
-            ${req.fromPhoto
-              ? `<img src="${escapeHtml(req.fromPhoto)}" class="w-full h-full object-cover" />`
-              : `<div class="w-full h-full flex items-center justify-center font-headline font-bold text-on-surface-variant">${escapeHtml((req.fromName || '?')[0])}</div>`
-            }
+      let html = '';
+
+      if (pending.length > 0) {
+        html += `
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-8 h-[2px] bg-[#FF5C00]"></span>
+            <h2 class="font-headline text-xl font-bold tracking-tight uppercase">Friend Requests</h2>
           </div>
-          <p class="flex-1 font-label font-bold text-sm text-on-surface truncate">${escapeHtml(req.fromName || 'Unknown')}</p>
-          <button class="social-accept-btn px-3 py-1.5 bg-primary-container rounded-full font-label font-bold text-xs text-on-primary-container uppercase tracking-widest active:scale-95 transition-all" data-req-id="${req.id}" data-from-uid="${req.from}">Accept</button>
-          <button class="social-decline-btn px-3 py-1.5 border border-outline-variant/30 rounded-full font-label text-xs text-on-surface-variant uppercase tracking-widest active:scale-95 transition-all" data-req-id="${req.id}">Ignore</button>
-        </div>
-      `).join('');
+        `;
+        html += pending.map(req => `
+          <div class="bg-surface-container rounded-2xl px-4 py-3 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+              ${req.fromPhoto
+                ? `<img src="${escapeHtml(req.fromPhoto)}" class="w-full h-full object-cover" />`
+                : `<div class="w-full h-full flex items-center justify-center font-headline font-bold text-on-surface-variant">${escapeHtml((req.fromName || '?')[0])}</div>`
+              }
+            </div>
+            <p class="flex-1 font-label font-bold text-sm text-on-surface truncate">${escapeHtml(req.fromName || 'Unknown')}</p>
+            <button class="social-accept-btn px-3 py-1.5 bg-primary-container rounded-full font-label font-bold text-xs text-on-primary-container uppercase tracking-widest active:scale-95 transition-all" data-req-id="${req.id}" data-from-uid="${req.from}">Accept</button>
+            <button class="social-decline-btn px-3 py-1.5 border border-outline-variant/30 rounded-full font-label text-xs text-on-surface-variant uppercase tracking-widest active:scale-95 transition-all" data-req-id="${req.id}">Ignore</button>
+          </div>
+        `).join('');
+      }
+
+      if (sent.length > 0) {
+        html += `
+          <div class="flex items-center gap-3 mb-2 ${pending.length > 0 ? 'mt-6' : ''}">
+            <span class="w-8 h-[2px] bg-on-surface-variant/30"></span>
+            <h2 class="font-headline text-lg font-bold tracking-tight uppercase text-on-surface-variant">Sent Requests</h2>
+          </div>
+        `;
+        html += sent.map(req => `
+          <div class="bg-surface-container rounded-2xl px-4 py-3 flex items-center gap-3 opacity-70">
+            <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+              ${req.toPhoto
+                ? `<img src="${escapeHtml(req.toPhoto)}" class="w-full h-full object-cover" />`
+                : `<div class="w-full h-full flex items-center justify-center font-headline font-bold text-on-surface-variant">${escapeHtml((req.toName || '?')[0])}</div>`
+              }
+            </div>
+            <p class="flex-1 font-label font-bold text-sm text-on-surface truncate">${escapeHtml(req.toName || 'Unknown')}</p>
+            <span class="px-3 py-1.5 border border-outline-variant/20 rounded-full font-label text-[10px] text-on-surface-variant uppercase tracking-widest">Pending</span>
+          </div>
+        `).join('');
+      }
+
+      list.innerHTML = html;
+
       list.querySelectorAll('.social-accept-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
           btn.disabled = true;

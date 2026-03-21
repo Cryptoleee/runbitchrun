@@ -387,6 +387,16 @@ export async function getPendingRequests() {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
+export async function getSentRequests() {
+  const db = getDb();
+  const snapshot = await db.collection('friendRequests')
+    .where('from', '==', uid())
+    .where('status', '==', 'pending')
+    .get();
+
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
 export async function syncAcceptedRequests() {
   const db = getDb();
   const snapshot = await db.collection('friendRequests')

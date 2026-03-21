@@ -1,6 +1,6 @@
 import { state } from './app.js';
 import {
-  getFriends, getPendingRequests, sendFriendRequest,
+  getFriends, getPendingRequests, getSentRequests, sendFriendRequest,
   acceptFriendRequest, declineFriendRequest, removeFriend,
   searchUsers, syncAcceptedRequests, getFeed,
   addReaction, removeReaction, getReactions,
@@ -31,6 +31,10 @@ export async function loadFriends() {
 
 export async function loadPendingRequests() {
   return getPendingRequests();
+}
+
+export async function loadSentRequests() {
+  return getSentRequests();
 }
 
 export async function handleSendRequest(userId) {
