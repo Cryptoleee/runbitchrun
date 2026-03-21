@@ -117,6 +117,27 @@
   <span class="ptr-label">Pull to refresh</span>
 </div>
 
+<!-- ═══════════════ PHOTO VIEWER OVERLAY ════════════════════════════════ -->
+<div id="photo-viewer" class="fixed inset-0 z-[999] bg-black/95 backdrop-blur-md hidden" style="padding-top: env(safe-area-inset-top, 0px);">
+  <div class="flex flex-col h-full">
+    <div class="flex items-center justify-between px-4 py-3">
+      <button id="photo-viewer-close" class="text-white active:scale-90 transition-transform p-2">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
+      <button id="photo-viewer-comment" class="text-white active:scale-90 transition-transform p-2">
+        <span class="material-symbols-outlined text-2xl">chat_bubble</span>
+      </button>
+    </div>
+    <div class="flex-1 flex items-center justify-center px-4">
+      <img id="photo-viewer-img" class="max-w-full max-h-full rounded-xl object-contain" src="" alt="" />
+    </div>
+    <div id="photo-viewer-info" class="px-6 py-4 text-center">
+      <p id="photo-viewer-user" class="font-headline font-bold text-sm text-white"></p>
+      <p id="photo-viewer-time" class="font-label text-xs text-on-surface-variant mt-1"></p>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════ GPS HEADER BADGE (shown only during run) ═══════════════ -->
 <div id="gps-badge" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 px-3 py-1.5 bg-surface-container/90 backdrop-blur-md border border-primary-container/20 rounded-full">
   <span class="font-label text-[9px] text-primary-fixed-dim uppercase tracking-widest flex items-center gap-1.5">
@@ -642,6 +663,18 @@
         <div class="flex items-center justify-center py-12">
           <div class="spinner"></div>
         </div>
+      </div>
+      <button id="social-show-more" class="hidden w-full py-3 rounded-full border border-white/10 bg-surface-container font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant active:scale-95 transition-all">Show more</button>
+    </section>
+
+    <!-- Gallery -->
+    <section class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-[2px] bg-[#B8FF00]"></span>
+        <h2 class="font-headline text-xl font-bold tracking-tight uppercase">Gallery</h2>
+      </div>
+      <div id="social-gallery" class="grid grid-cols-3 gap-1.5 rounded-2xl overflow-hidden">
+        <div class="text-center py-6 col-span-3 text-on-surface-variant font-label text-xs opacity-60">Loading...</div>
       </div>
     </section>
   </main>
@@ -1794,7 +1827,7 @@ async function initDetailPage() {
       photosContainer.innerHTML = `
         <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-3">Photos</p>
         <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-          ${run.photos.map(p => `<img src="${p.thumbnail || p.full}" class="h-24 rounded-xl object-cover flex-shrink-0" />`).join('')}
+          ${run.photos.map(p => `<img src="${p.thumbnail || p.full}" data-full="${p.full || p.thumbnail}" data-run-id="${run.id}" data-user-name="${escapeHtml(run.userName || '')}" data-time="" class="photo-thumb h-24 rounded-xl object-cover flex-shrink-0 cursor-pointer active:scale-95 transition-transform" />`).join('')}
         </div>
       `;
     }
@@ -2751,6 +2784,7 @@ let socialAllFeed = [];
 
 async function initSocialPage() {
   socialFilter = 'all';
+  socialFeedExpanded = false;
 
   // Reset filter chip UI
   document.querySelectorAll('.social-filter-btn').forEach(btn => {
@@ -2780,6 +2814,7 @@ async function initSocialPage() {
     await loadFriends();
     socialAllFeed = await loadFeed();
     renderSocialFeed(socialAllFeed);
+    renderGallery(socialAllFeed);
   } catch (err) {
     console.warn('Social feed error:', err);
     document.getElementById('social-feed').innerHTML = `
@@ -2984,8 +3019,11 @@ function renderLeaderboard(leaders) {
   container.innerHTML = secondHtml + firstHtml + thirdHtml;
 }
 
+let socialFeedExpanded = false;
+
 function renderSocialFeed(items) {
   const container = document.getElementById('social-feed');
+  const showMoreBtn = document.getElementById('social-show-more');
   const filtered = socialFilter === 'all' ? items : items.filter(i => (i.type || 'run') === socialFilter);
 
   if (filtered.length === 0) {
@@ -2995,13 +3033,34 @@ function renderSocialFeed(items) {
         ${socialFilter === 'all' ? 'No activity yet. Add friends or start working out!' : 'No ' + (socialFilter === 'interval' ? 'workouts' : 'runs') + ' to show.'}
       </div>
     `;
+    showMoreBtn.classList.add('hidden');
     return;
   }
 
-  container.innerHTML = filtered.map(item => renderSocialFeedItem(item)).join('');
+  const limit = socialFeedExpanded ? 10 : 3;
+  const visible = filtered.slice(0, limit);
+  const hasMore = filtered.length > limit;
 
-  // Load reactions for each feed item
-  filtered.forEach(async (item) => {
+  let html = visible.map(item => renderSocialFeedItem(item)).join('');
+
+  // Fade the last card if truncated (tease the 4th)
+  if (!socialFeedExpanded && filtered.length > 3) {
+    const peekCard = renderSocialFeedItem(filtered[3]);
+    html += `<div style="max-height:80px;overflow:hidden;mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);-webkit-mask-image:linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);pointer-events:none;">${peekCard}</div>`;
+  }
+
+  container.innerHTML = html;
+
+  // Show/hide "show more" button
+  if (hasMore && !socialFeedExpanded) {
+    showMoreBtn.classList.remove('hidden');
+    showMoreBtn.textContent = `Show more (${filtered.length - 3} more)`;
+  } else {
+    showMoreBtn.classList.add('hidden');
+  }
+
+  // Load reactions for visible feed items
+  visible.forEach(async (item) => {
     try {
       const reactions = await getReactions(item.id);
       const el = document.getElementById(`reactions-${item.id}`);
@@ -3036,6 +3095,93 @@ document.getElementById('btn-social-search').addEventListener('click', () => {
 document.getElementById('btn-social-add-friend').addEventListener('click', () => {
   navigateTo('friends');
 });
+
+// Show more feed button
+document.getElementById('social-show-more').addEventListener('click', () => {
+  socialFeedExpanded = true;
+  renderSocialFeed(socialAllFeed);
+});
+
+// Clickable user names/avatars on feed cards → friend profile
+document.addEventListener('click', (e) => {
+  const userLink = e.target.closest('.feed-user-link');
+  if (userLink && userLink.dataset.uid) {
+    const uid = userLink.dataset.uid;
+    if (uid === state.user?.uid) return; // don't navigate to own profile from feed
+    currentFriendUserId = uid;
+    navigateTo('friend');
+  }
+});
+
+// Photo viewer
+function openPhotoViewer(fullUrl, userName, timeAgo, runId) {
+  const viewer = document.getElementById('photo-viewer');
+  document.getElementById('photo-viewer-img').src = fullUrl;
+  document.getElementById('photo-viewer-user').textContent = userName || '';
+  document.getElementById('photo-viewer-time').textContent = timeAgo || '';
+  viewer.classList.remove('hidden');
+  viewer.dataset.runId = runId || '';
+}
+
+document.getElementById('photo-viewer-close').addEventListener('click', () => {
+  document.getElementById('photo-viewer').classList.add('hidden');
+  document.getElementById('photo-viewer-img').src = '';
+});
+
+document.getElementById('photo-viewer-comment').addEventListener('click', () => {
+  const viewer = document.getElementById('photo-viewer');
+  const runId = viewer.dataset.runId;
+  if (runId) {
+    viewer.classList.add('hidden');
+    openComments(runId);
+  }
+});
+
+// Global click handler for photo thumbnails
+document.addEventListener('click', (e) => {
+  const thumb = e.target.closest('.photo-thumb');
+  if (thumb) {
+    openPhotoViewer(
+      thumb.dataset.full || thumb.src,
+      thumb.dataset.userName || '',
+      thumb.dataset.time || '',
+      thumb.dataset.runId || ''
+    );
+  }
+});
+
+// Gallery renderer
+function renderGallery(feedItems) {
+  const gallery = document.getElementById('social-gallery');
+  const photos = [];
+  for (const item of feedItems) {
+    if (item.photos && item.photos.length > 0) {
+      for (const p of item.photos) {
+        photos.push({
+          full: p.full || p.thumbnail,
+          thumbnail: p.thumbnail || p.full,
+          userName: item.userName || '',
+          timeAgo: item.startedAt?.toDate ? formatTimeAgo(item.startedAt.toDate()) : '',
+          runId: item.id
+        });
+      }
+    }
+  }
+
+  if (photos.length === 0) {
+    gallery.innerHTML = `<div class="text-center py-8 col-span-3 text-on-surface-variant font-label text-xs opacity-60">
+      <span class="material-symbols-outlined text-2xl block mb-2 opacity-40">photo_library</span>
+      No photos yet
+    </div>`;
+    return;
+  }
+
+  gallery.innerHTML = photos.slice(0, 12).map(p => `
+    <div class="aspect-square overflow-hidden">
+      <img src="${escapeHtml(p.thumbnail)}" data-full="${escapeHtml(p.full)}" data-user-name="${escapeHtml(p.userName)}" data-time="${escapeHtml(p.timeAgo)}" data-run-id="${p.runId}" class="photo-thumb w-full h-full object-cover cursor-pointer active:scale-95 transition-transform" />
+    </div>
+  `).join('');
+}
 
 // Friend row clicks on social page
 document.getElementById('social-friends-list').addEventListener('click', (e) => {

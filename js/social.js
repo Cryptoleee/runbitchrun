@@ -301,10 +301,17 @@ export function renderSocialFeedItem(run) {
     `;
   }
 
+  // Photos strip
+  const photosHtml = run.photos && run.photos.length > 0
+    ? `<div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1 mb-4">
+        ${run.photos.map(p => `<img src="${escapeHtml(p.thumbnail || p.full)}" data-full="${escapeHtml(p.full || p.thumbnail)}" data-run-id="${run.id}" data-user-name="${escapeHtml(run.userName || '')}" data-time="${timeAgo}" class="photo-thumb h-20 rounded-xl object-cover flex-shrink-0 cursor-pointer active:scale-95 transition-transform" />`).join('')}
+      </div>`
+    : '';
+
   return `
     <div class="social-feed-card rounded-2xl p-5 border-l-4 ${borderColor} backdrop-blur-md" style="background:linear-gradient(135deg, #1a1919 40%, ${glowColor}12 100%);" data-run-id="${run.id}" data-run-type="${run.type || 'run'}">
       <div class="flex justify-between items-start mb-6">
-        <div class="flex items-center gap-3">
+        <button class="feed-user-link flex items-center gap-3 text-left active:scale-95 transition-transform" data-uid="${run.userId || ''}">
           <div class="w-10 h-10 rounded-xl overflow-hidden bg-surface-container-highest">
             ${avatarHtml}
           </div>
@@ -312,9 +319,10 @@ export function renderSocialFeedItem(run) {
             <h4 class="font-headline font-bold text-sm uppercase">${escapeHtml(run.userName || 'Unknown')}</h4>
             <p class="font-label text-[10px] text-on-surface-variant uppercase tracking-tighter">${escapeHtml(label)} &bull; ${timeAgo}</p>
           </div>
-        </div>
+        </button>
         <span class="material-symbols-outlined text-on-surface-variant text-xl">${typeIcon}</span>
       </div>
+      ${photosHtml}
       <div class="grid grid-cols-3 gap-4 mb-6">
         ${statsHtml}
       </div>
@@ -351,7 +359,7 @@ export function renderFeedItem(run) {
 
   const photosHtml = run.photos && run.photos.length > 0
     ? `<div style="display:flex;gap:8px;overflow-x:auto;padding:8px 0;-webkit-overflow-scrolling:touch;">
-        ${run.photos.map(p => `<img src="${escapeHtml(p.thumbnail || p.full)}" style="height:80px;border-radius:8px;object-fit:cover;flex-shrink:0;" />`).join('')}
+        ${run.photos.map(p => `<img src="${escapeHtml(p.thumbnail || p.full)}" data-full="${escapeHtml(p.full || p.thumbnail)}" data-run-id="${run.id}" data-user-name="${escapeHtml(run.userName || '')}" class="photo-thumb" style="height:80px;border-radius:8px;object-fit:cover;flex-shrink:0;cursor:pointer;" />`).join('')}
       </div>`
     : '';
 
