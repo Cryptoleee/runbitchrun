@@ -321,6 +321,17 @@ export async function getFeed(friendIds, lastDoc = null) {
 
 export async function sendFriendRequest(toUserId) {
   const db = getDb();
+
+  // Check if a pending request already exists (either direction)
+  const [sentSnap, receivedSnap] = await Promise.all([
+    db.collection('friendRequests')
+      .where('from', '==', uid()).where('to', '==', toUserId).where('status', '==', 'pending').get(),
+    db.collection('friendRequests')
+      .where('from', '==', toUserId).where('to', '==', uid()).where('status', '==', 'pending').get()
+  ]);
+  if (!sentSnap.empty) throw new Error('Request already sent');
+  if (!receivedSnap.empty) throw new Error('This user already sent you a request');
+
   const toProfile = await getProfile(toUserId);
   if (!toProfile) throw new Error('User not found');
 
@@ -328,9 +339,9 @@ export async function sendFriendRequest(toUserId) {
   await ref.set({
     from: uid(),
     to: toUserId,
-    fromName: state.profile.displayName || '',
+    fromName: feedName(state.profile),
     fromPhoto: state.profile.customPhoto || state.profile.photoURL || '',
-    toName: toProfile.displayName || '',
+    toName: feedName(toProfile),
     toPhoto: toProfile.customPhoto || toProfile.photoURL || '',
     status: 'pending',
     createdAt: ts()
@@ -357,7 +368,7 @@ export async function acceptFriendRequest(requestId, fromUserId) {
   const myFriendRef = db.collection('users').doc(uid()).collection('friends').doc(fromUserId);
   batch.set(myFriendRef, {
     since: ts(),
-    friendName: fromProfile?.displayName || requestData.fromName || '',
+    friendName: feedName(fromProfile) || requestData.fromName || '',
     friendPhoto: fromProfile?.customPhoto || fromProfile?.photoURL || requestData.fromPhoto || ''
   });
 
@@ -365,8 +376,20 @@ export async function acceptFriendRequest(requestId, fromUserId) {
   const theirFriendRef = db.collection('users').doc(fromUserId).collection('friends').doc(uid());
   batch.set(theirFriendRef, {
     since: ts(),
-    friendName: state.profile.displayName || '',
+    friendName: feedName(state.profile),
     friendPhoto: state.profile.customPhoto || state.profile.photoURL || ''
+  });
+
+  // Notify the sender that their request was accepted
+  const notifRef = db.collection('notifications').doc();
+  batch.set(notifRef, {
+    userId: fromUserId,
+    type: 'friend_accepted',
+    fromId: uid(),
+    fromName: feedName(state.profile),
+    fromPhoto: state.profile.customPhoto || state.profile.photoURL || '',
+    read: false,
+    createdAt: ts()
   });
 
   await batch.commit();

@@ -222,3 +222,48 @@ body {
     transform: rotate(360deg);
   }
 }
+
+/* ── Pull to Refresh ─────────────────────────────── */
+.ptr-indicator {
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-60px);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: rgba(26, 25, 25, 0.95);
+  border: 1px solid rgba(184, 255, 0, 0.15);
+  backdrop-filter: blur(12px);
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ptr-indicator.visible {
+  opacity: 1;
+}
+
+.ptr-indicator.refreshing .ptr-spinner {
+  animation: spin 0.6s linear infinite;
+}
+
+.ptr-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #b7fe00;
+  border-radius: 50%;
+}
+
+.ptr-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #adaaaa;
+}

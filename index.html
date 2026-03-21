@@ -111,6 +111,12 @@
 </head>
 <body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
 
+<!-- Pull-to-refresh indicator -->
+<div id="ptr-indicator" class="ptr-indicator">
+  <div class="ptr-spinner"></div>
+  <span class="ptr-label">Pull to refresh</span>
+</div>
+
 <!-- ═══════════════ GPS HEADER BADGE (shown only during run) ═══════════════ -->
 <div id="gps-badge" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-50 px-3 py-1.5 bg-surface-container/90 backdrop-blur-md border border-primary-container/20 rounded-full">
   <span class="font-label text-[9px] text-primary-fixed-dim uppercase tracking-widest flex items-center gap-1.5">
@@ -768,7 +774,7 @@
       <h3 class="font-label text-on-surface-variant text-[10px] uppercase tracking-widest mb-3">Settings</h3>
       <div class="space-y-3">
         <!-- Username -->
-        <div class="bg-surface-container rounded-2xl px-4 py-3">
+        <div class="bg-surface-container rounded-2xl px-4 py-3 border border-[#B8FF00]/30">
           <div class="flex items-center justify-between">
             <div>
               <p class="font-label font-bold text-sm text-on-surface">Username</p>
@@ -2222,8 +2228,8 @@ function openNotificationsSheet() {
         <div style="display:flex;align-items:flex-start;gap:10px;padding:10px;border-radius:12px;background:${n.read ? 'transparent' : 'rgba(183,254,0,0.05)'};cursor:pointer;" class="notif-item" data-run-id="${n.runId || ''}">
           ${photo}
           <div style="flex:1;min-width:0;">
-            <p style="font-size:13px;color:#fff;"><strong>${n.fromName || 'Someone'}</strong> commented</p>
-            ${preview ? `<p style="font-size:12px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"${preview}"</p>` : ''}
+            <p style="font-size:13px;color:#fff;"><strong>${n.fromName || 'Someone'}</strong> ${n.type === 'friend_accepted' ? 'accepted your friend request' : 'commented'}</p>
+            ${n.type === 'comment' && preview ? `<p style="font-size:12px;color:#888;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"${preview}"</p>` : ''}
             <p style="font-size:11px;color:#555;margin-top:2px;">${time}</p>
           </div>
         </div>
@@ -3101,6 +3107,73 @@ document.addEventListener('click', async (e) => {
     return;
   }
 });
+
+// ─── Pull-to-Refresh ─────────────────────────────────────────────────────
+
+function setupPullToRefresh() {
+  const indicator = document.getElementById('ptr-indicator');
+  const label = indicator.querySelector('.ptr-label');
+  const THRESHOLD = 80;
+  let startY = 0;
+  let pulling = false;
+  let refreshing = false;
+
+  document.addEventListener('touchstart', (e) => {
+    if (refreshing) return;
+    const activePage = document.querySelector('.page.active');
+    if (!activePage) return;
+    const pageId = activePage.id.replace('page-', '');
+    if (!['home', 'social', 'history'].includes(pageId)) return;
+    if (window.scrollY > 5) return;
+    startY = e.touches[0].clientY;
+    pulling = true;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!pulling || refreshing) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy < 0) { pulling = false; return; }
+    const progress = Math.min(dy / THRESHOLD, 1);
+    const translateY = Math.min(dy * 0.5, 60);
+    indicator.style.transform = `translateX(-50%) translateY(${translateY}px)`;
+    indicator.classList.add('visible');
+    label.textContent = progress >= 1 ? 'Release to refresh' : 'Pull to refresh';
+  }, { passive: true });
+
+  document.addEventListener('touchend', async () => {
+    if (!pulling || refreshing) return;
+    pulling = false;
+    const currentY = parseFloat(indicator.style.transform.match(/translateY\(([^)]+)\)/)?.[1] || '0');
+    if (currentY < 40) {
+      indicator.classList.remove('visible');
+      indicator.style.transform = 'translateX(-50%) translateY(-60px)';
+      return;
+    }
+
+    refreshing = true;
+    label.textContent = 'Refreshing...';
+    indicator.classList.add('refreshing');
+    indicator.style.transform = 'translateX(-50%) translateY(20px)';
+
+    try {
+      const activePage = document.querySelector('.page.active');
+      const pageId = activePage?.id.replace('page-', '');
+      if (pageId === 'social') await initSocialPage();
+      else if (pageId === 'home') await initHomePage();
+      else if (pageId === 'history') await initHistoryPage();
+    } catch (err) {
+      console.warn('Refresh error:', err);
+    }
+
+    setTimeout(() => {
+      indicator.classList.remove('visible', 'refreshing');
+      indicator.style.transform = 'translateX(-50%) translateY(-60px)';
+      refreshing = false;
+    }, 400);
+  });
+}
+
+setupPullToRefresh();
 
 // ─── App Bootstrap ────────────────────────────────────────────────────────
 
