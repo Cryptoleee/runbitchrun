@@ -567,6 +567,11 @@
 
       <!-- Photos -->
       <div id="detail-photos" class="mb-6"></div>
+      <button id="btn-add-run-photo" class="hidden w-full h-11 rounded-xl border border-dashed border-primary-container/30 font-label font-bold text-xs text-primary-container uppercase tracking-widest active:scale-95 transition-all mb-4 flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-base">add_a_photo</span>
+        Add Photo
+      </button>
+      <input type="file" id="detail-photo-input" accept="image/*" class="hidden" />
 
       <!-- Reactions -->
       <div class="flex items-center justify-between bg-surface-container rounded-2xl px-4 py-3 mb-4">
@@ -1169,7 +1174,7 @@ import { initAuth, signOut } from './js/auth.js';
 import { startRun, stopRun, togglePause, getRunState, getRunData, checkBattery } from './js/tracker.js';
 import { startWorkout, stopWorkout, togglePauseWorkout, getWorkoutState, getWorkoutData, isWorkoutRunning, playRandomHypeHome, playRandomHypeDone } from './js/timer.js';
 import { initStaticMap, getMapSnapshotUrl } from './js/map.js';
-import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions, checkUsernameAvailable, subscribeToNotifications, markNotificationsRead, getRequestStatus } from './js/firestore.js';
+import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, addPhotoToRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions, checkUsernameAvailable, subscribeToNotifications, markNotificationsRead, getRequestStatus } from './js/firestore.js';
 import { loadFriends, loadPendingRequests, loadSentRequests, loadFeed, loadLeaderboard, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderSocialFeedItem, renderReactions } from './js/social.js';
 import { showToast, showConfirm, formatDistance, formatPace, formatDuration, formatTimeAgo, getGreeting, resizeImage, resizeImageSquare, openBottomSheet, closeBottomSheet } from './js/ui.js';
 
@@ -1841,15 +1846,12 @@ async function initDetailPage() {
       console.warn('Reactions error:', err);
     }
 
-    // Show/hide delete button only for own runs
+    // Show/hide own-run actions (delete, add photo)
+    const isOwn = state.user && run.userId === state.user.uid;
     const deleteBtn = document.getElementById('btn-delete-run');
-    if (deleteBtn) {
-      if (state.user && run.userId === state.user.uid) {
-        deleteBtn.classList.remove('hidden');
-      } else {
-        deleteBtn.classList.add('hidden');
-      }
-    }
+    const addPhotoBtn = document.getElementById('btn-add-run-photo');
+    if (deleteBtn) deleteBtn.classList.toggle('hidden', !isOwn);
+    if (addPhotoBtn) addPhotoBtn.classList.toggle('hidden', !isOwn);
   } catch (err) {
     console.warn('Failed to load run detail:', err);
     showToast('Failed to load run', 'error');
@@ -2540,6 +2542,33 @@ document.getElementById('btn-delete-run').addEventListener('click', async () => 
       showToast('Failed to delete run', 'error');
     }
   }
+});
+
+// ─── DETAIL: Add Photo ───────────────────────────────────────────────────
+
+document.getElementById('btn-add-run-photo').addEventListener('click', () => {
+  document.getElementById('detail-photo-input').click();
+});
+
+document.getElementById('detail-photo-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+  const btn = document.getElementById('btn-add-run-photo');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;"></div> Uploading...';
+  try {
+    const fullBlob = await resizeImage(file, 1200);
+    const thumbBlob = await resizeImage(file, 400);
+    await addPhotoToRun(currentDetailRunId, { full: fullBlob, thumbnail: thumbBlob });
+    showToast('Photo added!', 'success');
+    // Re-init detail page to show new photo
+    navigateTo('detail', { skipHistory: true });
+  } catch (err) {
+    showToast(err.message || 'Failed to add photo', 'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<span class="material-symbols-outlined text-base">add_a_photo</span> Add Photo';
 });
 
 // ─── PROFILE: Photo Upload ────────────────────────────────────────────────

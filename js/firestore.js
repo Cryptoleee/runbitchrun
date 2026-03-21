@@ -155,6 +155,34 @@ export async function getRun(runId) {
   return { id: doc.id, ...doc.data() };
 }
 
+export async function addPhotoToRun(runId, photoBlob) {
+  const db = getDb();
+  const storage = getStorage();
+  const runDoc = await db.collection('runs').doc(runId).get();
+  if (!runDoc.exists) throw new Error('Run not found');
+  const runData = runDoc.data();
+  if (runData.userId !== uid()) throw new Error('Not authorized');
+
+  const existing = runData.photos || [];
+  if (existing.length >= MAX_RUN_PHOTOS) throw new Error(`Max ${MAX_RUN_PHOTOS} photos allowed`);
+
+  const photoId = db.collection('runs').doc().id;
+  const fullRef = storage.ref(`runs/${uid()}/${photoId}_full.jpg`);
+  const thumbRef = storage.ref(`runs/${uid()}/${photoId}_thumb.jpg`);
+
+  await fullRef.put(photoBlob.full, { contentType: 'image/jpeg' });
+  await thumbRef.put(photoBlob.thumbnail, { contentType: 'image/jpeg' });
+
+  const fullURL = await fullRef.getDownloadURL();
+  const thumbURL = await thumbRef.getDownloadURL();
+
+  await db.collection('runs').doc(runId).update({
+    photos: [...existing, { full: fullURL, thumbnail: thumbURL }]
+  });
+
+  return { full: fullURL, thumbnail: thumbURL };
+}
+
 export async function deleteRun(runId) {
   const db = getDb();
   const runDoc = await db.collection('runs').doc(runId).get();
