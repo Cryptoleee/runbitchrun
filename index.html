@@ -595,6 +595,32 @@
       </div>
     </section>
 
+    <!-- Pending Friend Requests (shown when there are pending requests) -->
+    <section id="social-pending-requests" class="hidden space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-[2px] bg-[#FF5C00]"></span>
+        <h2 class="font-headline text-xl font-bold tracking-tight uppercase">Friend Requests</h2>
+      </div>
+      <div id="social-pending-list" class="space-y-3"></div>
+    </section>
+
+    <!-- Friends List -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-[2px] bg-[#B8FF00]"></span>
+          <h2 class="font-headline text-xl font-bold tracking-tight uppercase">Friends</h2>
+        </div>
+        <button id="btn-social-add-friend" class="flex items-center gap-1 px-3 py-1.5 bg-surface-container-high rounded-full active:scale-95 transition-all">
+          <span class="material-symbols-outlined text-sm text-[#B8FF00]">person_add</span>
+          <span class="font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Add</span>
+        </button>
+      </div>
+      <div id="social-friends-list" class="space-y-3">
+        <div class="text-center py-6 text-on-surface-variant font-label text-xs opacity-60">Loading...</div>
+      </div>
+    </section>
+
     <!-- Activity Feed -->
     <section class="space-y-6">
       <div class="flex items-center gap-3">
@@ -1108,7 +1134,7 @@ import { initAuth, signOut } from './js/auth.js';
 import { startRun, stopRun, togglePause, getRunState, getRunData, checkBattery } from './js/tracker.js';
 import { startWorkout, stopWorkout, togglePauseWorkout, getWorkoutState, getWorkoutData, isWorkoutRunning, playRandomHypeHome, playRandomHypeDone } from './js/timer.js';
 import { initStaticMap, getMapSnapshotUrl } from './js/map.js';
-import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions, checkUsernameAvailable, subscribeToNotifications, markNotificationsRead } from './js/firestore.js';
+import { saveRun, saveWorkout, getMyRuns, getRun, deleteRun, getWeeklyRuns, getUserRuns, getProfile, updateProfile, uploadProfilePhoto, getReactions, checkUsernameAvailable, subscribeToNotifications, markNotificationsRead, getRequestStatus } from './js/firestore.js';
 import { loadFriends, loadPendingRequests, loadFeed, loadLeaderboard, handleSendRequest, handleAcceptRequest, handleDeclineRequest, handleRemoveFriend, handleSearchUsers, handleReaction, openComments, renderFeedItem, renderSocialFeedItem, renderReactions } from './js/social.js';
 import { showToast, showConfirm, formatDistance, formatPace, formatDuration, formatTimeAgo, getGreeting, resizeImage, resizeImageSquare, openBottomSheet, closeBottomSheet } from './js/ui.js';
 
@@ -1823,10 +1849,33 @@ async function initFriendPage() {
       statsSummary.textContent = `${stats.totalRuns || 0} runs · ${dist.value} ${dist.unit}`;
     }
 
-    // Add/Remove friend buttons
+    // Add/Remove/Pending friend buttons
     const isFriend = state.friends && state.friends.includes(currentFriendUserId);
-    document.getElementById('btn-add-friend').classList.toggle('hidden', isFriend);
-    document.getElementById('btn-remove-friend').classList.toggle('hidden', !isFriend);
+    const addBtn = document.getElementById('btn-add-friend');
+    const removeBtn = document.getElementById('btn-remove-friend');
+    if (isFriend) {
+      addBtn.classList.add('hidden');
+      removeBtn.classList.remove('hidden');
+    } else {
+      removeBtn.classList.add('hidden');
+      const reqStatus = await getRequestStatus(currentFriendUserId);
+      if (reqStatus === 'sent') {
+        addBtn.classList.remove('hidden');
+        addBtn.textContent = 'Pending';
+        addBtn.disabled = true;
+        addBtn.classList.add('opacity-50');
+      } else if (reqStatus === 'received') {
+        addBtn.classList.remove('hidden');
+        addBtn.textContent = 'Accept';
+        addBtn.disabled = false;
+        addBtn.classList.remove('opacity-50');
+      } else {
+        addBtn.classList.remove('hidden');
+        addBtn.textContent = 'Add';
+        addBtn.disabled = false;
+        addBtn.classList.remove('opacity-50');
+      }
+    }
 
     // Their runs
     const runsContainer = document.getElementById('friend-runs');
@@ -2738,6 +2787,84 @@ async function initSocialPage() {
       </div>
     `;
   }
+
+  // Load pending friend requests
+  renderSocialPending();
+
+  // Load friends list
+  renderSocialFriends();
+}
+
+async function renderSocialPending() {
+  try {
+    const pending = await loadPendingRequests();
+    const section = document.getElementById('social-pending-requests');
+    const list = document.getElementById('social-pending-list');
+    if (pending.length > 0) {
+      section.classList.remove('hidden');
+      list.innerHTML = pending.map(req => `
+        <div class="bg-surface-container rounded-2xl px-4 py-3 flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+            ${req.fromPhoto
+              ? `<img src="${escapeHtml(req.fromPhoto)}" class="w-full h-full object-cover" />`
+              : `<div class="w-full h-full flex items-center justify-center font-headline font-bold text-on-surface-variant">${escapeHtml((req.fromName || '?')[0])}</div>`
+            }
+          </div>
+          <p class="flex-1 font-label font-bold text-sm text-on-surface truncate">${escapeHtml(req.fromName || 'Unknown')}</p>
+          <button class="social-accept-btn px-3 py-1.5 bg-primary-container rounded-full font-label font-bold text-xs text-on-primary-container uppercase tracking-widest active:scale-95 transition-all" data-req-id="${req.id}" data-from-uid="${req.from}">Accept</button>
+          <button class="social-decline-btn px-3 py-1.5 border border-outline-variant/30 rounded-full font-label text-xs text-on-surface-variant uppercase tracking-widest active:scale-95 transition-all" data-req-id="${req.id}">Ignore</button>
+        </div>
+      `).join('');
+      list.querySelectorAll('.social-accept-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          btn.textContent = '...';
+          await handleAcceptRequest(btn.dataset.reqId, btn.dataset.fromUid);
+          renderSocialPending();
+          renderSocialFriends();
+          updatePendingBadge();
+        });
+      });
+      list.querySelectorAll('.social-decline-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          await handleDeclineRequest(btn.dataset.reqId);
+          renderSocialPending();
+          updatePendingBadge();
+        });
+      });
+    } else {
+      section.classList.add('hidden');
+      list.innerHTML = '';
+    }
+  } catch (err) {
+    console.warn('Social pending error:', err);
+  }
+}
+
+async function renderSocialFriends() {
+  try {
+    const friends = await loadFriends();
+    const list = document.getElementById('social-friends-list');
+    if (friends.length === 0) {
+      list.innerHTML = `<div class="text-center py-6 text-on-surface-variant font-label text-xs opacity-60">No friends yet. Tap + to add some!</div>`;
+    } else {
+      list.innerHTML = friends.map(f => `
+        <div class="friend-row bg-surface-container rounded-2xl px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-transform cursor-pointer" data-uid="${f.id}">
+          <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
+            ${f.friendPhoto
+              ? `<img src="${escapeHtml(f.friendPhoto)}" class="w-full h-full object-cover" />`
+              : `<div class="w-full h-full flex items-center justify-center font-headline font-bold text-on-surface-variant">${escapeHtml((f.friendName || '?')[0])}</div>`
+            }
+          </div>
+          <p class="flex-1 font-label font-bold text-sm text-on-surface truncate">${escapeHtml(f.friendName || 'Unknown')}</p>
+          <span class="material-symbols-outlined text-on-surface-variant text-lg">chevron_right</span>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    console.warn('Social friends error:', err);
+  }
 }
 
 function renderLeaderboard(leaders) {
@@ -2865,6 +2992,20 @@ document.getElementById('social-filter-chips').addEventListener('click', (e) => 
 // Social search button
 document.getElementById('btn-social-search').addEventListener('click', () => {
   navigateTo('friends');
+});
+
+// Social add friend button
+document.getElementById('btn-social-add-friend').addEventListener('click', () => {
+  navigateTo('friends');
+});
+
+// Friend row clicks on social page
+document.getElementById('social-friends-list').addEventListener('click', (e) => {
+  const row = e.target.closest('.friend-row');
+  if (row && row.dataset.uid) {
+    currentFriendUserId = row.dataset.uid;
+    navigateTo('friend');
+  }
 });
 
 // ─── page:enter dispatch handler ─────────────────────────────────────────

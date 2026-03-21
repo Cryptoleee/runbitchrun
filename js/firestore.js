@@ -410,6 +410,25 @@ export async function syncAcceptedRequests() {
   }
 }
 
+export async function getRequestStatus(otherUserId) {
+  const db = getDb();
+  // Check if we sent a request to them
+  const sent = await db.collection('friendRequests')
+    .where('from', '==', uid())
+    .where('to', '==', otherUserId)
+    .where('status', '==', 'pending')
+    .get();
+  if (!sent.empty) return 'sent';
+  // Check if they sent a request to us
+  const received = await db.collection('friendRequests')
+    .where('from', '==', otherUserId)
+    .where('to', '==', uid())
+    .where('status', '==', 'pending')
+    .get();
+  if (!received.empty) return 'received';
+  return null;
+}
+
 export async function getFriends() {
   const db = getDb();
   const snapshot = await db.collection('users').doc(uid())
