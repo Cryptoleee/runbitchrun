@@ -2310,7 +2310,7 @@ document.getElementById('btn-start-run').addEventListener('click', async () => {
       startRun((runState) => {
         const units = state.profile?.units || 'metric';
 
-        if (runState.currentPace > 0) {
+        if (runState.currentPace > 0 && runState.currentPace < 3600) {
           const paceFmt = formatPace(runState.currentPace, units);
           document.getElementById('run-pace').textContent = paceFmt.value;
         } else {
