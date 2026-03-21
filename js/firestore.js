@@ -329,7 +329,7 @@ export async function sendFriendRequest(toUserId) {
     db.collection('friendRequests')
       .where('from', '==', toUserId).where('to', '==', uid()).where('status', '==', 'pending').get()
   ]);
-  if (!sentSnap.empty) throw new Error('Request already sent');
+  if (!sentSnap.empty) throw new Error('Invite already sent!');
   if (!receivedSnap.empty) throw new Error('This user already sent you a request');
 
   const toProfile = await getProfile(toUserId);
@@ -417,7 +417,30 @@ export async function getSentRequests() {
     .where('status', '==', 'pending')
     .get();
 
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  // Deduplicate: keep only the newest request per recipient, delete extras
+  const byRecipient = {};
+  for (const doc of snapshot.docs) {
+    const data = doc.data();
+    const key = data.to;
+    const entry = { id: doc.id, ...data };
+    if (!byRecipient[key]) {
+      byRecipient[key] = [entry];
+    } else {
+      byRecipient[key].push(entry);
+    }
+  }
+
+  const results = [];
+  for (const entries of Object.values(byRecipient)) {
+    entries.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+    results.push(entries[0]);
+    // Delete duplicates
+    for (let i = 1; i < entries.length; i++) {
+      db.collection('friendRequests').doc(entries[i].id).delete().catch(() => {});
+    }
+  }
+
+  return results;
 }
 
 export async function syncAcceptedRequests() {
