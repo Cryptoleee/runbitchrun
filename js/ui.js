@@ -152,7 +152,7 @@ export function resizeImage(file, maxWidth, maxHeight) {
         height = height * (maxWidth / width);
         width = maxWidth;
       }
-      if (height > maxHeight) {
+      if (maxHeight && height > maxHeight) {
         width = width * (maxHeight / height);
         height = maxHeight;
       }
@@ -161,7 +161,16 @@ export function resizeImage(file, maxWidth, maxHeight) {
       canvas.height = Math.round(height);
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.85);
+      canvas.toBlob((blob) => {
+        // Clean up canvas memory (important on iOS)
+        canvas.width = 0;
+        canvas.height = 0;
+        if (!blob) {
+          reject(new Error('Failed to create image blob'));
+          return;
+        }
+        resolve(blob);
+      }, 'image/jpeg', 0.8);
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
@@ -186,7 +195,15 @@ export function resizeImageSquare(file, size) {
       canvas.height = size;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, sx, sy, cropSize, cropSize, 0, 0, size, size);
-      canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.85);
+      canvas.toBlob((blob) => {
+        canvas.width = 0;
+        canvas.height = 0;
+        if (!blob) {
+          reject(new Error('Failed to create image blob'));
+          return;
+        }
+        resolve(blob);
+      }, 'image/jpeg', 0.8);
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);

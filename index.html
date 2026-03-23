@@ -1313,6 +1313,30 @@ async function updatePendingBadge() {
 // ─── Page: HOME ───────────────────────────────────────────────────────────
 
 async function initHomePage() {
+  // Recover unsaved run/workout after crash
+  if (!pendingRunData) {
+    try {
+      const saved = localStorage.getItem('wbw_pending_run');
+      if (saved) {
+        const recovered = JSON.parse(saved);
+        const confirmed = await showConfirm(
+          'Recover Workout',
+          'A previous workout was not saved (app may have crashed). Save it now?'
+        );
+        if (confirmed) {
+          pendingRunData = recovered;
+          pendingPhotoBlobs = [];
+          navigateTo('summary', { skipHistory: true });
+          return;
+        } else {
+          localStorage.removeItem('wbw_pending_run');
+        }
+      }
+    } catch (_) {
+      localStorage.removeItem('wbw_pending_run');
+    }
+  }
+
   // Start notification listener
   if (state.user) startNotifications();
 
@@ -2141,6 +2165,7 @@ function handleWorkoutComplete() {
   pendingRunData = workoutData;
   pendingPhotoBlobs = [];
   selectedVisibility = state.profile?.defaultVisibility || 'public';
+  try { localStorage.setItem('wbw_pending_run', JSON.stringify(pendingRunData)); } catch (_) {}
 
   // Populate summary for interval workout
   document.getElementById('summary-distance').textContent = formatDuration(workoutData.duration || 0);
@@ -2372,6 +2397,7 @@ document.getElementById('btn-stop').addEventListener('click', () => {
   const runData = stopRun();
   pendingRunData = { ...runData, type: 'run' };
   pendingPhotoBlobs = [];
+  try { localStorage.setItem('wbw_pending_run', JSON.stringify(pendingRunData)); } catch (_) {}
 
   // Ensure summary shows run-specific labels
   document.getElementById('summary-map').style.display = '';
@@ -2455,6 +2481,7 @@ document.getElementById('btn-save-run').addEventListener('click', async () => {
     }
     pendingRunData = null;
     pendingPhotoBlobs = [];
+    localStorage.removeItem('wbw_pending_run');
     document.getElementById('photo-previews').innerHTML = '';
     // Restore summary map visibility for next run
     document.getElementById('summary-map').style.display = '';
@@ -2480,6 +2507,7 @@ document.getElementById('btn-discard-run').addEventListener('click', async () =>
   if (confirmed) {
     pendingRunData = null;
     pendingPhotoBlobs = [];
+    localStorage.removeItem('wbw_pending_run');
     document.getElementById('photo-previews').innerHTML = '';
     document.getElementById('summary-map').style.display = '';
     document.getElementById('btn-save-run').textContent = 'Save Run';
@@ -2503,19 +2531,19 @@ document.getElementById('photo-input').addEventListener('change', async (e) => {
 
   for (const file of toProcess) {
     try {
-      const [full, thumbnail] = await Promise.all([
-        resizeImage(file, 1200, 1200),
-        resizeImage(file, 300, 300)
-      ]);
+      // Process sequentially to avoid iOS WebView memory crash
+      const full = await resizeImage(file, 1200);
+      const thumbnail = await resizeImage(file, 300);
       pendingPhotoBlobs.push({ full, thumbnail });
 
-      const previewUrl = URL.createObjectURL(full);
+      const previewUrl = URL.createObjectURL(thumbnail);
       const previewContainer = document.getElementById('photo-previews');
       const img = document.createElement('img');
       img.src = previewUrl;
       img.className = 'w-20 h-20 rounded-xl object-cover';
       previewContainer.appendChild(img);
     } catch (err) {
+      console.warn('Photo processing error:', err);
       showToast('Failed to process photo', 'error');
     }
   }
