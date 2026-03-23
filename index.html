@@ -157,6 +157,28 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- GLOBAL TOP BAR                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<header id="global-header" class="fixed top-0 w-full z-50 bg-[#0E0E0E] flex items-center justify-between px-6 pb-4" style="display:none; padding-top: calc(env(safe-area-inset-top, 0px) + 1rem)">
+  <div class="flex items-center gap-3">
+    <span class="material-symbols-outlined text-[#B8FF00] text-2xl" style="font-variation-settings:'FILL' 1;">bolt</span>
+    <h1 class="text-2xl font-black italic tracking-tighter text-[#B8FF00] font-headline uppercase">Work bitch! Work!</h1>
+  </div>
+  <div class="flex items-center gap-3">
+    <button id="btn-global-search" class="active:scale-90 transition-transform">
+      <span class="material-symbols-outlined text-2xl text-on-surface-variant">search</span>
+    </button>
+    <button id="btn-notifications" class="relative active:scale-90 transition-transform">
+      <span class="material-symbols-outlined text-2xl text-on-surface-variant">notifications</span>
+      <span id="notif-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-error rounded-full text-[9px] font-bold flex items-center justify-center text-on-error">0</span>
+    </button>
+    <button id="btn-home-profile" class="h-10 w-10 rounded-full overflow-hidden border-2 border-surface-container-highest active:scale-95 duration-150 transition-opacity hover:opacity-80">
+      <img id="home-profile-photo" alt="Profile" class="w-full h-full object-cover" src="" />
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
 <!-- PAGE: LOGIN                                                             -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div id="page-login" class="page min-h-screen">
@@ -213,23 +235,6 @@
       </button>
     </div>
   </div>
-
-  <!-- Top App Bar -->
-  <header class="fixed top-0 w-full z-50 bg-[#0E0E0E] flex items-center justify-between px-6 pb-4" style="padding-top: calc(env(safe-area-inset-top, 0px) + 1rem)">
-    <div class="flex items-center gap-3">
-      <span class="material-symbols-outlined text-[#B8FF00] text-2xl" style="font-variation-settings:'FILL' 1;">bolt</span>
-      <h1 class="text-2xl font-black italic tracking-tighter text-[#B8FF00] font-headline uppercase">Work bitch! Work!</h1>
-    </div>
-    <div class="flex items-center gap-3">
-      <button id="btn-notifications" class="relative active:scale-90 transition-transform">
-        <span class="material-symbols-outlined text-2xl text-on-surface-variant">notifications</span>
-        <span id="notif-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-error rounded-full text-[9px] font-bold flex items-center justify-center text-on-error">0</span>
-      </button>
-      <button id="btn-home-profile" class="h-10 w-10 rounded-full overflow-hidden border-2 border-surface-container-highest active:scale-95 duration-150 transition-opacity hover:opacity-80">
-        <img id="home-profile-photo" alt="Profile" class="w-full h-full object-cover" src="" />
-      </button>
-    </div>
-  </header>
 
   <main class="pb-32 px-6 max-w-2xl mx-auto page-enter" style="padding-top: calc(6rem + env(safe-area-inset-top, 0px))">
     <!-- Greeting -->
@@ -485,8 +490,8 @@
 <!-- PAGE: HISTORY                                                           -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div id="page-history" class="page min-h-screen">
-  <main class="pt-14 pt-safe px-5 max-w-lg mx-auto pb-32 page-enter">
-    <section class="mb-8 pt-6">
+  <main class="px-5 max-w-lg mx-auto pb-32 page-enter" style="padding-top: calc(6rem + env(safe-area-inset-top, 0px))">
+    <section class="mb-8 pt-2">
       <p class="font-label text-on-surface-variant text-[10px] tracking-[0.2em] uppercase mb-2">Training Archive</p>
       <h2 class="font-display text-5xl tracking-tight leading-none mb-6">ACTIVITY LOG</h2>
 
@@ -594,20 +599,7 @@
 <!-- PAGE: SOCIAL                                                             -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div id="page-social" class="page min-h-screen">
-  <!-- Top App Bar -->
-  <header class="fixed top-0 w-full z-50 bg-[#0E0E0E] flex justify-between items-center px-6" style="padding-top: calc(env(safe-area-inset-top, 0px) + 0.5rem); height: calc(env(safe-area-inset-top, 0px) + 4rem)">
-    <div class="flex items-center gap-3">
-      <span class="material-symbols-outlined text-[#B8FF00]" style="font-variation-settings:'FILL' 1;">bolt</span>
-      <h1 class="text-2xl font-black italic tracking-tighter text-[#B8FF00] uppercase font-headline">Work bitch! Work!</h1>
-    </div>
-    <div class="flex items-center gap-4">
-      <button id="btn-social-search" class="active:scale-95 transition-transform">
-        <span class="material-symbols-outlined text-white">search</span>
-      </button>
-    </div>
-  </header>
-
-  <main class="px-6 pb-32 space-y-10 max-w-2xl mx-auto page-enter" style="margin-top: calc(5rem + env(safe-area-inset-top, 0px))">
+  <main class="px-6 pb-32 space-y-10 max-w-2xl mx-auto page-enter" style="padding-top: calc(6rem + env(safe-area-inset-top, 0px))">
     <!-- Section: Leaderboard -->
     <section>
       <div class="flex justify-between items-end mb-8">
@@ -689,9 +681,9 @@
 <!-- PAGE: PROFILE                                                           -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div id="page-profile" class="page min-h-screen">
-  <main class="pt-14 pt-safe pb-32 px-5 max-w-lg mx-auto page-enter">
+  <main class="pb-32 px-5 max-w-lg mx-auto page-enter" style="padding-top: calc(6rem + env(safe-area-inset-top, 0px))">
     <!-- Profile Header -->
-    <section class="mb-8 pt-6">
+    <section class="mb-8 pt-2">
       <div class="flex items-center gap-4 mb-6">
         <!-- Profile Photo (clickable) -->
         <div class="relative">
@@ -968,9 +960,9 @@
 <!-- PAGE: TRAINING (Workout Config / Interval Timer Setup)                   -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div id="page-training" class="page min-h-screen">
-  <main class="pt-14 pt-safe pb-32 px-5 max-w-lg mx-auto page-enter">
+  <main class="pb-32 px-5 max-w-lg mx-auto page-enter" style="padding-top: calc(6rem + env(safe-area-inset-top, 0px))">
     <!-- Header -->
-    <section class="mb-10 pt-6">
+    <section class="mb-10 pt-2">
       <p class="font-label text-on-surface-variant text-xs tracking-[0.2em] mb-2 uppercase">Workout Mode</p>
       <h2 class="font-headline text-5xl font-extrabold tracking-tighter italic uppercase text-primary-fixed">Interval Timer</h2>
     </section>
@@ -2253,10 +2245,25 @@ function openNotificationsSheet() {
   sheet.querySelector('#notif-close').addEventListener('click', closeBottomSheet);
 
   const list = sheet.querySelector('#notif-list');
-  if (_notifications.length === 0) {
+
+  // Username reminder alert
+  const usernameAlert = !state.profile?.username
+    ? `<div class="notif-username-alert" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:rgba(255,92,0,0.1);border:1px solid rgba(255,92,0,0.3);cursor:pointer;margin-bottom:4px;">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,92,0,0.2);display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:#FF5C00;font-size:20px;">warning</span>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <p style="font-size:13px;color:#fff;font-weight:600;">Set your username</p>
+          <p style="font-size:11px;color:#aaa;margin-top:2px;">Pick a unique username so friends can find you.</p>
+        </div>
+        <span class="material-symbols-outlined" style="color:#666;font-size:18px;">chevron_right</span>
+      </div>`
+    : '';
+
+  if (_notifications.length === 0 && !usernameAlert) {
     list.innerHTML = '<p style="color:#666;text-align:center;padding:24px;font-size:14px;">No notifications yet.</p>';
   } else {
-    list.innerHTML = _notifications.map(n => {
+    list.innerHTML = usernameAlert + _notifications.map(n => {
       const photo = n.fromPhoto
         ? `<img src="${n.fromPhoto}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" />`
         : `<div style="width:36px;height:36px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;">${((n.fromName || '?').split(' ')[0])[0]}</div>`;
@@ -2273,6 +2280,14 @@ function openNotificationsSheet() {
         </div>
       `;
     }).join('');
+
+    const usernameBtn = list.querySelector('.notif-username-alert');
+    if (usernameBtn) {
+      usernameBtn.addEventListener('click', () => {
+        closeBottomSheet();
+        navigateTo('profile');
+      });
+    }
 
     list.querySelectorAll('.notif-item').forEach(item => {
       item.addEventListener('click', () => {
@@ -3137,7 +3152,7 @@ document.getElementById('social-filter-chips').addEventListener('click', (e) => 
 });
 
 // Social search button
-document.getElementById('btn-social-search').addEventListener('click', () => {
+document.getElementById('btn-global-search').addEventListener('click', () => {
   navigateTo('friends');
 });
 

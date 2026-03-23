@@ -17,6 +17,7 @@ export function setUser(user, profile) {
 
 const pageHistory = [];
 const HIDE_NAV_PAGES = ['run', 'summary', 'workout'];
+const SHOW_HEADER_PAGES = ['home', 'social', 'history', 'profile', 'training'];
 
 // ── Navigation ────────────────────────────────────────
 
@@ -44,6 +45,11 @@ export function navigateTo(page, opts = {}) {
   const bottomNav = document.getElementById('bottom-nav');
   if (bottomNav) {
     bottomNav.style.display = HIDE_NAV_PAGES.includes(page) ? 'none' : '';
+  }
+
+  const globalHeader = document.getElementById('global-header');
+  if (globalHeader) {
+    globalHeader.style.display = SHOW_HEADER_PAGES.includes(page) ? '' : 'none';
   }
 
   const gpsBadge = document.getElementById('gps-badge');
