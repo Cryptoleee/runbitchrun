@@ -1872,8 +1872,9 @@ async function initFriendPage() {
       return;
     }
 
-    document.getElementById('friend-page-title').textContent = profile.displayName || 'Profile';
-    document.getElementById('friend-name').textContent = profile.displayName || 'Runner';
+    const friendDisplayName = profile.username || (profile.displayName || 'Runner').split(' ')[0];
+    document.getElementById('friend-page-title').textContent = friendDisplayName;
+    document.getElementById('friend-name').textContent = friendDisplayName;
 
     const photoEl = document.getElementById('friend-photo');
     if (photoEl) photoEl.src = profile.customPhoto || profile.photoURL || '';
@@ -2763,10 +2764,10 @@ document.getElementById('friend-search').addEventListener('input', (e) => {
                 <div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest flex-shrink-0">
                   ${u.customPhoto || u.photoURL
                     ? `<img src="${escapeHtml(u.customPhoto || u.photoURL)}" class="w-full h-full object-cover" />`
-                    : `<div class="w-full h-full flex items-center justify-center font-headline font-bold">${escapeHtml((u.displayName || '?')[0])}</div>`
+                    : `<div class="w-full h-full flex items-center justify-center font-headline font-bold">${escapeHtml((u.username || u.displayName || '?')[0])}</div>`
                   }
                 </div>
-                <p class="flex-1 font-label font-bold text-sm text-on-surface truncate">${escapeHtml(u.displayName || 'Unknown')}</p>
+                <p class="flex-1 font-label font-bold text-sm text-on-surface truncate">${escapeHtml(u.username || (u.displayName || 'Unknown').split(' ')[0])}</p>
                 ${isFriend
                   ? `<span class="font-label text-xs text-primary-container uppercase tracking-widest">Friends</span>`
                   : `<button class="send-req-btn px-3 py-1.5 bg-primary-container rounded-full font-label font-bold text-xs text-on-primary-container uppercase tracking-widest active:scale-95 transition-all" data-uid="${u.id}">Add</button>`
@@ -2948,6 +2949,7 @@ async function renderSocialPending() {
     }
   } catch (err) {
     console.warn('Social pending error:', err);
+    showToast('Could not load friend requests', 'error');
   }
 }
 

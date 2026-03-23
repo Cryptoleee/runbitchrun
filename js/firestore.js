@@ -487,7 +487,7 @@ export async function syncAcceptedRequests() {
       const toProfile = await getProfile(data.to);
       await friendRef.set({
         since: ts(),
-        friendName: toProfile?.displayName || data.toName || '',
+        friendName: feedName(toProfile) || data.toName || '',
         friendPhoto: toProfile?.customPhoto || toProfile?.photoURL || data.toPhoto || ''
       });
     }
