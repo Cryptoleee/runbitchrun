@@ -364,14 +364,28 @@ export async function sendFriendRequest(toUserId) {
   if (!toProfile) throw new Error('User not found');
 
   const ref = db.collection('friendRequests').doc();
+  const senderName = feedName(state.profile);
+  const senderPhoto = state.profile.customPhoto || state.profile.photoURL || '';
   await ref.set({
     from: uid(),
     to: toUserId,
-    fromName: feedName(state.profile),
-    fromPhoto: state.profile.customPhoto || state.profile.photoURL || '',
+    fromName: senderName,
+    fromPhoto: senderPhoto,
     toName: feedName(toProfile),
     toPhoto: toProfile.customPhoto || toProfile.photoURL || '',
     status: 'pending',
+    createdAt: ts()
+  });
+
+  // Notify the recipient about the friend request
+  const notifRef = db.collection('notifications').doc();
+  await notifRef.set({
+    userId: toUserId,
+    type: 'friend_request',
+    fromId: uid(),
+    fromName: senderName,
+    fromPhoto: senderPhoto,
+    read: false,
     createdAt: ts()
   });
 
